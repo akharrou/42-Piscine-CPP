@@ -6,34 +6,97 @@
 /*   By: aymenkh <aymenkh@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/29 23:05:36 by aymenkh           #+#    #+#             */
-/*   Updated: 2019/07/01 02:01:17 by aymenkh          ###   ########.fr       */
+/*   Updated: 2019/07/09 23:04:31 by aymenkh          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Contact.hpp"
+#include "Phonebook.hpp"
 
-Contact::Contact() { };
-Contact::Contact(	std::string first,
-					std::string last,
-					std::string nickname,
-					std::string login,
-					std::string postal,
-					std::string email,
-					std::string phone,
-					std::string birthday,
-					std::string favMeal,
-					std::string undiColor,
-					std::string darkestSecret	)
+Phonebook::Contact::Contact()
 {
-	_first          = first;
-	_last           = last;
-	_nickname       = nickname;
-	_login          = login;
-	_postal         = postal;
-	_email          = email;
-	_phone          = phone;
-	_birthday       = birthday;
-	_favMeal        = favMeal;
-	_undiColor      = undiColor;
-	_darkestSecret  = darkestSecret;
+	m_first           = "empty";
+	m_last            = "empty";
+	m_nickname        = "empty";
+	m_login           = "empty";
+	m_postal          = "empty";
+	m_email           = "empty";
+	m_phone           = "empty";
+	m_birthday        = "empty";
+	m_fav_meal        = "empty";
+	m_color           = "empty";
+	m_darkest_secret  = "empty";
+}
+
+Phonebook::Contact& Phonebook::Contact::modify()
+{
+	std::cout << "First Name:" << std::endl;
+	std::getline(std::cin, m_first);
+
+	std::cout << std::endl << "Last Name:" << std::endl;
+	std::getline(std::cin, m_last);
+
+	std::cout << std::endl << "Nickname:" << std::endl;
+	std::getline(std::cin, m_nickname);
+
+	std::cout << std::endl << "Login:" << std::endl;
+	std::getline(std::cin, m_login);
+
+	std::cout << std::endl << "Postal Code:" << std::endl;
+	std::getline(std::cin, m_postal);
+
+	std::cout << std::endl << "Email:" << std::endl;
+	std::getline(std::cin, m_email);
+
+	std::cout << std::endl << "Phone Number:" << std::endl;
+	std::getline(std::cin, m_phone);
+
+	std::cout << std::endl << "Birthday:" << std::endl;
+	std::getline(std::cin, m_birthday);
+
+	std::cout << std::endl << "Favorite Meal:" << std::endl;
+	std::getline(std::cin, m_fav_meal);
+
+	std::cout << std::endl << "Color:" << std::endl;
+	std::getline(std::cin, m_color);
+
+	std::cout << std::endl <<
+	"Darkest Secret: " << ITALIC("(terminate with '$\\n')") \
+	<< std::endl;
+
+	std::string tmp;
+	while (std::getline(std::cin, tmp) && tmp[tmp.length() - 1] != '$')
+		m_darkest_secret += tmp + "\n";
+	tmp[tmp.length() - 1] = '\0';
+	m_darkest_secret += tmp;
+
+	return (*this);
+}
+
+std::string Phonebook::Contact::toString()
+{
+	return (
+		" ——————————————————————————————————————————\n"
+		"| First Name     | " + m_first + "\n"
+		"———————————————————————————————————————————\n"
+		"| Last Name      | " + m_last + "\n"
+		"———————————————————————————————————————————\n"
+		"| Nickname       | " + m_nickname + "\n"
+		"———————————————————————————————————————————\n"
+		"| Login          | " + m_login + "\n"
+		"———————————————————————————————————————————\n"
+		"| Postal         | " + m_postal + "\n"
+		"———————————————————————————————————————————\n"
+		"| Email          | " + m_email + "\n"
+		"———————————————————————————————————————————\n"
+		"| Phone          | " + m_phone + "\n"
+		"———————————————————————————————————————————\n"
+		"| Birthday       | " + m_birthday + "\n"
+		"———————————————————————————————————————————\n"
+		"| Favorite Meal  | " + m_fav_meal + "\n"
+		"———————————————————————————————————————————\n"
+		"| Color          | " + m_color + "\n"
+		"———————————————————————————————————————————\n"
+		"| Darkest Secret | " + m_darkest_secret + "\n"
+		" ——————————————————————————————————————————\n"
+	);
 }

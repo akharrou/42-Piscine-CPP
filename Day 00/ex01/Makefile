@@ -6,7 +6,7 @@
 #    By: aymenkh <aymenkh@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/05/07 18:55:23 by akharrou          #+#    #+#              #
-#    Updated: 2019/07/01 00:29:31 by aymenkh          ###   ########.fr        #
+#    Updated: 2019/07/09 23:07:51 by aymenkh          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,11 +25,13 @@ NAME        =   app
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
-HEADERS     =   Contact.hpp                                                   \
+HEADERS     =   Phonebook.hpp                                                 \
+                Contact.hpp                                                   \
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
 SOURCES     =   main.cpp                                                      \
+                Phonebook.cpp                                                 \
                 Contact.cpp                                                   \
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
