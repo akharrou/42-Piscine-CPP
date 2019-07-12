@@ -6,7 +6,7 @@
 /*   By: aymenkh <aymenkh@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/09 22:59:47 by aymenkh           #+#    #+#             */
-/*   Updated: 2019/07/10 00:13:38 by aymenkh          ###   ########.fr       */
+/*   Updated: 2019/07/11 19:11:59 by aymenkh          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,37 +32,84 @@ Phonebook&		Phonebook::add()
 {
 	CLEANUP;
 	if (contact_index < MAX_CONTACTS)
+	{
 		contacts[contact_index++].modify();
+		std::cout << "\n\n[√] Contact Successfully Added." << std::endl;
+		sleep(1);
+	}
 	else
-		std::cout << \
-		"Failed to add contact. " << ITALIC("(maximum capacity reached)") \
-		<< std::endl;
+	{
+		CLEANUP;
+		std::cout << ITALIC("Maximum capacity reached.") << std::endl;
+		sleep(2);
+	}
 	return (*this);
 }
 
-void			Phonebook::search()
+int			Phonebook::preview()
 {
-	int			chosen_index;
+	std::string first;
+	std::string last;
+	std::string nickname;
 
 	CLEANUP;
 	if (contact_index == 0)
 	{
 		std::cout << "No contacts currently held." << std::endl;
 		sleep(2);
-		return ;
+		return (-1);
 	}
+
 	for (int i = 0; i < contact_index; i++)
 	{
-		std::cout << "| " << i << " | "                                \
-				  << std::setw(10) << contacts[i].m_first    << " | "  \
-				  << std::setw(10) << contacts[i].m_last     << " | "  \
-				  << std::setw(10) << contacts[i].m_nickname << " |"   \
+
+		first = contacts[i].m_first;
+		last = contacts[i].m_last;
+		nickname = contacts[i].m_nickname;
+		if (first.length() > 9)
+		{
+			first[9] = '.';
+			first[10] = '\0';
+		}
+		if (last.length() > 9)
+		{
+			last[9] = '.';
+			last[10] = '\0';
+		}
+		if (nickname.length() > 9)
+		{
+			nickname[9] = '.';
+			nickname[10] = '\0';
+		}
+
+		std::cout << "| " << i << " | "                  \
+				  << std::setw(10) << first.c_str()    << " | "  \
+				  << std::setw(10) << last.c_str()     << " | "  \
+				  << std::setw(10) << nickname.c_str() << " |"   \
 				  << std::endl;
 	}
-	std::cout << "\nSelect Contact Index: ";
-	std::cin >> chosen_index;
+
+	return (0);
+}
+
+void			Phonebook::search()
+{
+	std::string	input;
+	int			idx;
+
+	if (this->preview() == -1)
+		return ;
+	std::cout << std::endl << std::endl;
+	do {
+		std::cout << CLEARINPUTLINE << std::flush;
+		std::cout << "Choose a contact (index): " << std::flush;
+		std::cin >> input;
+		idx = atoi(input.c_str());
+	} while (input.length() > 1 || !std::isdigit(input[0]) ||
+		idx < 0 || idx >= contact_index);
+
 	CLEANUP;
-	std::cout << contacts[chosen_index].toString() << std::endl;
-	std::cout << ITALIC("(Press enter to exit)");
-	std::cin >> chosen_index;
+	std::cout << contacts[idx].toString() << std::endl;
+	std::cout << ITALIC("\n(enter '1' to go to menu)") << std::endl;
+	std::cin >> input;
 }

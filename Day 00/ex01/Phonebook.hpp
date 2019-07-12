@@ -6,7 +6,7 @@
 /*   By: aymenkh <aymenkh@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/09 22:05:34 by aymenkh           #+#    #+#             */
-/*   Updated: 2019/07/09 23:40:42 by aymenkh          ###   ########.fr       */
+/*   Updated: 2019/07/11 18:34:37 by aymenkh          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 /* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —  */
 
+# include <stdlib.h>
 # include <unistd.h>
 
 # include <iostream>
@@ -23,9 +24,11 @@
 
 /* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —  */
 
-# define ITALIC(str) ("\033[3m" str "\033[0m")
-# define CLEAR "\033[2J"
-# define HOME  "\033[H"
+# define ITALIC(str)     ("\033[3m" str "\033[0m")
+# define CLEARLINE       "\033[2K\r"
+# define CLEARINPUTLINE  "\033[A\033[2K\r"
+# define HOME            "\033[H"
+# define CLEAR           "\033[2J"
 # define CLEANUP { std::cout << CLEAR << HOME << std::endl; }
 
 /* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —  */
@@ -68,9 +71,11 @@ struct Phonebook {
 	void			welcome();
 	void			prompt();
 	Phonebook&		add();
+	int				preview();
 	void			search();
 
 	private:
+
 		Contact		contacts[MAX_CONTACTS];
 		int			contact_index;
 
