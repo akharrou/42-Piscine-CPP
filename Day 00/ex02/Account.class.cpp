@@ -2,7 +2,7 @@
 //                                                                            //
 //                Account.class.cpp for GlobalBanksters United                //
 //                Created on  : Mon Jul 15 11:36:43 2019                      //
-//                Last update : Mon Jul 15 3:22:01 2019                      //
+//                Last update : Mon Jul 15 3:25:01 2019                       //
 //                Made by : akharrou                                          //
 //                                                                            //
 // ************************************************************************** //
