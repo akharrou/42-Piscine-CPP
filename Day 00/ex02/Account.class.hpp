@@ -61,5 +61,5 @@ class Account {
 // -*- indent-tabs-mode:t;                                                   -*-
 // -*- mode: c++-mode;                                                       -*-
 // -*- fill-column: 75; comment-column: 75;                                  -*-
-// My boss is a dick                                                          //
+// My boss is a annoying                                                      //
 // ************************************************************************** //
