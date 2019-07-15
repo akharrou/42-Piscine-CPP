@@ -12,7 +12,7 @@
 // ************************************************************************** //
 
 #ifndef ACCOUNT_CLASS_HPP
-#define  ACCOUNT_CLASS_HPP
+# define  ACCOUNT_CLASS_HPP
 
 class Account {
 
