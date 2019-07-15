@@ -10,6 +10,7 @@
 #include <vector>
 #include <algorithm>
 #include <functional>
+
 #include "Account.class.hpp"
 
 
@@ -36,16 +37,6 @@ int		main( void ) {
 	ints_t				withdrawals( w, w + w_size );
 	ints_t::iterator 	wit_begin	= withdrawals.begin();
 	ints_t::iterator 	wit_end		= withdrawals.end();
-
-
-/*
-
-	accounts_t	const	accounts[]		= { { 42 }, { 54 }, { 957 }, { 432 }, { 1234 }, { 0},  { 754 }, { 16576 } };
-	ints_t		const	deposits[]		= { 5, 765, 564, 2, 87, 23, 9, 20 };
-	ints_t		const	withdrawals[]	= { 321, 34, 657, 4, 76, 275, 657, 7654 };
-
-*/
-
 
 	Account::displayAccountsInfos();
 	std::for_each( acc_begin, acc_end, std::mem_fun_ref( &Account::displayStatus ) );

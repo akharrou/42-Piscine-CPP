@@ -11,6 +11,9 @@
 //                               Account Class                                //
 // ************************************************************************** //
 
+#ifndef ACCOUNT_CLASS_HPP
+#define  ACCOUNT_CLASS_HPP
+
 class Account {
 
 	public:
@@ -26,11 +29,10 @@ class Account {
 		Account( int initial_deposit );
 		~Account( void );
 
-		void	makeDeposit( int deposit );
-		bool	makeWithdrawal( int withdrawal );
-		int		checkAmount( void ) const;
-		void	displayStatus( void ) const;
-
+		void		makeDeposit( int deposit );
+		bool		makeWithdrawal( int withdrawal );
+		int			checkAmount( void ) const;
+		void		displayStatus( void ) const;
 
 	private:
 
@@ -38,6 +40,8 @@ class Account {
 		static int	_totalAmount;
 		static int	_totalNbDeposits;
 		static int	_totalNbWithdrawals;
+
+		static int _checkAmountCallCount;
 
 		static void	_displayTimestamp( void );
 
@@ -50,6 +54,7 @@ class Account {
 
 };
 
+#endif /* ACCOUNT_CLASS_HPP */
 
 // ************************************************************************** //
 // vim: set ts=4 sw=4 tw=80 noexpandtab:                                      //
