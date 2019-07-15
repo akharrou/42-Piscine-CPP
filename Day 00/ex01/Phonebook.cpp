@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Phonebook.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aymenkh <aymenkh@student.42.fr>            +#+  +:+       +#+        */
+/*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/09 22:59:47 by aymenkh           #+#    #+#             */
-/*   Updated: 2019/07/11 19:11:59 by aymenkh          ###   ########.fr       */
+/*   Updated: 2019/07/15 10:28:59 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Phonebook.hpp"
 
-void			Phonebook::welcome()
+void			Phonebook::bootup()
 {
 	std::cout << "\nWelcome to the Phonebook App ! \n" << std::endl;
 	sleep(2);
@@ -63,9 +63,9 @@ int			Phonebook::preview()
 	for (int i = 0; i < contact_index; i++)
 	{
 
-		first = contacts[i].m_first;
-		last = contacts[i].m_last;
-		nickname = contacts[i].m_nickname;
+		first		= contacts[i].getFirst();
+		last		= contacts[i].getLast();
+		nickname	= contacts[i].getNickname();
 		if (first.length() > 9)
 		{
 			first[9] = '.';

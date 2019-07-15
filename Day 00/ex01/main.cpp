@@ -3,18 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aymenkh <aymenkh@student.42.fr>            +#+  +:+       +#+        */
+/*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/29 23:05:36 by aymenkh           #+#    #+#             */
-/*   Updated: 2019/07/10 00:49:24 by aymenkh          ###   ########.fr       */
+/*   Updated: 2019/07/15 09:14:39 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /*
 **  PROGRAM
-**      .
-**
-** — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
+**      Rudementary phonebook application.
 */
 
 #include "Phonebook.hpp"
@@ -24,7 +22,8 @@ int	main(void)
 	Phonebook		phonebook;
 	std::string		command;
 
-	phonebook.welcome();
+	phonebook.bootup();
+	phonebook.contact_index = 0;
 	while (1)
 	{
 		phonebook.prompt();

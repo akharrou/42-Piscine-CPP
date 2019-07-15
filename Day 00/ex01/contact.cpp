@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Contact.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aymenkh <aymenkh@student.42.fr>            +#+  +:+       +#+        */
+/*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/29 23:05:36 by aymenkh           #+#    #+#             */
-/*   Updated: 2019/07/11 18:40:21 by aymenkh          ###   ########.fr       */
+/*   Updated: 2019/07/15 10:25:41 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ Phonebook::Contact::Contact()
 	m_darkest_secret  = "empty";
 }
 
-Phonebook::Contact& Phonebook::Contact::modify()
+Phonebook::Contact&	Phonebook::Contact::modify()
 {
 	std::cout << "First Name: " << std::endl;
 	std::getline(std::cin, m_first);
@@ -72,7 +72,22 @@ Phonebook::Contact& Phonebook::Contact::modify()
 	return (*this);
 }
 
-std::string Phonebook::Contact::toString()
+std::string			Phonebook::Contact::getFirst()
+{
+	return (this->m_first);
+}
+
+std::string			Phonebook::Contact::getLast()
+{
+	return (this->m_last);
+}
+
+std::string			Phonebook::Contact::getNickname()
+{
+	return (this->m_nickname);
+}
+
+std::string			Phonebook::Contact::toString()
 {
 	return (
 		" ——————————————————————————————————————————\n"

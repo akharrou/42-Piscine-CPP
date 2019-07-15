@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Phonebook.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aymenkh <aymenkh@student.42.fr>            +#+  +:+       +#+        */
+/*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/09 22:05:34 by aymenkh           #+#    #+#             */
-/*   Updated: 2019/07/11 18:34:37 by aymenkh          ###   ########.fr       */
+/*   Updated: 2019/07/15 10:25:44 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,10 @@
 
 struct Phonebook {
 
+	/// Phonebook Contact (class)
 	class Contact {
 
-		public:
+		private:
 
 			std::string m_first;
 			std::string m_last;
@@ -57,27 +58,29 @@ struct Phonebook {
 
 		public:
 
-			/// Constructor
+			/// Contact Constructor
 			Contact();
 
-			/// Modify Contact Information
-			Contact& modify();
+			/// Contact Methods
+			Contact&	modify();
+			std::string	toString();
 
-			/// String Representation
-			std::string toString();
+			/// Accessors
+			std::string	getFirst();
+			std::string	getLast();
+			std::string	getNickname();
 	};
 
+	/// Phonebook Attributes
+	int			contact_index;
+	Contact		contacts[MAX_CONTACTS];
+
 	/// Phonebook Program Functions
-	void			welcome();
-	void			prompt();
-	Phonebook&		add();
-	int				preview();
-	void			search();
-
-	private:
-
-		Contact		contacts[MAX_CONTACTS];
-		int			contact_index;
+	void		bootup();
+	void		prompt();
+	Phonebook&	add();
+	int			preview();
+	void		search();
 
 };
 
