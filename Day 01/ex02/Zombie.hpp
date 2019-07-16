@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 16:42:49 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/15 18:59:21 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/15 19:54:00 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class Zombie {
 
 		std::string _name;
 		std::string _type;
+
 };
 
 #endif /* ZOMBIE_HPP */

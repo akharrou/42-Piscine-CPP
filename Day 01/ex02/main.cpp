@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 16:42:03 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/15 19:53:00 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/15 19:56:34 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,9 @@ int	main() {
 	Zombie		*z4 = new Zombie("Ferris", "42 Staff");
 
 	Zombie		*z5 = zEvent1.randomChump();
+
 	Zombie		*z6 = zEvent2.randomChump();
+	(*z6).setType("42 Founder");
 
 	zEvent3.setZombieType("42 Founder");
 	Zombie		*z7 = zEvent3.newZombie("Xavier");
