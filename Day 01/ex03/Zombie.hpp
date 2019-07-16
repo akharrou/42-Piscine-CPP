@@ -1,40 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ZombieEvent.hpp                                    :+:      :+:    :+:   */
+/*   Zombie.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/15 16:43:21 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/15 20:20:21 by akharrou         ###   ########.fr       */
+/*   Created: 2019/07/15 16:42:49 by akharrou          #+#    #+#             */
+/*   Updated: 2019/07/15 20:17:02 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ZOMBIEEVENT_HPP
-# define ZOMBIEEVENT_HPP
+#ifndef ZOMBIE_HPP
+# define ZOMBIE_HPP
 
-#include "Zombie.hpp"
+#include <string>
 
-class ZombieEvent {
+class Zombie {
 
 	public:
 
-		ZombieEvent(std::string type);
-		~ZombieEvent();
+		Zombie(std::string name, std::string type);
+		Zombie();
 
-		void				setZombieType(std::string type);
+		~Zombie();
 
-		Zombie				*newZombie(std::string name);
-		Zombie				*randomChump();
+		void	announce();
 
-		static std::string	zombieNames[];
-		static int			nZombieNames;
-
+		void	setName(std::string new_name);
+		void	setType(std::string new_type);
 
 	private:
 
-		std::string		_type;
+		std::string _name;
+		std::string _type;
 
 };
 
-#endif /* ZOMBIEEVENT_HPP */
+#endif /* ZOMBIE_HPP */

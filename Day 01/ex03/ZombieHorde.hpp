@@ -1,40 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ZombieEvent.hpp                                    :+:      :+:    :+:   */
+/*   ZombieHorde.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/15 16:43:21 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/15 20:20:21 by akharrou         ###   ########.fr       */
+/*   Created: 2019/07/15 19:59:04 by akharrou          #+#    #+#             */
+/*   Updated: 2019/07/15 20:22:19 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ZOMBIEEVENT_HPP
-# define ZOMBIEEVENT_HPP
+#ifndef ZOMBIEHORDE_HPP
+# define ZOMBIEHORDE_HPP
 
 #include "Zombie.hpp"
 
-class ZombieEvent {
+class ZombieHorde {
 
 	public:
 
-		ZombieEvent(std::string type);
-		~ZombieEvent();
+		ZombieHorde( int N );
+		~ZombieHorde();
 
-		void				setZombieType(std::string type);
-
-		Zombie				*newZombie(std::string name);
-		Zombie				*randomChump();
+		void	announce();
 
 		static std::string	zombieNames[];
-		static int			nZombieNames;
+		static std::string	zombieTypes[];
 
+		static int			nZombieNames;
+		static int			nZombieTypes;
 
 	private:
 
-		std::string		_type;
+		int		_N;
+		Zombie	*_horde;
 
 };
 
-#endif /* ZOMBIEEVENT_HPP */
+#endif /* ZOMBIEHORDE_HPP */
