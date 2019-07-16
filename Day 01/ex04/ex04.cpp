@@ -1,40 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ZombieHorde.hpp                                    :+:      :+:    :+:   */
+/*   ex04.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/15 19:59:04 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/15 21:30:38 by akharrou         ###   ########.fr       */
+/*   Created: 2019/07/15 21:31:06 by akharrou          #+#    #+#             */
+/*   Updated: 2019/07/15 21:38:12 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ZOMBIEHORDE_HPP
-# define ZOMBIEHORDE_HPP
+#include <string>
+#include <iostream>
 
-#include "Zombie.hpp"
+int	main() {
 
-class ZombieHorde {
+	std::string		s = "HI THIS IS BRAIN";
 
-	public:
+	std::string		*sPtr = &s;
+	std::string&	sRef = s;
 
-		ZombieHorde( int N );
-		~ZombieHorde();
+	std::cout << *sPtr << std::endl << sRef << std::endl;
 
-		void	announce();
-
-		static std::string	zombieNames[];
-		static std::string	zombieTypes[];
-
-		static int			nZombieNames;
-		static int			nZombieTypes;
-
-	private:
-
-		Zombie	*_horde;
-		int		_N;
-
-};
-
-#endif /* ZOMBIEHORDE_HPP */
+	return (0);
+}

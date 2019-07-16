@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 19:58:39 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/15 20:21:53 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/15 21:29:13 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ ZombieHorde::~ZombieHorde() {
 }
 
 
-/* MEMBER FUNCTIONS — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
+/* MEMBER FUNCTION(S) — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
 
 void	ZombieHorde::announce()
 {
@@ -43,7 +43,13 @@ void	ZombieHorde::announce()
 }
 
 
-std::string	zombieNames[] = { "", "", "", "", "" };
-std::string	zombieTypes[] = { "", "", "", "", "" };
-int			nZombieNames = ;
-int			nZombieTypes = ;
+/* STATIC VARIABLE(S)  — — — — — — — — — — — — — — — — — — — — — — — — — — — */
+
+std::string	ZombieHorde::zombieNames[10] = { "James", "John", "Steven", "Gilbert",
+                                             "Marcus", "Stewy", "Herald", "Lenard",
+                                             "Bob", "Pat" };
+
+std::string	ZombieHorde::zombieTypes[3] = { "42 Staff", "42 Student", "42 Founder"};
+
+int			ZombieHorde::nZombieNames = 10;
+int			ZombieHorde::nZombieTypes = 3;

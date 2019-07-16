@@ -1,40 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ZombieHorde.hpp                                    :+:      :+:    :+:   */
+/*   Brain.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/15 19:59:04 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/15 21:30:38 by akharrou         ###   ########.fr       */
+/*   Created: 2019/07/15 21:39:02 by akharrou          #+#    #+#             */
+/*   Updated: 2019/07/15 21:50:29 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ZOMBIEHORDE_HPP
-# define ZOMBIEHORDE_HPP
+#ifndef BRAIN_HPP
+# define BRAIN_HPP
 
-#include "Zombie.hpp"
+#include <string>
 
-class ZombieHorde {
+class Brain {
 
 	public:
 
-		ZombieHorde( int N );
-		~ZombieHorde();
-
-		void	announce();
-
-		static std::string	zombieNames[];
-		static std::string	zombieTypes[];
-
-		static int			nZombieNames;
-		static int			nZombieTypes;
+		std::string		identify();
 
 	private:
 
-		Zombie	*_horde;
-		int		_N;
+		int _size;
 
 };
 
-#endif /* ZOMBIEHORDE_HPP */
+#endif /* BRAIN_HPP */

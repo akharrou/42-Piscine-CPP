@@ -1,40 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ZombieHorde.hpp                                    :+:      :+:    :+:   */
+/*   Human.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/15 19:59:04 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/15 21:30:38 by akharrou         ###   ########.fr       */
+/*   Created: 2019/07/15 21:39:02 by akharrou          #+#    #+#             */
+/*   Updated: 2019/07/15 21:48:40 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ZOMBIEHORDE_HPP
-# define ZOMBIEHORDE_HPP
+#ifndef HUMAN_HPP
+# define HUMAN_HPP
 
-#include "Zombie.hpp"
-
-class ZombieHorde {
+class Human {
 
 	public:
 
-		ZombieHorde( int N );
-		~ZombieHorde();
-
-		void	announce();
-
-		static std::string	zombieNames[];
-		static std::string	zombieTypes[];
-
-		static int			nZombieNames;
-		static int			nZombieTypes;
+		.
 
 	private:
 
-		Zombie	*_horde;
-		int		_N;
+		.
 
 };
 
-#endif /* ZOMBIEHORDE_HPP */
+#endif /* HUMAN_HPP */
