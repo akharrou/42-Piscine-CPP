@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 21:39:02 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/15 23:35:54 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/16 11:01:22 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,6 @@ std::string	Human::identify() {
 	return (_brain.identify());
 }
 
-Brain		Human::getBrain() {
+Brain&		Human::getBrain() {
 	return (_brain);
 }

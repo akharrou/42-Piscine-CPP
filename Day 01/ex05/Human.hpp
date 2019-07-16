@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 21:39:02 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/15 23:34:44 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/16 11:00:57 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class Human {
 		~Human();
 
 		std::string	identify();
-		Brain		getBrain();
+		Brain&		getBrain();
 
 	private:
 
