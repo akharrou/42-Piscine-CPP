@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 21:39:02 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/15 21:50:29 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/15 23:27:49 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,14 @@ class Brain {
 
 	public:
 
-		std::string		identify();
+		Brain( int intel_lvl );
+		~Brain();
+
+		std::string	identify();
 
 	private:
 
-		int _size;
+		int _intelligence_lvl;
 
 };
 
