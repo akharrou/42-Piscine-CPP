@@ -6,11 +6,12 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/16 21:13:31 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/17 12:32:07 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/17 13:44:24 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
+#include <cmath>
 #include "Fixed.hpp"
 
 /* CONSTRUCTOR / DECONSTRUCTOR — — — — — — — — — — — — — — — — — — — — — — — */
@@ -21,12 +22,12 @@ Fixed::Fixed( void )
 }
 
 Fixed::Fixed( const int N )
-	: _fixed_pt_value( N << 8 ) {
+	: _fixed_pt_value( N << _fractional_bits ) {
 	std::cout << "Int constructor called" << std::endl;
 }
 
 Fixed::Fixed( const float N )
-	: _fixed_pt_value( N * (( 1 << 8 ) / 1 ) ) {
+	: _fixed_pt_value( roundf( N * ( 1 << _fractional_bits ) ) ) {
 	std::cout << "Float constructor called" << std::endl;
 }
 
@@ -53,8 +54,7 @@ Fixed&			Fixed::operator=(const Fixed & rhs) {
 
 std::ostream &	operator<<( std::ostream & out, const Fixed & in ) {
 
-	if (in.getRawBits() & (0b11111111)) {
-		float r = in.toFloat();
+	if (in.getRawBits() & FRACTIONAL_BITMASK) {
 		out << in.toFloat();
 	} else {
 		out << in.toInt();
@@ -78,9 +78,9 @@ void	Fixed::setRawBits( int const raw ) {
 /* PUBLIC MEMBER FUNCTION(S) — — — — — — — — — — — — — — — — — — — — — — — — */
 
 float		Fixed::toFloat( void ) const {
-	return ( (float) ( _fixed_pt_value / (( 1 << 8 ) / 1 )) );
+	return ( (float) ( _fixed_pt_value / ( (double) (1 << _fractional_bits) ) ) );
 }
 
 int			Fixed::toInt( void ) const {
-	return ( (int) ( _fixed_pt_value >> 8 ) );
+	return ( (int) ( _fixed_pt_value >> _fractional_bits ) );
 }

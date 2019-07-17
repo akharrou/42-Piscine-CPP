@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 09:41:03 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/17 12:28:57 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/17 13:32:18 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,50 +34,3 @@ int		main( void ) {
 
 	return (0);
 }
-
-
-/*
-
-Default constructor called
-Int constructor called
-Float constructor called
-Copy constructor called
-Assignation operator called
-Float constructor called
-Assignation operator called
-Destructor called
-a is 1234.43
-b is 10
-c is 42.4219
-d is 10
-a is 1234 as integer
-b is 10 as integer
-c is 42 as integer
-d is 10 as integer
-Destructor called
-Destructor called
-Destructor called
-Destructor called
-
-Default constructor called
-Int constructor called
-Float constructor called
-Copy constructor called
-Assignation operator called
-Float constructor called
-Assignation operator called
-Destructor called
-a is 1234 FIXME
-b is 10
-c is 42   FIXME
-d is 10
-a is 1234 as integer
-b is 10 as integer
-c is 42 as integer
-d is 10 as integer
-Destructor called
-Destructor called
-Destructor called
-Destructor called
-
-*/

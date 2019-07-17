@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/16 21:13:31 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/17 12:10:04 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/17 13:44:32 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 # define FIXED_HPP
 
 #include <string>
+
+# define FRACTIONAL_BITS    (8)
+# define FRACTIONAL_BITMASK (0b11111111)
 
 class Fixed {
 
@@ -36,7 +39,7 @@ class Fixed {
 	private:
 
 		int					_fixed_pt_value;
-		static const int	_fractional_bits = 8;
+		static const int	_fractional_bits = FRACTIONAL_BITS;
 
 };
 
@@ -45,8 +48,9 @@ std::ostream& operator<<( std::ostream& out, const Fixed& in );
 #endif /* FIXED_HPP */
 
 
+/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
+EXPLANATION:
 
-/* EXPLANATION
 
 	GREAT SOURCE : https://en.wikipedia.org/wiki/Fixed-point_arithmetic
 
@@ -66,7 +70,7 @@ EXAMPLE 1:  int ——> fixed <32,8>
 
 
 		Fixed   |   <32, |  8>                                          |  ( 8.0 )           |  = 2048
-			^     |    ^   |  ^                                           |     ^              |     ^
+          ^     |    ^   |  ^                                           |     ^              |     ^
 	number type | 32 bit | of which 8 are reserved for fractional bits  |  our real number   |  its representation as a fied point number
 
 
@@ -81,8 +85,11 @@ EXAMPLE 2:  float ——> fixed <32,8>
 		suffices to bring the number to the ratio ( R = 2^8 / 1 )
 		to convert it to the fixed point value for Fixed <x, 8>.
 
-	32 bit Fix Point Number (w/ 8 fractional bits) : 2176
+	32 bit Fix Point Number (w/ 8 fractional bits) =
+
+		8.5 * round(R) = 8.5 * round(2^8 / 1) = 2176
 
 	(i.e)  ———>  0000 0000 | 0000 0000 | 0000 1000 . 1000 0000
 
-*/
+
+ — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
