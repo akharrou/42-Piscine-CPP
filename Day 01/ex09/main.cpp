@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/16 16:33:00 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/16 17:03:00 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/16 17:34:22 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,10 @@
 
 int	main() {
 
-	std::string timestamp;
-	time_t rawtime;
+	Logger	logger("log.txt");
 
-	time (&rawtime);
-	timestamp = std::string(ctime(&rawtime));
-	timestamp[timestamp.length() - 1] = '\0';
-	std::cout << ("[" + timestamp + "] " + std::string("Some super cool and long log msg.")) << std::endl;
+	logger.log("logToFile", "[WARNING] : * msg *\n");
+	logger.log("logToConsole", "[WARNING] : * msg *\n");
 
 	return (0);
 }

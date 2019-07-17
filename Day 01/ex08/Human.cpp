@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/16 15:24:55 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/16 16:32:08 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/16 17:22:28 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	Human::action(std::string const &action_name,
 
 	for ( int i = 0; i < 3; ++i ) {
 		if (actions[i].name == action_name)
-			(Human().*actions[i].func)(target);
+			(*this.*actions[i].func)(target);
 	}
 
 }
