@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/16 21:13:31 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/17 09:57:46 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/17 10:17:43 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,6 @@ Fixed::Fixed( void )
 	: _fixed_pt_value(0) {
 	std::cout << "Default constructor called" << std::endl;
 }
-
-Fixed::Fixed( int integer )
-	: _fixed_pt_value(integer) { }
 
 Fixed::Fixed( const Fixed& src ) {
 	std::cout << "Copy constructor called" << std::endl;

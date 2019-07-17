@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/16 21:13:31 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/17 09:56:40 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/17 10:17:46 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ class Fixed {
 	public:
 
 		Fixed( void );
-		Fixed( int integer );
 		Fixed( const Fixed & src );
 		~Fixed( void );
 
