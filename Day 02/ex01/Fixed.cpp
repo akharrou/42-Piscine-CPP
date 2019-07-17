@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/16 21:13:31 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/17 13:44:24 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/17 13:57:10 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ Fixed::Fixed( const int N )
 }
 
 Fixed::Fixed( const float N )
-	: _fixed_pt_value( roundf( N * ( 1 << _fractional_bits ) ) ) {
+	: _fixed_pt_value( (int) roundf( N * ( 1 << _fractional_bits ) ) ) {
 	std::cout << "Float constructor called" << std::endl;
 }
 

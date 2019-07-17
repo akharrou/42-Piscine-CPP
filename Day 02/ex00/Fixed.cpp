@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/16 21:13:31 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/17 10:17:43 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/17 13:45:28 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ Fixed&			Fixed::operator=(const Fixed & rhs) {
 }
 
 std::ostream &	operator<<( std::ostream & out, const Fixed & in ) {
-
 	out << in.getRawBits();
 	return (out);
 }
