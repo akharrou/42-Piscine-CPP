@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/16 21:13:31 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/16 22:03:18 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/17 09:56:40 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,19 @@ class Fixed {
 	public:
 
 		Fixed( void );
-		Fixed( /* regular */ );
-		Fixed( const Fixed& src );
+		Fixed( int integer );
+		Fixed( const Fixed & src );
 		~Fixed( void );
 
-		std::string		toString();
-		Fixed			&operator=(const Fixed &rhs);
+		Fixed &		operator=(const Fixed &rhs);
+
+		int			getRawBits( void ) const;
+		void		setRawBits( int const raw );
 
 	private:
 
-		/* attribs. */
+		int					_fixed_pt_value;
+		static const int	_fractional_bits = 8;
 
 };
 
