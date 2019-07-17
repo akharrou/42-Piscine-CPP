@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/16 21:13:31 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/17 09:56:46 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/17 09:57:46 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,9 @@ Fixed::Fixed( const Fixed& src ) {
 	*this = src;
 }
 
-Fixed::~Fixed( void ) { }
+Fixed::~Fixed( void ) {
+	std::cout << "Destructor called" << std::endl;
+}
 
 
 /* OPERATOR OVERLOAD(S) — — — — — — — — — — — — — — — — — — — — — — — — — — */
