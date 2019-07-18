@@ -1,24 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   FragTrap.hpp                                       :+:      :+:    :+:   */
+/*   ScavTrap.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/17 20:39:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 16:00:35 by akharrou         ###   ########.fr       */
+/*   Created: 2019/07/18 15:40:20 by akharrou          #+#    #+#             */
+/*   Updated: 2019/07/18 16:16:52 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FRAGTRAP_HPP
-# define FRAGTRAP_HPP
+#ifndef SCAVTRAP_HPP
+# define SCAVTRAP_HPP
 
 #include <string>
 #include <iostream>
 
-# define NUMBER_OF_ATTACKS (5)
+# define NUMBER_OF_CHALLENGES (5)
 
-class FragTrap {
+class ScavTrap {
 
 	private:
 
@@ -26,7 +26,7 @@ class FragTrap {
 		static const int	_max_hit_points = 100;
 
 		int					_energy_points;
-		static const int	_max_energy_points = 100;
+		static const int	_max_energy_points = 50;
 
 		std::string			_name;
 		int					_level;
@@ -41,12 +41,12 @@ class FragTrap {
 
 	public:
 
-		FragTrap( void );
-		FragTrap( std::string name );
-		FragTrap( const FragTrap & src );
-		~FragTrap( void );
+		ScavTrap( void );
+		ScavTrap( std::string name );
+		ScavTrap( const ScavTrap & src );
+		~ScavTrap( void );
 
-		FragTrap &		operator = ( const FragTrap & rhs );
+		ScavTrap &		operator = ( const ScavTrap & rhs );
 
 		void			featherAttack  ( std::string const & target ) const;
 		void			rangedAttack   ( std::string const & target ) const;
@@ -57,7 +57,7 @@ class FragTrap {
 		void			takeDamage ( unsigned int amount );
 		void			beRepaired ( unsigned int amount );
 
-		void			vaulthunter_dot_exe( std::string const & target );
+		void			challengeNewcomer( std::string const & target ) const;
 
 		std::string		getName            () const;
 		int				getLevel           () const;
@@ -68,6 +68,6 @@ class FragTrap {
 
 };
 
-std::ostream & operator<<( std::ostream & out, const FragTrap & in );
+std::ostream & operator<<( std::ostream & out, const ScavTrap & in );
 
-#endif /* FRAGTRAP_HPP */
+#endif /* SCAVTRAP_HPP */
