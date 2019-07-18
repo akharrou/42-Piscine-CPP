@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 20:39:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 12:47:59 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 15:39:13 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,10 @@ FragTrap &		FragTrap::operator = ( const FragTrap & rhs ) {
 
 std::ostream &	operator<<( std::ostream& out, const FragTrap & in ) {
 
-	out << in.getName() << " <Level " << in.getLevel() << ">";
+	out << in.getName()
+		<< " <Level " << in.getLevel() << ">"
+		<< " <Hit Points: " << in.getHitPoints() << "/" << in.getMaxHitPoints() << ">"
+		<< " <Energy Points: " << in.getEnergyPoints() << "/" << in.getMaxEnergyPoints() << ">";
 	return (out);
 }
 
@@ -93,13 +96,27 @@ int				FragTrap::getLevel() const {
 	return (_level);
 }
 
+int				FragTrap::getHitPoints() const {
+	return (_hit_points);
+}
+int				FragTrap::getEnergyPoints() const {
+	return (_energy_points);
+}
+
+int				FragTrap::getMaxHitPoints() const {
+	return (_max_hit_points);
+}
+int				FragTrap::getMaxEnergyPoints() const {
+	return (_max_energy_points);
+}
+
 
 /* PUBLIC MEMBER FUNCTION(S) — — — — — — — — — — — — — — — — — — — — — — — — */
 
 void			FragTrap::rangedAttack ( std::string const & target ) const {
 	std::cout << "FR4G-TP <" << _name
 	          << "> attacks <" << target
-	          << "> with " << __FUNCTION__
+	          << "> with " << __func__
 			  << ", causing <" << _ranged_attack_damage
 	          << "> points of damage !"
 	          << std::endl;
@@ -108,7 +125,7 @@ void			FragTrap::rangedAttack ( std::string const & target ) const {
 void			FragTrap::meleeAttack  ( std::string const & target ) const {
 	std::cout << "FR4G-TP <" << _name
 	          << "> attacks <" << target
-	          << "> with " << __FUNCTION__
+	          << "> with " << __func__
 			  << ", causing <" << _melee_attack_damage
 	          << "> points of damage !"
 	          << std::endl;
@@ -117,7 +134,7 @@ void			FragTrap::meleeAttack  ( std::string const & target ) const {
 void			FragTrap::featherAttack  ( std::string const & target ) const {
 	std::cout << "FR4G-TP <" << _name
 	          << "> attacks <" << target
-	          << "> with " << __FUNCTION__
+	          << "> with " << __func__
 			  << ", causing <" << _feather_attack_damage
 	          << "> points of damage !"
 	          << std::endl;
@@ -126,7 +143,7 @@ void			FragTrap::featherAttack  ( std::string const & target ) const {
 void			FragTrap::stealthAttack    ( std::string const & target ) const {
 	std::cout << "FR4G-TP <" << _name
 	          << "> attacks <" << target
-	          << "> with " << __FUNCTION__
+	          << "> with " << __func__
 			  << ", causing <" << _stealth_attack_damage
 	          << "> points of damage !"
 	          << std::endl;
@@ -135,41 +152,82 @@ void			FragTrap::stealthAttack    ( std::string const & target ) const {
 void			FragTrap::ultimateAttack   ( std::string const & target ) const {
 	std::cout << "FR4G-TP <" << _name
 	          << "> attacks <" << target
-	          << "> with " << __FUNCTION__
+	          << "> with " << __func__
 			  << ", causing <" << _ultimate_attack_damage
 	          << "> points of damage !"
 	          << std::endl;
 }
 
+/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
+
 void			FragTrap::takeDamage   ( unsigned int amount ) {
 
 	amount = amount - _armor_damage_reduction;
 
-	std::cout << "<" << _name << "> * takes damage for "<< amount << " hit points *" << std::endl;
-	_hit_points = (_hit_points - amount > 0) ? (_hit_points - amount) : 0;
+	std::cout << "<" << _name
+	          << "> * takes damage for "<< amount
+			  << " hit points *"
+			  << std::endl;
+
+	_hit_points = (_hit_points - amount > 0) ?
+		(_hit_points - amount) : 0;
 }
 
 void			FragTrap::beRepaired   ( unsigned int amount ) {
 
-	std::cout << "<" << _name << "> * gets repaired for "<< amount << " hit points *" << std::endl;
-	_hit_points = (_hit_points + amount < 100) ? (_hit_points + amount) : 100;
+    int	repair_hit_pts    = amount;
+    int	repair_energy_pts = amount;
+
+	if (_hit_points != _max_hit_points) {
+
+		repair_hit_pts = (_hit_points + repair_hit_pts > _max_hit_points) ?
+			 _max_hit_points - _hit_points : repair_hit_pts;
+		_hit_points += repair_hit_pts;
+
+	} else {
+		repair_hit_pts = 0;
+	}
+
+	if (_energy_points != _max_energy_points) {
+
+		repair_energy_pts = (_energy_points + repair_energy_pts > _max_energy_points) ?
+			 _max_energy_points - _energy_points : repair_energy_pts;
+		_energy_points += repair_energy_pts;
+
+	} else {
+		repair_energy_pts = 0;
+	}
+
+	std::cout << "<" << _name
+	          << "> * gets repaired for "<< repair_hit_pts
+			  << " hit points and " << repair_energy_pts
+			  << " energy points *"
+			  << std::endl;
 }
 
+/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
+
 typedef struct {
-	std::string name;
 	void (FragTrap::*func)(std::string const &target) const;
 } attack_t;
 
-void			FragTrap::vaulthunter_dot_exe( std::string const & target ) const {
+attack_t	g_attacks_table[] = {
+	{ &FragTrap::featherAttack  },
+	{ &FragTrap::rangedAttack   },
+	{ &FragTrap::meleeAttack    },
+	{ &FragTrap::stealthAttack  },
+	{ &FragTrap::ultimateAttack }
+};
 
-	attack_t	attacks[] = {
-		{ "featherAttack",  &FragTrap::featherAttack  },
-		{ "rangedAttack",   &FragTrap::rangedAttack   },
-		{ "meleeAttack",    &FragTrap::meleeAttack    },
-		{ "stealthAttack",  &FragTrap::stealthAttack  },
-		{ "ultimateAttack", &FragTrap::ultimateAttack },
-		{ NULL,             NULL                      }
-	};
+void			FragTrap::vaulthunter_dot_exe( std::string const & target ) {
 
+	if (_energy_points < 25) {
+		std::cout << "* Out of energy for an attack *" << std::endl;
+		return ;
+	}
 
+	int random_index = (_energy_points * _hit_points - _level) % NUMBER_OF_ATTACKS;
+
+	(*this.*g_attacks_table[random_index].func)(target);
+	_energy_points -= 25;
 }

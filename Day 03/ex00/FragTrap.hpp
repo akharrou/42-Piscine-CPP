@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 20:39:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 12:41:04 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 15:39:33 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 #include <string>
 #include <iostream>
+
+# define NUMBER_OF_ATTACKS (5)
 
 class FragTrap {
 
@@ -55,10 +57,14 @@ class FragTrap {
 		void			takeDamage ( unsigned int amount );
 		void			beRepaired ( unsigned int amount );
 
-		void			vaulthunter_dot_exe( std::string const & target ) const;
+		void			vaulthunter_dot_exe( std::string const & target );
 
-		std::string		getName  () const;
-		int				getLevel () const;
+		std::string		getName            () const;
+		int				getLevel           () const;
+		int				getHitPoints       () const;
+		int				getEnergyPoints    () const;
+		int				getMaxHitPoints    () const;
+		int				getMaxEnergyPoints () const;
 
 };
 
