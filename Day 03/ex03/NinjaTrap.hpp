@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 17:48:53 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 18:51:23 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 20:35:54 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,13 @@ class NinjaTrap : public ClapTrap {
 
 		std::string		getType() const;
 
-		virtual void	featherAttack  ( std::string const & target ) const;
-		virtual void	rangedAttack   ( std::string const & target ) const;
-		virtual void	meleeAttack    ( std::string const & target ) const;
-		virtual void	stealthAttack  ( std::string const & target ) const;
-		virtual void	ultimateAttack ( std::string const & target ) const;
+		void	featherAttack  ( std::string const & target ) const;
+		void	rangedAttack   ( std::string const & target ) const;
+		void	meleeAttack    ( std::string const & target ) const;
+		void	stealthAttack  ( std::string const & target ) const;
+		void	ultimateAttack ( std::string const & target ) const;
 
-		void			ninjaShoebox( ClapTrap & target );
+		void	ninjaShoebox( ClapTrap & target );
 
 };
 

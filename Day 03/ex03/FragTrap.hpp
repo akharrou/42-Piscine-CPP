@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 20:39:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 18:51:15 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 20:36:12 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,13 @@ class FragTrap : public ClapTrap {
 
 		std::string		getType() const;
 
-		virtual void	featherAttack  ( std::string const & target ) const;
-		virtual void	rangedAttack   ( std::string const & target ) const;
-		virtual void	meleeAttack    ( std::string const & target ) const;
-		virtual void	stealthAttack  ( std::string const & target ) const;
-		virtual void	ultimateAttack ( std::string const & target ) const;
+		void	featherAttack  ( std::string const & target ) const;
+		void	rangedAttack   ( std::string const & target ) const;
+		void	meleeAttack    ( std::string const & target ) const;
+		void	stealthAttack  ( std::string const & target ) const;
+		void	ultimateAttack ( std::string const & target ) const;
 
-		void			vaulthunter_dot_exe( std::string const & target );
+		void	vaulthunter_dot_exe( std::string const & target );
 
 };
 

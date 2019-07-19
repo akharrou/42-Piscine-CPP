@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 15:40:20 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 18:51:28 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 20:35:26 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,13 @@ class ScavTrap : public ClapTrap {
 
 		std::string		getType() const;
 
-		virtual void	featherAttack  ( std::string const & target ) const;
-		virtual void	rangedAttack   ( std::string const & target ) const;
-		virtual void	meleeAttack    ( std::string const & target ) const;
-		virtual void	stealthAttack  ( std::string const & target ) const;
-		virtual void	ultimateAttack ( std::string const & target ) const;
+		void	featherAttack  ( std::string const & target ) const;
+		void	rangedAttack   ( std::string const & target ) const;
+		void	meleeAttack    ( std::string const & target ) const;
+		void	stealthAttack  ( std::string const & target ) const;
+		void	ultimateAttack ( std::string const & target ) const;
 
-		void			challengeNewcomer( std::string const & target ) const;
+		void	challengeNewcomer( std::string const & target ) const;
 
 };
 
