@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 20:39:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 19:20:34 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 21:17:04 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "FragTrap.hpp"
 #include "ScavTrap.hpp"
 #include "NinjaTrap.hpp"
+#include "SuperTrap.hpp"
 
 int		main() {
 
@@ -239,6 +240,60 @@ int		main() {
 		std::cout << std::endl;
 
 		/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
+	}
+
+	{
+		/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
+		/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
+
+		std::cout << "\n\n# ============================================================= #\n";
+		std::cout << "#                        NINJA-TP TESTS                          #\n";
+		std::cout << "# ============================================================= #\n\n";
+
+		/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
+		/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
+
+		{
+			NinjaTrap	NINJA_TP_instance_1 ("Mark");
+			NinjaTrap	NINJA_TP_instance_2 ("Koby");
+			NinjaTrap	NINJA_TP_instance_3 ("Brian");
+			NinjaTrap	NINJA_TP_instance_4 ("Albert");
+			NinjaTrap	NINJA_TP_instance_5 ("Susie");
+			std::cout << std::endl;
+
+			/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
+
+			NINJA_TP_instance_1.featherAttack( "Xaiver Niel" );
+			NINJA_TP_instance_2.rangedAttack( "Xaiver Niel" );
+			NINJA_TP_instance_3.meleeAttack( "Xaiver Niel" );
+			NINJA_TP_instance_4.stealthAttack( "Xaiver Niel" );
+			NINJA_TP_instance_5.ultimateAttack( "Xaiver Niel" );
+			std::cout << std::endl;
+		}
+
+		std::cout << "\n/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */\n\n";
+
+		{
+			ClapTrap	ClapTrap_dummy  ("Clap");
+			FragTrap	FragTrap_dummy  ("Frag");
+			ScavTrap	ScavTrap_dummy  ("Scav");
+			NinjaTrap	NinjaTrap_dummy ("Ninja");
+			SuperTrap	SuperTrap_dummy ("Super"); /* <————— NOTE: this was added*/
+
+			NinjaTrap	NinjaPro("Pro");
+
+			std::cout << std::endl;
+
+			NinjaPro.ninjaShoebox(ClapTrap_dummy);
+			NinjaPro.ninjaShoebox(FragTrap_dummy);
+			NinjaPro.ninjaShoebox(ScavTrap_dummy);
+			NinjaPro.ninjaShoebox(NinjaTrap_dummy);
+			NinjaPro.ninjaShoebox(SuperTrap_dummy); /* <————— NOTE: this was added*/
+			std::cout << std::endl;
+		}
+
+		/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
+
 	}
 
 	{

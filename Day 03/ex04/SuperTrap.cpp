@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 19:28:42 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 20:40:59 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 21:13:09 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,18 @@ SuperTrap::SuperTrap( void )
 
 	std::cout << "SuperTrap Default constructor called" << std::endl;
 
-    _hit_points             = 100;
-    _energy_points          = 100;
-    _max_hit_points         = 100;
-    _max_energy_points      = 100;
-    _ranged_attack_damage   = 20;
-    _melee_attack_damage    = 30;
-    _feather_attack_damage  = 3;
-    _stealth_attack_damage  = 15;
-    _ultimate_attack_damage = 70;
-    _armor_damage_reduction = 5;
+    _hit_points             = FragTrap::_hit_points;
+    _max_hit_points         = FragTrap::_max_hit_points;
+    _energy_points          = NinjaTrap::_energy_points;
+    _max_energy_points      = NinjaTrap::_max_energy_points;
+
+    _ranged_attack_damage   = FragTrap::_ranged_attack_damage;
+    _melee_attack_damage    = NinjaTrap::_melee_attack_damage;
+    _feather_attack_damage  = 18;
+    _stealth_attack_damage  = 55;
+    _ultimate_attack_damage = 99;
+
+    _armor_damage_reduction = FragTrap::_armor_damage_reduction;
 }
 
 SuperTrap::SuperTrap( std::string name )
@@ -36,16 +38,18 @@ SuperTrap::SuperTrap( std::string name )
 
 	std::cout << "SuperTrap Regular constructor called" << std::endl;
 
-    _hit_points             = 100;
-    _energy_points          = 100;
-    _max_hit_points         = 100;
-    _max_energy_points      = 100;
-    _ranged_attack_damage   = 20;
-    _melee_attack_damage    = 30;
-    _feather_attack_damage  = 3;
-    _stealth_attack_damage  = 15;
-    _ultimate_attack_damage = 70;
-    _armor_damage_reduction = 5;
+    _hit_points             = FragTrap::_hit_points;
+    _max_hit_points         = FragTrap::_max_hit_points;
+    _energy_points          = NinjaTrap::_energy_points;
+    _max_energy_points      = NinjaTrap::_max_energy_points;
+
+    _ranged_attack_damage   = FragTrap::_ranged_attack_damage;
+    _melee_attack_damage    = NinjaTrap::_melee_attack_damage;
+    _feather_attack_damage  = 18;
+    _stealth_attack_damage  = 55;
+    _ultimate_attack_damage = 99;
+
+    _armor_damage_reduction = FragTrap::_armor_damage_reduction;
 }
 
 SuperTrap::SuperTrap( const SuperTrap & src ) {
@@ -104,21 +108,11 @@ std::string		SuperTrap::getType() const {
 /* PUBLIC MEMBER FUNCTION(S) — — — — — — — — — — — — — — — — — — — — — — — — — — */
 
 void			SuperTrap::rangedAttack ( std::string const & target ) const {
-	std::cout << "SUPER-TP <" << _name
-	          << "> attacks <" << target
-	          << "> with " << __func__
-			  << ", causing <" << _ranged_attack_damage
-	          << "> points of damage !"
-	          << std::endl;
+	FragTrap::rangedAttack( target );
 }
 
 void			SuperTrap::meleeAttack  ( std::string const & target ) const {
-	std::cout << "SUPER-TP <" << _name
-	          << "> attacks <" << target
-	          << "> with " << __func__
-			  << ", causing <" << _melee_attack_damage
-	          << "> points of damage !"
-	          << std::endl;
+	NinjaTrap::rangedAttack( target );
 }
 
 void			SuperTrap::featherAttack  ( std::string const & target ) const {
