@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/19 13:03:15 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/19 13:10:17 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/19 13:11:36 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ Enemy::~Enemy( void ) { }
 Enemy &			Enemy::operator = ( const Enemy & rhs ) {
 
 	if (this != &rhs) {
-        _type       = rhs._type;
-        _hit_points = rhs._hit_points;
+        _type           = rhs._type;
+        _hit_points     = rhs._hit_points;
         _max_hit_points = rhs._max_hit_points;
 	}
 	return (*this);
