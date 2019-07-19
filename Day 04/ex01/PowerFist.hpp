@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/19 12:32:03 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/19 12:45:41 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/19 16:17:23 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ class PowerFist
 		void	attack() const;
 
 };
-
-std::ostream & operator << ( std::ostream & out, const PowerFist & in );
 
 /* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
 

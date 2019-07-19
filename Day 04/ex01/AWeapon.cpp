@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/19 12:17:49 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/19 12:47:53 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/19 16:21:34 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ AWeapon::AWeapon( void ) { }
 
 AWeapon::AWeapon( std::string const & name, int apcost, int damage ) :
 	_name(name),
-	_damage_points(apcost),
-	_action_points(damage) {
+	_damage_points(damage),
+	_action_points(apcost) {
 }
 
 AWeapon::AWeapon( const AWeapon & src ) {
@@ -48,7 +48,8 @@ std::ostream &		operator << ( std::ostream& out, const AWeapon & in ) {
 
 	out << "<" << in.getName() << ">"
 	    << " deals " << in.getDamage()
-		<< " & costs " << in.getAPCost();
+		<< " damage points and costs " << in.getAPCost()
+		<< " action points";
 	return (out);
 }
 
@@ -60,9 +61,9 @@ std::string		AWeapon::getName() const {
 }
 
 int				AWeapon::getAPCost() const {
-	return (_damage_points);
+	return (_action_points);
 }
 
 int				AWeapon::getDamage() const {
-	return (_action_points);
+	return (_damage_points);
 }

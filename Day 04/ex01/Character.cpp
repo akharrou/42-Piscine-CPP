@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/19 15:39:12 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/19 15:57:32 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/19 16:24:36 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ Character &			Character::operator = ( const Character & rhs ) {
 
 std::ostream &		operator << ( std::ostream& out, const Character & in ) {
 
-	if (in.getWeapon()) {
+	if (in.getWeapon() != NULL) {
 
 		out << in.getName() << " has "
 		    << in.getAP() << " AP and wields a "
