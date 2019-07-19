@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 20:39:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 21:27:30 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 23:14:12 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,6 +306,17 @@ int		main() {
 
 		/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
 		/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
+
+		{
+			SuperTrap	Super ("Mark");
+			std::cout << std::endl;
+
+			std::cout << Super << std::endl;
+
+			std::cout << std::endl;
+		}
+
+		std::cout << "\n/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */\n\n";
 
 		{
 			SuperTrap	SUPER_TP_instance_1 ("Mark");

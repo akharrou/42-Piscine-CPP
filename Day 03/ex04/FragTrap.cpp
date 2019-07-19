@@ -6,11 +6,36 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 20:39:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 19:57:24 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 23:16:55 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "FragTrap.hpp"
+
+/* PRIVATE CONSTRUCTOR(S) — — — — — — — — — — — — — — — — — — — — — — — — — */
+
+FragTrap::FragTrap( int __SuperTrapOnly__ )
+	: ClapTrap () {
+
+	std::cout << "FragTrap Special __SuperTrapOnly__ constructor called" << std::endl;
+
+	_hit_points             = 100;
+	_max_hit_points         = 100;
+    _ranged_attack_damage   = 20;
+    _armor_damage_reduction = 5;
+}
+
+FragTrap::FragTrap( int __SuperTrapOnly__, std::string name )
+	: ClapTrap ( name ) {
+
+	std::cout << "FragTrap Special __SuperTrapOnly__ constructor called" << std::endl;
+
+	_hit_points             = 100;
+	_max_hit_points         = 100;
+    _ranged_attack_damage   = 20;
+    _armor_damage_reduction = 5;
+}
+
 
 /* CONSTRUCTOR / DECONSTRUCTOR — — — — — — — — — — — — — — — — — — — — — — — */
 

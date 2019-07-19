@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 20:39:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 20:35:34 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 23:10:58 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,11 @@
 # define NUMBER_OF_ATTACKS (5)
 
 class FragTrap : public virtual ClapTrap {
+
+	protected:
+
+		FragTrap( int __SuperTrapOnly__ );
+		FragTrap( int __SuperTrapOnly__, std::string name );
 
 	public:
 

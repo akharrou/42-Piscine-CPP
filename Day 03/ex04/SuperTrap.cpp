@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 19:28:42 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 21:21:54 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 23:09:02 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /* CONSTRUCTOR / DECONSTRUCTOR — — — — — — — — — — — — — — — — — — — — — — — */
 
 SuperTrap::SuperTrap( void )
-	: ClapTrap() {
+	: ClapTrap() , NinjaTrap(__SUPERTRAP__) , FragTrap(__SUPERTRAP__) {
 
 	std::cout << "SuperTrap Default constructor called" << std::endl;
 
@@ -34,7 +34,7 @@ SuperTrap::SuperTrap( void )
 }
 
 SuperTrap::SuperTrap( std::string name )
-	: ClapTrap( name ) {
+	: ClapTrap( name ) , NinjaTrap(__SUPERTRAP__) , FragTrap(__SUPERTRAP__) {
 
 	std::cout << "SuperTrap Regular constructor called" << std::endl;
 

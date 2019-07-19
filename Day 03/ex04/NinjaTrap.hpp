@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 17:48:53 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 20:35:23 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 23:10:58 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,11 @@
 /* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
 
 class NinjaTrap : public virtual ClapTrap {
+
+	protected:
+
+		NinjaTrap( int __SuperTrapOnly__ );
+		NinjaTrap( int __SuperTrapOnly__, std::string name );
 
 	public:
 

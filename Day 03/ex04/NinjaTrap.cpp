@@ -6,13 +6,35 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 17:48:50 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 21:14:13 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 23:12:45 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "NinjaTrap.hpp"
 
-/* CONSTRUCTOR / DECONSTRUCTOR — — — — — — — — — — — — — — — — — — — — — — — */
+/* PRIVATE CONSTRUCTOR(S) — — — — — — — — — — — — — — — — — — — — — — — — — */
+
+NinjaTrap::NinjaTrap( int __SuperTrapOnly__ )
+	: ClapTrap () {
+
+	std::cout << "NinjaTrap Special __SuperTrapOnly__ constructor called" << std::endl;
+
+	_energy_points       = 120;
+	_max_energy_points   = 120;
+    _melee_attack_damage = 60;
+}
+
+NinjaTrap::NinjaTrap( int __SuperTrapOnly__, std::string name )
+	: ClapTrap ( name ) {
+
+	std::cout << "NinjaTrap Special __SuperTrapOnly__ constructor called" << std::endl;
+
+	_energy_points       = 120;
+	_max_energy_points   = 120;
+    _melee_attack_damage = 60;
+}
+
+/* PUBLIC CONSTRUCTOR / DECONSTRUCTOR — — — — — — — — — — — — — — — — — — — */
 
 NinjaTrap::NinjaTrap( void )
 	: ClapTrap () {

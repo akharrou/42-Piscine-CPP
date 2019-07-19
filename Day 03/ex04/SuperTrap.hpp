@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 20:34:53 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 21:27:05 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 23:08:23 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include "NinjaTrap.hpp"
 
 /* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
+
+# define __SUPERTRAP__ (0)
 
 class SuperTrap
 	: public NinjaTrap, public FragTrap {
