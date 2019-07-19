@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 16:18:22 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 18:49:47 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 19:14:15 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,11 @@ class ClapTrap {
 		int				getMaxHitPoints    () const;
 		int				getMaxEnergyPoints () const;
 
-		virtual void	featherAttack  ( std::string const & target ) const = 0;
-		virtual void	rangedAttack   ( std::string const & target ) const = 0;
-		virtual void	meleeAttack    ( std::string const & target ) const = 0;
-		virtual void	stealthAttack  ( std::string const & target ) const = 0;
-		virtual void	ultimateAttack ( std::string const & target ) const = 0;
+		virtual void	featherAttack  ( std::string const & target ) const;
+		virtual void	rangedAttack   ( std::string const & target ) const;
+		virtual void	meleeAttack    ( std::string const & target ) const;
+		virtual void	stealthAttack  ( std::string const & target ) const;
+		virtual void	ultimateAttack ( std::string const & target ) const;
 
 		void			takeDamage ( unsigned int amount );
 		void			beRepaired ( unsigned int amount );

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 17:48:50 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 18:53:20 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 19:21:57 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,10 +150,6 @@ void			NinjaTrap::ultimateAttack   ( std::string const & target ) const {
 
 
 /* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
-
-std::string	g_classNames[] = {
-	"ClapTrap", "FragTrap", "ScavTrap", "NinjaTrap"
-};
 
 void			NinjaTrap::ninjaShoebox( ClapTrap & target ) {
 

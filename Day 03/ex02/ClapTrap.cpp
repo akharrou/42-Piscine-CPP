@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 16:18:18 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 17:42:00 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 19:20:49 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ int				ClapTrap::getMaxEnergyPoints() const {
 }
 
 
-/* PRIVATE MEMBER FUNCTION(S) — — — — — — — — — — — — — — — — — — — — — — — */
+/* PUBLIC MEMBER FUNCTION(S) — — — — — — — — — — — — — — — — — — — — — — — */
 
 void			ClapTrap::takeDamage   ( unsigned int amount ) {
 

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 16:18:18 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 18:50:24 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 19:16:51 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,52 @@ int				ClapTrap::getMaxEnergyPoints() const {
 }
 
 
-/* PRIVATE MEMBER FUNCTION(S) — — — — — — — — — — — — — — — — — — — — — — — */
+/* PUBLIC MEMBER FUNCTION(S) — — — — — — — — — — — — — — — — — — — — — — — — */
+
+void			ClapTrap::rangedAttack ( std::string const & target ) const {
+	std::cout << "CLAP-TP <" << _name
+	          << "> attacks <" << target
+	          << "> with " << __func__
+			  << ", causing <" << _ranged_attack_damage
+	          << "> points of damage !"
+	          << std::endl;
+}
+
+void			ClapTrap::meleeAttack  ( std::string const & target ) const {
+	std::cout << "CLAP-TP <" << _name
+	          << "> attacks <" << target
+	          << "> with " << __func__
+			  << ", causing <" << _melee_attack_damage
+	          << "> points of damage !"
+	          << std::endl;
+}
+
+void			ClapTrap::featherAttack  ( std::string const & target ) const {
+	std::cout << "CLAP-TP <" << _name
+	          << "> attacks <" << target
+	          << "> with " << __func__
+			  << ", causing <" << _feather_attack_damage
+	          << "> points of damage !"
+	          << std::endl;
+}
+
+void			ClapTrap::stealthAttack    ( std::string const & target ) const {
+	std::cout << "CLAP-TP <" << _name
+	          << "> attacks <" << target
+	          << "> with " << __func__
+			  << ", causing <" << _stealth_attack_damage
+	          << "> points of damage !"
+	          << std::endl;
+}
+
+void			ClapTrap::ultimateAttack   ( std::string const & target ) const {
+	std::cout << "CLAP-TP <" << _name
+	          << "> attacks <" << target
+	          << "> with " << __func__
+			  << ", causing <" << _ultimate_attack_damage
+	          << "> points of damage !"
+	          << std::endl;
+}
 
 void			ClapTrap::takeDamage   ( unsigned int amount ) {
 
