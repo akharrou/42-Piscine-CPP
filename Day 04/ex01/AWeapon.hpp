@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/19 10:58:15 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/19 12:41:18 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/19 12:48:17 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ class AWeapon {
 
 		AWeapon( std::string const & name, int apcost, int damage );
 		AWeapon( const AWeapon & src );
-		virtual ~AWeapon( void ) = 0;
+		virtual ~AWeapon( void );
 
 		AWeapon &		operator = ( const AWeapon & rhs );
 

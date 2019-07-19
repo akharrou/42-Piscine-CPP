@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/19 12:17:49 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/19 12:31:38 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/19 12:47:53 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ AWeapon::AWeapon( std::string const & name, int apcost, int damage ) :
 AWeapon::AWeapon( const AWeapon & src ) {
 	*this = src;
 }
+
+AWeapon::~AWeapon( void ) { }
 
 
 /* OPERATOR OVERLOAD(S) — — — — — — — — — — — — — — — — — — — — — — — — — — */
