@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 20:39:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 16:04:05 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 16:56:49 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 FragTrap::FragTrap( void ) :
 	_hit_points(100),
 	_energy_points(100),
+	_max_hit_points(100),
+	_max_energy_points(100),
 	_level(1),
 	_name("none"),
 	_ranged_attack_damage(20),
@@ -26,12 +28,14 @@ FragTrap::FragTrap( void ) :
 	_ultimate_attack_damage(70),
 	_armor_damage_reduction(5)
 {
-		std::cout << "FragTrap Default constructor called" << std::endl;
+	std::cout << "FragTrap Default constructor called" << std::endl;
 }
 
 FragTrap::FragTrap( std::string name ) :
 	_hit_points(100),
 	_energy_points(100),
+	_max_hit_points(100),
+	_max_energy_points(100),
 	_level(1),
 	_name(name),
 	_ranged_attack_damage(20),
@@ -62,6 +66,8 @@ FragTrap &		FragTrap::operator = ( const FragTrap & rhs ) {
 
         _hit_points             = rhs._hit_points;
         _energy_points          = rhs._energy_points;
+        _max_hit_points         = rhs._max_hit_points;
+        _max_energy_points      = rhs._max_energy_points;
         _name                   = rhs._name;
         _level                  = rhs._level;
 

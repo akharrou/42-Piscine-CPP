@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 20:39:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 15:43:54 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 16:39:44 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ class FragTrap {
 	private:
 
 		int					_hit_points;
-		static const int	_max_hit_points = 100;
+		int					_max_hit_points;
 
 		int					_energy_points;
-		static const int	_max_energy_points = 100;
+		int					_max_energy_points;
 
 		std::string			_name;
 		int					_level;

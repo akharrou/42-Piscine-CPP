@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 15:40:20 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 16:16:52 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 16:40:14 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ class ScavTrap {
 	private:
 
 		int					_hit_points;
-		static const int	_max_hit_points = 100;
+		int					_max_hit_points;
 
 		int					_energy_points;
-		static const int	_max_energy_points = 50;
+		int					_max_energy_points;
 
 		std::string			_name;
 		int					_level;
