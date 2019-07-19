@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/19 12:18:25 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/19 12:22:44 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/19 16:02:05 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,29 @@
 
 int	main() {
 
-	std::cout << std::endl;
+	{
+		Character	*zaz = new Character("zaz");
+
+		std::cout << *zaz;
+
+		Enemy		*b = new RadScorpion();
+
+		AWeapon		*pr = new PlasmaRifle();
+		AWeapon		*pf = new PowerFist();
+
+		zaz->equip(pr);
+		std::cout << *zaz;
+		zaz->equip(pf);
+
+		zaz->attack(b);
+		std::cout << *zaz;
+		zaz->equip(pr);
+		std::cout << *zaz;
+		zaz->attack(b);
+		std::cout << *zaz;
+		zaz->attack(b);
+		std::cout << *zaz;
+	}
 
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/19 13:03:15 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/19 13:11:36 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/19 16:00:27 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,8 @@ void	Enemy::takeDamage( int amount ) {
 	if (amount < 0)
 		return ;
 
-	std::cout << "<" << _type
-	          << "> * takes damage for "<< amount
-			  << " hit points *"
-			  << std::endl;
+	_hit_points -= amount;
 
-	_hit_points = (_hit_points - amount > 0) ?
-		(_hit_points - amount) : 0;
+	if (_hit_points <= 0)
+		delete this;
 }
