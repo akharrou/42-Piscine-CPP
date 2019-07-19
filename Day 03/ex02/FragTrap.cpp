@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 20:39:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 17:03:07 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 17:39:06 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,38 +14,38 @@
 
 /* CONSTRUCTOR / DECONSTRUCTOR — — — — — — — — — — — — — — — — — — — — — — — */
 
-FragTrap::FragTrap( void ) :
-	_hit_points(100),
-	_energy_points(100),
-	_max_hit_points(100),
-	_max_energy_points(100),
-	_level(1),
-	_name("none"),
-	_ranged_attack_damage(20),
-	_melee_attack_damage(30),
-	_feather_attack_damage(3),
-	_stealth_attack_damage(15),
-	_ultimate_attack_damage(70),
-	_armor_damage_reduction(5)
-{
+FragTrap::FragTrap( void )
+	: ClapTrap () {
+
 	std::cout << "FragTrap Default constructor called" << std::endl;
+
+    _hit_points             = 100;
+    _energy_points          = 100;
+    _max_hit_points         = 100;
+    _max_energy_points      = 100;
+    _ranged_attack_damage   = 20;
+    _melee_attack_damage    = 30;
+    _feather_attack_damage  = 3;
+    _stealth_attack_damage  = 15;
+    _ultimate_attack_damage = 70;
+    _armor_damage_reduction = 5;
 }
 
-FragTrap::FragTrap( std::string name ) :
-	_hit_points(100),
-	_energy_points(100),
-	_max_hit_points(100),
-	_max_energy_points(100),
-	_level(1),
-	_name(name),
-	_ranged_attack_damage(20),
-	_melee_attack_damage(30),
-	_feather_attack_damage(3),
-	_stealth_attack_damage(15),
-	_ultimate_attack_damage(70),
-	_armor_damage_reduction(5)
-{
+FragTrap::FragTrap( std::string name )
+	: ClapTrap ( name ) {
+
 	std::cout << "FragTrap Regular constructor called" << std::endl;
+
+    _hit_points             = 100;
+    _energy_points          = 100;
+    _max_hit_points         = 100;
+    _max_energy_points      = 100;
+    _ranged_attack_damage   = 20;
+    _melee_attack_damage    = 30;
+    _feather_attack_damage  = 3;
+    _stealth_attack_damage  = 15;
+    _ultimate_attack_damage = 70;
+    _armor_damage_reduction = 5;
 }
 
 FragTrap::FragTrap( const FragTrap & src ) {
@@ -66,8 +66,10 @@ FragTrap &		FragTrap::operator = ( const FragTrap & rhs ) {
 
         _hit_points             = rhs._hit_points;
         _energy_points          = rhs._energy_points;
+
         _max_hit_points         = rhs._max_hit_points;
         _max_energy_points      = rhs._max_energy_points;
+
         _name                   = rhs._name;
         _level                  = rhs._level;
 
@@ -82,38 +84,13 @@ FragTrap &		FragTrap::operator = ( const FragTrap & rhs ) {
 	return (*this);
 }
 
-std::ostream &	operator<<( std::ostream& out, const FragTrap & in ) {
+std::ostream &	operator << ( std::ostream& out, const FragTrap & in ) {
 
 	out << in.getName()
 		<< " <Level " << in.getLevel() << ">"
 		<< " <Hit Points: " << in.getHitPoints() << "/" << in.getMaxHitPoints() << ">"
 		<< " <Energy Points: " << in.getEnergyPoints() << "/" << in.getMaxEnergyPoints() << ">";
 	return (out);
-}
-
-
-/* ACCESSOR(S) — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
-
-std::string		FragTrap::getName() const {
-	return (_name);
-}
-
-int				FragTrap::getLevel() const {
-	return (_level);
-}
-
-int				FragTrap::getHitPoints() const {
-	return (_hit_points);
-}
-int				FragTrap::getEnergyPoints() const {
-	return (_energy_points);
-}
-
-int				FragTrap::getMaxHitPoints() const {
-	return (_max_hit_points);
-}
-int				FragTrap::getMaxEnergyPoints() const {
-	return (_max_energy_points);
 }
 
 
@@ -164,52 +141,6 @@ void			FragTrap::ultimateAttack   ( std::string const & target ) const {
 	          << std::endl;
 }
 
-/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
-
-void			FragTrap::takeDamage   ( unsigned int amount ) {
-
-	amount = amount - _armor_damage_reduction;
-
-	std::cout << "<" << _name
-	          << "> * takes damage for "<< amount
-			  << " hit points *"
-			  << std::endl;
-
-	_hit_points = (_hit_points - amount > 0) ?
-		(_hit_points - amount) : 0;
-}
-
-void			FragTrap::beRepaired   ( unsigned int amount ) {
-
-    int	repair_hit_pts    = amount;
-    int	repair_energy_pts = amount;
-
-	if (_hit_points != _max_hit_points) {
-
-		repair_hit_pts = (_hit_points + repair_hit_pts > _max_hit_points) ?
-			 _max_hit_points - _hit_points : repair_hit_pts;
-		_hit_points += repair_hit_pts;
-
-	} else {
-		repair_hit_pts = 0;
-	}
-
-	if (_energy_points != _max_energy_points) {
-
-		repair_energy_pts = (_energy_points + repair_energy_pts > _max_energy_points) ?
-			 _max_energy_points - _energy_points : repair_energy_pts;
-		_energy_points += repair_energy_pts;
-
-	} else {
-		repair_energy_pts = 0;
-	}
-
-	std::cout << "<" << _name
-	          << "> * gets repaired for "<< repair_hit_pts
-			  << " hit points and " << repair_energy_pts
-			  << " energy points *"
-			  << std::endl;
-}
 
 /* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
 

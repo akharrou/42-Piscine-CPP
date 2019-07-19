@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 20:39:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 17:02:02 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 17:38:34 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,12 @@ class FragTrap : public ClapTrap {
 		~FragTrap( void );
 
 		FragTrap &		operator = ( const FragTrap & rhs );
+
+		void			featherAttack  ( std::string const & target ) const;
+		void			rangedAttack   ( std::string const & target ) const;
+		void			meleeAttack    ( std::string const & target ) const;
+		void			stealthAttack  ( std::string const & target ) const;
+		void			ultimateAttack ( std::string const & target ) const;
 
 		void			vaulthunter_dot_exe( std::string const & target );
 

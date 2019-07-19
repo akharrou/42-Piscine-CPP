@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 16:18:18 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 17:00:43 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 17:42:00 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ ClapTrap &		ClapTrap::operator = ( const ClapTrap & rhs ) {
 	return (*this);
 }
 
-std::ostream &	operator<<( std::ostream& out, const ClapTrap & in ) {
+std::ostream &	operator << ( std::ostream& out, const ClapTrap & in ) {
 
 	out << in.getName()
 		<< " <Level " << in.getLevel() << ">"

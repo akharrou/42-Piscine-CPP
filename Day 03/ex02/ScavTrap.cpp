@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 15:40:17 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 17:02:54 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 17:41:13 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,38 +14,38 @@
 
 /* CONSTRUCTOR / DECONSTRUCTOR — — — — — — — — — — — — — — — — — — — — — — — */
 
-ScavTrap::ScavTrap( void ) :
-	_hit_points(100),
-	_energy_points(50),
-	_max_hit_points(100),
-	_max_energy_points(50),
-	_level(1),
-	_name("none"),
-	_ranged_attack_damage(15),
-	_melee_attack_damage(20),
-	_feather_attack_damage(8),
-	_stealth_attack_damage(10),
-	_ultimate_attack_damage(75),
-	_armor_damage_reduction(3) {
+ScavTrap::ScavTrap( void )
+	: ClapTrap () {
 
 	std::cout << "ScavTrap Default constructor called" << std::endl;
+
+    _hit_points             = 100;
+    _energy_points          = 50;
+    _max_hit_points         = 100;
+    _max_energy_points      = 50;
+    _ranged_attack_damage   = 15;
+    _melee_attack_damage    = 20;
+    _feather_attack_damage  = 8;
+    _stealth_attack_damage  = 10;
+    _ultimate_attack_damage = 75;
+    _armor_damage_reduction = 3;
 }
 
-ScavTrap::ScavTrap( std::string name ) :
-	_hit_points(100),
-	_energy_points(50),
-	_max_hit_points(100),
-	_max_energy_points(50),
-	_level(1),
-	_name(name),
-	_ranged_attack_damage(15),
-	_melee_attack_damage(20),
-	_feather_attack_damage(8),
-	_stealth_attack_damage(10),
-	_ultimate_attack_damage(75),
-	_armor_damage_reduction(3) {
+ScavTrap::ScavTrap( std::string name )
+	: ClapTrap ( name ) {
 
 	std::cout << "ScavTrap Regular constructor called" << std::endl;
+
+    _hit_points             = 100;
+    _energy_points          = 50;
+    _max_hit_points         = 100;
+    _max_energy_points      = 50;
+    _ranged_attack_damage   = 15;
+    _melee_attack_damage    = 20;
+    _feather_attack_damage  = 8;
+    _stealth_attack_damage  = 10;
+    _ultimate_attack_damage = 75;
+    _armor_damage_reduction = 3;
 }
 
 ScavTrap::ScavTrap( const ScavTrap & src ) {
@@ -66,8 +66,10 @@ ScavTrap &		ScavTrap::operator = ( const ScavTrap & rhs ) {
 
         _hit_points             = rhs._hit_points;
         _energy_points          = rhs._energy_points;
+
         _max_hit_points         = rhs._max_hit_points;
         _max_energy_points      = rhs._max_energy_points;
+
         _name                   = rhs._name;
         _level                  = rhs._level;
 
@@ -82,38 +84,13 @@ ScavTrap &		ScavTrap::operator = ( const ScavTrap & rhs ) {
 	return (*this);
 }
 
-std::ostream &	operator<<( std::ostream& out, const ScavTrap & in ) {
+std::ostream &	operator << ( std::ostream& out, const ScavTrap & in ) {
 
 	out << in.getName()
 		<< " <Level " << in.getLevel() << ">"
 		<< " <Hit Points: " << in.getHitPoints() << "/" << in.getMaxHitPoints() << ">"
 		<< " <Energy Points: " << in.getEnergyPoints() << "/" << in.getMaxEnergyPoints() << ">";
 	return (out);
-}
-
-
-/* ACCESSOR(S) — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
-
-std::string		ScavTrap::getName() const {
-	return (_name);
-}
-
-int				ScavTrap::getLevel() const {
-	return (_level);
-}
-
-int				ScavTrap::getHitPoints() const {
-	return (_hit_points);
-}
-int				ScavTrap::getEnergyPoints() const {
-	return (_energy_points);
-}
-
-int				ScavTrap::getMaxHitPoints() const {
-	return (_max_hit_points);
-}
-int				ScavTrap::getMaxEnergyPoints() const {
-	return (_max_energy_points);
 }
 
 
@@ -164,52 +141,6 @@ void			ScavTrap::ultimateAttack   ( std::string const & target ) const {
 	          << std::endl;
 }
 
-/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
-
-void			ScavTrap::takeDamage   ( unsigned int amount ) {
-
-	amount = amount - _armor_damage_reduction;
-
-	std::cout << "<" << _name
-	          << "> * takes damage for "<< amount
-			  << " hit points *"
-			  << std::endl;
-
-	_hit_points = (_hit_points - amount > 0) ?
-		(_hit_points - amount) : 0;
-}
-
-void			ScavTrap::beRepaired   ( unsigned int amount ) {
-
-    int	repair_hit_pts    = amount;
-    int	repair_energy_pts = amount;
-
-	if (_hit_points != _max_hit_points) {
-
-		repair_hit_pts = (_hit_points + repair_hit_pts > _max_hit_points) ?
-			 _max_hit_points - _hit_points : repair_hit_pts;
-		_hit_points += repair_hit_pts;
-
-	} else {
-		repair_hit_pts = 0;
-	}
-
-	if (_energy_points != _max_energy_points) {
-
-		repair_energy_pts = (_energy_points + repair_energy_pts > _max_energy_points) ?
-			 _max_energy_points - _energy_points : repair_energy_pts;
-		_energy_points += repair_energy_pts;
-
-	} else {
-		repair_energy_pts = 0;
-	}
-
-	std::cout << "<" << _name
-	          << "> * gets repaired for "<< repair_hit_pts
-			  << " hit points and " << repair_energy_pts
-			  << " energy points *"
-			  << std::endl;
-}
 
 /* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
 
