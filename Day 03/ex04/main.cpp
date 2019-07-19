@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 20:39:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 21:17:04 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 21:27:30 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,7 +247,7 @@ int		main() {
 		/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
 
 		std::cout << "\n\n# ============================================================= #\n";
-		std::cout << "#                        NINJA-TP TESTS                          #\n";
+		std::cout << "#                        NINJA-TP TESTS                         #\n";
 		std::cout << "# ============================================================= #\n\n";
 
 		/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
@@ -278,7 +278,7 @@ int		main() {
 			FragTrap	FragTrap_dummy  ("Frag");
 			ScavTrap	ScavTrap_dummy  ("Scav");
 			NinjaTrap	NinjaTrap_dummy ("Ninja");
-			SuperTrap	SuperTrap_dummy ("Super"); /* <————— NOTE: this was added*/
+			SuperTrap	SuperTrap_dummy ("Super");
 
 			NinjaTrap	NinjaPro("Pro");
 
@@ -288,7 +288,7 @@ int		main() {
 			NinjaPro.ninjaShoebox(FragTrap_dummy);
 			NinjaPro.ninjaShoebox(ScavTrap_dummy);
 			NinjaPro.ninjaShoebox(NinjaTrap_dummy);
-			NinjaPro.ninjaShoebox(SuperTrap_dummy); /* <————— NOTE: this was added*/
+			NinjaPro.ninjaShoebox(SuperTrap_dummy);
 			std::cout << std::endl;
 		}
 
@@ -301,27 +301,27 @@ int		main() {
 		/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
 
 		std::cout << "\n\n# ============================================================= #\n";
-		std::cout << "#                        NINJA-TP TESTS                          #\n";
+		std::cout << "#                        SUPER-TP TESTS                         #\n";
 		std::cout << "# ============================================================= #\n\n";
 
 		/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
 		/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
 
 		{
-			NinjaTrap	NINJA_TP_instance_1 ("Mark");
-			NinjaTrap	NINJA_TP_instance_2 ("Koby");
-			NinjaTrap	NINJA_TP_instance_3 ("Brian");
-			NinjaTrap	NINJA_TP_instance_4 ("Albert");
-			NinjaTrap	NINJA_TP_instance_5 ("Susie");
+			SuperTrap	SUPER_TP_instance_1 ("Mark");
+			SuperTrap	SUPER_TP_instance_2 ("Koby");
+			SuperTrap	SUPER_TP_instance_3 ("Brian");
+			SuperTrap	SUPER_TP_instance_4 ("Albert");
+			SuperTrap	SUPER_TP_instance_5 ("Susie");
 			std::cout << std::endl;
 
 			/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
 
-			NINJA_TP_instance_1.featherAttack( "Xaiver Niel" );
-			NINJA_TP_instance_2.rangedAttack( "Xaiver Niel" );
-			NINJA_TP_instance_3.meleeAttack( "Xaiver Niel" );
-			NINJA_TP_instance_4.stealthAttack( "Xaiver Niel" );
-			NINJA_TP_instance_5.ultimateAttack( "Xaiver Niel" );
+			SUPER_TP_instance_1.featherAttack( "Xaiver Niel" );
+			SUPER_TP_instance_2.rangedAttack( "Xaiver Niel" );
+			SUPER_TP_instance_3.meleeAttack( "Xaiver Niel" );
+			SUPER_TP_instance_4.stealthAttack( "Xaiver Niel" );
+			SUPER_TP_instance_5.ultimateAttack( "Xaiver Niel" );
 			std::cout << std::endl;
 		}
 
@@ -332,15 +332,38 @@ int		main() {
 			FragTrap	FragTrap_dummy  ("Frag");
 			ScavTrap	ScavTrap_dummy  ("Scav");
 			NinjaTrap	NinjaTrap_dummy ("Ninja");
+			SuperTrap	SuperTrap_dummy ("Super");
 
-			NinjaTrap	NinjaPro("Pro");
+			SuperTrap	SuperPro ("Pro");
 
 			std::cout << std::endl;
 
-			NinjaPro.ninjaShoebox(ClapTrap_dummy);
-			NinjaPro.ninjaShoebox(FragTrap_dummy);
-			NinjaPro.ninjaShoebox(ScavTrap_dummy);
-			NinjaPro.ninjaShoebox(NinjaTrap_dummy);
+			SuperPro.ninjaShoebox(ClapTrap_dummy);
+			SuperPro.ninjaShoebox(FragTrap_dummy);
+			SuperPro.ninjaShoebox(ScavTrap_dummy);
+			SuperPro.ninjaShoebox(NinjaTrap_dummy);
+			SuperPro.ninjaShoebox(SuperTrap_dummy);
+			std::cout << std::endl;
+		}
+
+		std::cout << "\n/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */\n\n";
+
+		{
+			ClapTrap	ClapTrap_dummy  ("Clap");
+			FragTrap	FragTrap_dummy  ("Frag");
+			ScavTrap	ScavTrap_dummy  ("Scav");
+			NinjaTrap	NinjaTrap_dummy ("Ninja");
+			SuperTrap	SuperTrap_dummy ("Super");
+
+			SuperTrap	SuperPro ("Pro");
+
+			std::cout << std::endl;
+
+			SuperPro.vaulthunter_dot_exe( ClapTrap_dummy.getName() );
+			SuperPro.vaulthunter_dot_exe( FragTrap_dummy.getName() );
+			SuperPro.vaulthunter_dot_exe( ScavTrap_dummy.getName() );
+			SuperPro.vaulthunter_dot_exe( NinjaTrap_dummy.getName() );
+			SuperPro.vaulthunter_dot_exe( SuperTrap_dummy.getName() );
 			std::cout << std::endl;
 		}
 

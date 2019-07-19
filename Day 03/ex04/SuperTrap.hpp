@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 20:34:53 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 21:14:05 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 21:27:05 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 /* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
 
 class SuperTrap
-	: public NinjaTrap, FragTrap {
+	: public NinjaTrap, public FragTrap {
 
 	public:
 

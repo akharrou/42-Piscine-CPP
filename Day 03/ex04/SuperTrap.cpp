@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 19:28:42 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/18 21:13:09 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/18 21:21:54 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ void			SuperTrap::rangedAttack ( std::string const & target ) const {
 }
 
 void			SuperTrap::meleeAttack  ( std::string const & target ) const {
-	NinjaTrap::rangedAttack( target );
+	NinjaTrap::meleeAttack( target );
 }
 
 void			SuperTrap::featherAttack  ( std::string const & target ) const {
