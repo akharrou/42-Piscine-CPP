@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/19 18:56:32 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/19 19:26:15 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/19 19:53:55 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ Squad::~Squad( void ) {
 
 /* OPERATOR OVERLOAD(S) — — — — — — — — — — — — — — — — — — — — — — — — — — */
 
-Squad &			Squad::operator = ( const Squad & rhs ) {
+Squad &			Squad::operator = ( const Squad & rhs ) { /* FIXME : assignation isnt deep */
 
 	if (this != &rhs) {
 
