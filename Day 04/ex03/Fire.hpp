@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Cure.hpp                                           :+:      :+:    :+:   */
+/*   Fire.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/19 22:27:43 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/20 12:11:16 by akharrou         ###   ########.fr       */
+/*   Created: 2019/07/20 12:08:56 by akharrou          #+#    #+#             */
+/*   Updated: 2019/07/20 12:11:03 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CURE_HPP
-# define CURE_HPP
+#ifndef FIRE_HPP
+# define FIRE_HPP
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -20,15 +20,15 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-class Cure
+class Fire
 	: public AMateria {
 
 	public:
-		Cure( void );
-		Cure( const Cure & src );
-		~Cure( void );
+		Fire( void );
+		Fire( const Fire & src );
+		~Fire( void );
 
-		Cure &		operator = ( const Cure & rhs );
+		Fire &		operator = ( const Fire & rhs );
 
 		AMateria	*clone() const;
 		void		use( ICharacter & target );
@@ -37,4 +37,4 @@ class Cure
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#endif /* CURE_HPP */
+#endif /* FIRE_HPP */

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/19 22:26:47 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/20 11:44:29 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/20 12:45:17 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ AMateria &			AMateria::operator = ( const AMateria & rhs ) {
 
 std::ostream &		operator << ( std::ostream& out, const AMateria & in ) {
 
-	(void)in;
 	out << "Materia of type " << in.getType()
 		<< "; currently at " << in.getXP()
 		<< " xp" << std::endl;

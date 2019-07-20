@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/20 11:23:34 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/20 11:49:24 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/20 12:00:47 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,12 @@ MateriaSource::MateriaSource( const MateriaSource & src ) {
 	*this = src;
 }
 
-MateriaSource::~MateriaSource( void ) { }
+MateriaSource::~MateriaSource( void ) {
+
+	for (int i = 0; i < _maxLearnedMaterias; ++i)
+		if (_learnedMaterias[i] != NULL)
+			delete (_learnedMaterias[i]);
+}
 
 
 /* OPERATOR OVERLOAD(S) - - - - - - - - - - - - - - - - - - - - - - - - - - */

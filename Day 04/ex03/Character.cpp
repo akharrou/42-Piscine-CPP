@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/20 10:49:36 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/20 11:46:41 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/20 12:51:55 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,10 @@ Character::Character( const Character & src ) {
 Character::~Character( void ) {
 
 	for (int i = 0; i < _max_inventory; ++i)
-		if (inventory[i])
+		if (inventory[i]) {
 			delete (inventory[i]);
+			inventory[i] = NULL;
+		}
 }
 
 
@@ -81,7 +83,9 @@ void	Character::equip( AMateria *m ) {
 	if (!m)
 		return ;
 
-	for (int i = 0; i < _max_inventory; ++i)
+	int i;
+
+	for (i = 0; i < _max_inventory; ++i)
 		if (inventory[i] == NULL) {
 			inventory[i] = m;
 			break ;

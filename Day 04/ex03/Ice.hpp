@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/19 22:27:43 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/20 10:47:03 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/20 12:11:07 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,6 @@ class Ice
 		void		use( ICharacter & target );
 
 };
-
-std::ostream & operator << ( std::ostream & out, const Ice & in );
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
