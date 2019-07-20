@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/19 19:39:47 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/19 19:53:15 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/20 11:36:03 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,17 @@
 
 #include <iostream>
 
-#include "MateriaSource.hpp"
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
 #include "IMateriaSource.hpp"
+#include "MateriaSource.hpp"
+
 #include "ICharacter.hpp"
+#include "Character.hpp"
+
+#include "AMateria.hpp"
 #include "Ice.hpp"
 #include "Cure.hpp"
-#include "Character.hpp"
-#include "AMateria.hpp"
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
