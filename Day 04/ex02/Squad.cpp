@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/19 18:56:32 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/19 19:53:55 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/19 21:28:13 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,13 @@ Squad::~Squad( void ) {
 		delete (tmp->unit);
 		delete (tmp);
 	}
+	_squad = NULL;
 }
 
 
 /* OPERATOR OVERLOAD(S) — — — — — — — — — — — — — — — — — — — — — — — — — — */
 
-Squad &			Squad::operator = ( const Squad & rhs ) { /* FIXME : assignation isnt deep */
+Squad &			Squad::operator = ( const Squad & rhs ) {
 
 	if (this != &rhs) {
 
@@ -57,6 +58,7 @@ Squad &			Squad::operator = ( const Squad & rhs ) { /* FIXME : assignation isnt 
 				delete (tmp->unit);
 				delete (tmp);
 			}
+			_squad = NULL;
 		}
 		if (rhs._squad == NULL) {
 			_squad = NULL;
@@ -119,7 +121,7 @@ int		Squad::push( ISpaceMarine *obj ) {
 	if (_squad) {
 
 		probe = _squad;
-		while (probe->next)
+		while (probe && probe->next)
 			probe = probe->next;
 
 		probe->next = newUnit;

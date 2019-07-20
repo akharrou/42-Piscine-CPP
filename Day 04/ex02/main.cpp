@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/19 16:35:56 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/19 19:47:46 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/19 21:30:50 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,16 @@ int	main() {
 
 	{
 
-		Squad	*army = new Squad;
+		Squad	*army       = new Squad;
+		Squad	*armyCopy_0 = new Squad;
+		Squad	*armyCopy_1 = new Squad;
+		Squad	*armyCopy_2 = new Squad;
 
 		std::cout << "\nArmy Squand Count: " << army->getCount() << "\n";
 
-		Squad	*armyCopy_0(army);
+		*armyCopy_0 = *army;
+
+		std::cout << "\n*armyCopy_0 = *army;" << std::endl;
 		std::cout << "armyCopy_0 Squad Count : " << armyCopy_0->getCount() << std::endl << std::endl;
 
 		army->push(new TacticalMarine);
@@ -69,9 +74,10 @@ int	main() {
 		army->push(new TacticalMarine);
 		army->push(new AssaultTerminator);
 
-		Squad	*armyCopy_1 = army;
-		std::cout << "\narmyCopy_1 Squad Count : " << armyCopy_1->getCount() << std::endl;
+		std::cout << "\n*armyCopy_1 = *army;\n" << std::endl;
+		*armyCopy_1 = *army;
 
+		std::cout << "\narmyCopy_1 Squad Count : " << armyCopy_1->getCount() << std::endl;
 		std::cout << "Army Squand Count: " << army->getCount() << "\n\n";
 
 		army->push(new TacticalMarine);
@@ -91,12 +97,17 @@ int	main() {
 		army->push(new TacticalMarine);
 		army->push(new AssaultTerminator);
 
-		armyCopy_1 = army;
-		std::cout << "\narmyCopy_1 Squad Count : " << armyCopy_1->getCount() << std::endl;
+		std::cout << "\n*armyCopy_1 = *army;\n" << std::endl;
 
-		Squad	*armyCopy_2 = army;
+		*armyCopy_1 = *army;
+
+		std::cout << "\n*armyCopy_2 = *army;\n" << std::endl;
+
+		*armyCopy_2 = *army;
+
+		std::cout << "\narmyCopy_0 Squad Count : " << armyCopy_0->getCount() << std::endl;
+		std::cout << "armyCopy_1 Squad Count : " << armyCopy_1->getCount() << std::endl;
 		std::cout << "armyCopy_2 Squad Count : " << armyCopy_2->getCount() << std::endl;
-
 		std::cout << "Army Squand Count: " << army->getCount() << "\n\n";
 
 		std::cout << "\n/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */\nArmy:\n\n";
@@ -152,22 +163,21 @@ int	main() {
 			std::cout << std::endl;
 		}
 
-		std::cout << "\n/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */";
 		std::cout << "\n/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */\nDelete Army :\n\n";
 
 		delete (army);
 
-		// std::cout << "\n/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */\nDelete Army 0:\n\n";
+		std::cout << "\n/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */\nDelete Army 0:\n\n";
 
-		// delete (armyCopy_0);
+		delete (armyCopy_0);
 
-		// std::cout << "\n/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */\nDelete Army 1:\n\n";
+		std::cout << "\n/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */\nDelete Army 1:\n\n";
 
-		// delete (armyCopy_1);
+		delete (armyCopy_1);
 
-		// std::cout << "\n/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */\nDelete Army 2:\n\n";
+		std::cout << "\n/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */\nDelete Army 2:\n\n";
 
-		// delete (armyCopy_2);
+		delete (armyCopy_2);
 
 	}
 

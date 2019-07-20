@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/19 17:47:41 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/19 17:47:42 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/19 20:48:37 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,7 @@ std::ostream &		operator << ( std::ostream& out, const TacticalMarine & in ) {
 /* PUBLIC MEMBER FUNCTION(S) — — — — — — — — — — — — — — — — — — — — — — — — */
 
 ISpaceMarine	*TacticalMarine::clone() const {
-
-	ISpaceMarine	*clone = new TacticalMarine();
-
-	*clone = *this;
-	return (clone);
+	return ((ISpaceMarine*)new TacticalMarine());
 }
 
 /* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
