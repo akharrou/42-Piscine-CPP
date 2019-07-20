@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/20 10:01:22 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/20 11:08:25 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/20 14:35:37 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 class Character
-	: virtual public ICharacter {
+	: public ICharacter {
 
 	private:
 		Character( void );

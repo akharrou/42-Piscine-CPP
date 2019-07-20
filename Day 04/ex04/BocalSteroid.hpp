@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   MiningBarge.hpp                                    :+:      :+:    :+:   */
+/*   BocalSteroid.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/20 14:55:16 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/20 16:28:03 by akharrou         ###   ########.fr       */
+/*   Created: 2019/07/20 14:30:18 by akharrou          #+#    #+#             */
+/*   Updated: 2019/07/20 16:28:27 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MININGBARGE_HPP
-# define MININGBARGE_HPP
+#ifndef BOCALSTEROID_HPP
+# define BOCALSTEROID_HPP
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -19,33 +19,31 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-# include "IMiningLaser.hpp"
 # include "IAsteroid.hpp"
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-class MiningBarge {
+class BocalSteroid :
+	public IAsteroid {
 
 	private:
-
-		static const int	_max_lasers = 4;
-		IMiningLaser		*_lasers[_max_lasers];
+		std::string _name;
 
 	public:
 
-		MiningBarge( void );
-		MiningBarge( const MiningBarge & src );
-		~MiningBarge( void );
+		BocalSteroid( void );
+		BocalSteroid( const BocalSteroid & src );
+		~BocalSteroid( void );
 
-		MiningBarge &	operator = ( const MiningBarge & rhs );
+		BocalSteroid &	operator = ( const BocalSteroid & rhs );
 
-		void	equip ( IMiningLaser * );
-		void	mine  ( IAsteroid * ) const;
+		std::string		getName() const;
+
+		std::string		beMined ( StripMiner const * )    const;
+		std::string		beMined ( DeepCoreMiner const * ) const;
 
 };
 
-std::ostream & operator << ( std::ostream & out, const MiningBarge & in );
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#endif /* MININGBARGE_HPP */
+#endif /* BOCALSTEROID_HPP */

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/20 11:07:03 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/20 11:35:57 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/20 14:35:22 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 class MateriaSource
-	: virtual public IMateriaSource {
+	: public IMateriaSource {
 
 	private:
 		static const int	_maxLearnedMaterias = 4;

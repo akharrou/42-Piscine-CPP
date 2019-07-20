@@ -1,48 +1,51 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   DeepCoreMiner.cpp                                  :+:      :+:    :+:   */
+/*   AsteroBocal.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/20 14:19:25 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/20 15:15:20 by akharrou         ###   ########.fr       */
+/*   Created: 2019/07/20 14:54:35 by akharrou          #+#    #+#             */
+/*   Updated: 2019/07/20 15:29:38 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "DeepCoreMiner.hpp"
+#include "AsteroBocal.hpp"
 
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
-DeepCoreMiner::DeepCoreMiner( void ) :
-	_type("DeepCoreMiner") {
+AsteroBocal::AsteroBocal( void )
+	: _name("AsteroBocal") {
 }
 
-DeepCoreMiner::DeepCoreMiner( const DeepCoreMiner & src ) {
+AsteroBocal::AsteroBocal( const AsteroBocal & src ) {
 	*this = src;
 }
 
-DeepCoreMiner::~DeepCoreMiner( void ) { }
+AsteroBocal::~AsteroBocal( void ) { }
 
 
 /* OPERATOR OVERLOAD(S) - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-DeepCoreMiner &			DeepCoreMiner::operator = ( const DeepCoreMiner & rhs ) {
-
+AsteroBocal &	AsteroBocal::operator = ( const AsteroBocal & rhs ) {
 	(void)rhs;
 	return (*this);
 }
 
 
-/* ACCESSOR(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* ACCESSOR(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-const std::string &		DeepCoreMiner::getType() const {
-	return (_type);
+std::string		AsteroBocal::getName() const {
+	return (_name);
 }
 
 
 /* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */
 
-void	DeepCoreMiner::mine( IAsteroid *target ) {
-	std::cout << "* mining deep ... got " << target->beMined( this ) << " ! *" << std::endl;
+std::string		AsteroBocal::beMined( StripMiner const * ) const {
+	return ("Flavium");
+}
+
+std::string		AsteroBocal::beMined( DeepCoreMiner const * ) const {
+	return ("Thorite");
 }
