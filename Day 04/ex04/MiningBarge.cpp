@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/20 15:27:25 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/20 15:32:03 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/20 16:45:48 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,13 @@ void	MiningBarge::equip ( IMiningLaser *laser ) {
 	if (!laser)
 		return ;
 
-	for ( int i = 0; i < _max_lasers; ++i )
-		if (_lasers[i] == NULL)
+	for ( int i = 0; i < _max_lasers; ++i ) {
+
+		if (_lasers[i] == NULL) {
 			_lasers[i] = laser;
+			break ;
+		}
+	}
 }
 
 void	MiningBarge::mine  ( IAsteroid *asteroid ) const {
