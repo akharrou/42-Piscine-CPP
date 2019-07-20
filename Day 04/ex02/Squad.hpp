@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/19 16:56:21 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/19 17:01:58 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/19 19:27:12 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,23 @@
 /* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
 
 #include <iostream>
+
 #include "ISquad.hpp"
+#include "ISpaceMarine.hpp"
 
 /* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
+
+typedef struct s_unit {
+	ISpaceMarine	*unit;
+	s_unit			*next;
+} unit_t;
 
 class Squad
 	: public ISquad {
 
 	private:
 
+		unit_t	*_squad;
 		int		_squad_count;
 
 	public:
@@ -35,59 +43,14 @@ class Squad
 
 		Squad &		operator = ( const Squad & rhs );
 
+		int				getCount  ()      const;
+		ISpaceMarine	*getUnit  ( int ) const;
+
 		int		push( ISpaceMarine *obj );
 
 };
 
 std::ostream & operator << ( std::ostream & out, const Squad & in );
-
-
-#include "Squad.hpp"
-
-/* PUBLIC CONSTRUCTOR / DECONSTRUCTOR — — — — — — — — — — — — — — — — — — — — */
-
-Squad::Squad( void ) :
-	_squad_count(0) {
-}
-
-Squad::Squad( const Squad & src ) {
-	*this = src;
-}
-
-Squad::~Squad( void ) { }
-
-
-/* OPERATOR OVERLOAD(S) — — — — — — — — — — — — — — — — — — — — — — — — — — */
-
-Squad &			Squad::operator = ( const Squad & rhs ) {
-
-	if (this != &rhs) {
-		/* IMPLEMENT */
-	}
-	return (*this);
-}
-
-std::ostream &		operator << ( std::ostream& out, const Squad & in ) {
-
-	out << /* IMPLEMENT */;
-	return (out);
-}
-
-
-/* ACCESSOR(S) — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
-
-int				Squad::getCount ()      const {
-	return (_squad_count);
-}
-
-ISpaceMarine	*Squad::getUnit ( int ) const {
-	return (/* pointer to the Nth unit, starting at 0, NULL if empty */);
-}
-
-
-/* PUBLIC MEMBER FUNCTION(S) — — — — — — — — — — — — — — — — — — — — — — — — */
-
-
 
 /* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */
 
