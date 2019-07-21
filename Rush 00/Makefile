@@ -1,8 +1,8 @@
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
-CC          =   clang++
-CFLAGS      =   -W -Wall -Wextra -Werror -pedantic -lncurses -std=c++98
+CC          =   clang++ -std=c++2a
+CFLAGS      =   -W -Wall -Wextra -Werror -pedantic -lncurses
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
@@ -26,15 +26,16 @@ NAME        =   a
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
-HEADERS     =
+HEADERS     =                                                                 \
+                Includes/game.hpp                                             \
+                Includes/ObjectField.hpp                                      \
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
-FILES     =   \
-        main.cpp \
-        game.cpp \
-
-SOURCES = $(addprefix Sources/, $(FILES))
+SOURCES     =                                                                 \
+                Sources/main.cpp                                              \
+                Sources/game.cpp                                              \
+                Sources/ObjectField.cpp                                       \
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
@@ -52,6 +53,9 @@ $(NAME): $(OBJECTS)
 %.o: %.c $(HEADERS)
 	@$(CC) $(CFLAGS) -pipe -c $< -o $@
 	@echo $(WHITE) "Compiling => " $<
+
+run:
+	@./$(NAME)
 
 # House Keeping — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
@@ -72,6 +76,6 @@ WHITE = "\033[1;37m"
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
-.PHONY: all clean fclean re nc nh na correction
+.PHONY: all clean fclean re
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —

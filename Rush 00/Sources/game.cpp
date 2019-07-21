@@ -1,28 +1,35 @@
 
 #include "../Includes/game.hpp"
+#include "../Includes/ObjectField.hpp"
 
-WINDOW* wnd;
 
 int		init(void)
 {
-	wnd = initscr();     /* NOTE: puts us in ncurses mode                  */
-	start_color();       /* NOTE: gives us ability to use curses color attributes*/
+	g_window = initscr();        /* NOTE: puts us in ncurses mode                          */
+	start_color();               /* NOTE: gives us ability to use curses color attributes  */
 
-	cbreak();            /* NOTE: removes buffering                        */
-	keypad(wnd, TRUE);   /* NOTE: enables special keys                     */
-	curs_set(0);         /* NOTE: makes the cursor invisible               */
-	noecho();            /* NOTE: doesn't print user input                 */
-	nodelay(wnd, TRUE);  /* NOTE: getch becomes non-blocking (returns ERR) */
+	cbreak();                    /* NOTE: removes buffering                                */
+	keypad(g_window, TRUE);      /* NOTE: enables special keys                             */
+	curs_set(0);                 /* NOTE: makes the cursor invisible                       */
+	noecho();                    /* NOTE: doesn't print user input                         */
+	nodelay(g_window, TRUE);     /* NOTE: getch becomes non-blocking (returns ERR)         */
 
-	clear();             /* NOTE: clears the screen                        */
-	refresh();           /* NOTE: renders the screen                       */
+	clear();                     /* NOTE: clears the screen                                */
+	refresh();                   /* NOTE: renders the screen                               */
 
+/*
 	// init_color(9, 523, 273, 900);
 	init_pair(1, COLOR_WHITE, COLOR_BLACK);
 	attron(A_BOLD);
-    wbkgd(wnd, COLOR_PAIR(1));
+    wbkgd(g_window, COLOR_PAIR(1));
+*/
 
-	box(wnd, 0, 0);
+	/* Gets Window Boundaries */
+	getmaxyx(g_window, g_yMax, g_xMax);
+
+	/* Draw a Box Around the Window */
+	box(g_window, 0, 0);
+
 	return (0);
 }
 
@@ -36,50 +43,31 @@ void run(void)
 	player1.pos.x = 10;
 	player1.pos.y = 5;
 
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
 	bool exit_requested = false;
     int in_char;
 
-	while(1)
-	{ /* GAME LOOP */
-		in_char = wgetch(wnd);
+    // get window boundaries
+    getmaxyx(g_window, g_yMax, g_xMax);
 
-		mvaddch(player1.pos.y, player1.pos.x, ' ');
-		switch(in_char)
-		{
-			case 'q':
-				exit_requested = true;
-				break;
+    //initialize our rect with 0 offset
+	game_area = {{0, 0}, {g_xMax, g_yMax}};
 
-			case KEY_UP:
-			case 'w':
-				player1.pos.y -= 1;
-				break;
+	//set our star bounds
+    stars.setBounds(game_area);
 
-			case KEY_DOWN:
-			case 's':
-				player1.pos.y += 1;
-				break;
+	int tick = 0;
 
-			case KEY_LEFT:
-			case 'a':
-				player1.pos.x -= 1;
-				break;
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-			case KEY_RIGHT:
-			case 'd':
-				player1.pos.x += 1;
-				break;
+	while(1) /* GAME LOOP */
+	{
 
-			default:
-				break;
-		}
 
-        mvaddch(player1.pos.y, player1.pos.x, player1.disp_char);
-        refresh();
+	}
 
-        if (exit_requested)
-			break;
-    }
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 }
 

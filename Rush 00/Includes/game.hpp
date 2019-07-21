@@ -7,21 +7,16 @@
 ** HEADERS
 */
 
-# include <iostream>
-# include <string>
-# include <ncurses.h>
-# include <unistd.h>
 
+
+
+
+# include <iostream>
 
 /*
 ** -_---_-_-  -_---_-_-  -_---_-_-  -_---_-_-  -_---_-_-  -_---_-_-  -_---_-_-
 ** MACROS
 */
-
-# define WIN_WIDTH 50
-# define WIN_HEIGHT 50
-
-# define COLOR_GOLD 8
 
 
 /*
@@ -29,22 +24,43 @@
 ** STRUCTS
 */
 
-typedef struct
-{
-	uint_fast8_t x;
-	uint_fast8_t y;
-} vec2ui;
+typedef struct {
 
-typedef struct
-{
-	int_fast8_t x;
-	int_fast8_t y;
-} vec2i;
+    coord offset;
+    coord bounds;
+
+    uint_fast16_t top() { return offset.y; }
+    uint_fast16_t bot() { return offset.y + bounds.y; }
+    uint_fast16_t left() { return offset.x; }
+    uint_fast16_t right() { return offset.x + bounds.x; }
+
+    uint_fast16_t width() { return bounds.x; }
+    uint_fast16_t height() { return bounds.y; }
+
+    bool contains(coord a) { return (a.x >= offset.x && a.x < right()) &&
+                                    (a.y >= offset.y && a.y < bot()); }
+} rect;
 
 typedef struct {
-	vec2i pos;
-	char disp_char;
+    vec2i pos;
+    rect bounds;
+    char disp_char;
+    int energy;
 } player_t;
+
+struct enemy{
+    vec2i pos;
+};
+
+struct star {
+    vec2i pos;
+};
+
+
+/*
+** -_---_-_-  -_---_-_-  -_---_-_-  -_---_-_-  -_---_-_-  -_---_-_-  -_---_-_-
+** EXTERNAL GLOBALS
+*/
 
 
 /*
