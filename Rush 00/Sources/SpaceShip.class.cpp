@@ -4,7 +4,7 @@
 /* PRIVATE CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - */
 
 SpaceShip::SpaceShip( void ) :
-	APawn("SpaceShip", 16, 7), m_HP(3), m_MaxHP(3), m_AP(100), m_MaxAP(100) {
+	APawn("SpaceShip", 16, 9), m_HP(3), m_MaxHP(3), m_AP(100), m_MaxAP(100) {
 
 
     /* SpaceShip
