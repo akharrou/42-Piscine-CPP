@@ -6,18 +6,19 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:40:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/22 15:38:47 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/22 15:58:57 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bureaucrat.hpp"
+#include "Form.hpp"
 
 /* PRIVATE CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - */
 
 Bureaucrat::Bureaucrat( void )  :
 	_name("n/a"),
-	_highest_grade(0),
-	_lowest_grade(0) {
+	_highest_grade(HIGHEST_GRADE),
+	_lowest_grade(LOWEST_GRADE) {
 }
 
 
@@ -25,8 +26,8 @@ Bureaucrat::Bureaucrat( void )  :
 
 Bureaucrat::Bureaucrat( std::string name, int grade ) :
 	_name(name),
-	_highest_grade(1),
-	_lowest_grade(150) {
+	_highest_grade(HIGHEST_GRADE),
+	_lowest_grade(LOWEST_GRADE) {
 
 	if ( grade < _highest_grade ) {
 		throw GradeTooHighException();
@@ -112,6 +113,23 @@ void	Bureaucrat::decrementGrade() {
 	++_grade;
 }
 
+void	Bureaucrat::signForm ( Form &form ) {
+
+	try {
+
+		if ( form.beSigned(*this) )
+			std::cout << "<Bureaucrat> " << this->getName()
+					<< " signs <Form> " << form.getName()
+					<< std::endl;
+
+	} catch ( const char *reason ) {
+
+		std::cout << "<Bureaucrat> " << this->getName()
+				<< " cannot sign <Form> " << form.getName()
+				<< " because " << reason << "."
+				<< std::endl;
+	}
+}
 
 /* EXCEPTION(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
