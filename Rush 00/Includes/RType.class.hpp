@@ -4,52 +4,29 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-# include <unistd.h>
-# include <ncurses.h>
-
-# include <iostream>
-# include <cstdint>
-# include <string>
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+# include "Game.hpp"
 
 # include "AGame.class.hpp"
+# include "APawn.class.hpp"
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+# define SPACESHIPS (0)
+# define ENEMIES    (1)
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+class APawn;
 class RType
 	: public AGame {
 
 	private:
 
-		typedef struct s_int_coordinate{
-			int_fast8_t x;
-			int_fast8_t y;
-		} coord;
+		screen_t	m_mainScreen;
+		screen_t	m_gameScreen;
+		screen_t	m_infoScreen;
 
-		typedef struct {
-			coord	relativeCoord;
-			int		symbol;
-		} hitBoxUnit_t;
-
-		class Pawn {
-
-			private:
-				std::string	m_type;
-
-			protected:
-				hitBoxUnit_t *hitBox;
-				coord m_location;
-
-			public:
-				/*  */
-
-		};
-
-		APawn	**pawns;
-		int 	ticks;
-		WINDOW *game_area;
-		WINDOW *info_area;
+		state_t		m_GameState;
 
 	public:
 		RType( void );
@@ -58,60 +35,14 @@ class RType
 
 		RType &		operator = ( const RType & rhs );
 
-		void	initializeGame  ( void );
-		void	exitGame        ( void ) const;
+		int		initialize      ( void );
+		void	exit            ( void ) const;
 
 		void	getUserInput    ( void );
 		void	updateGameState ( void );
 		void	renderGameFrame ( void ) const;
 
 };
-
-#include "RType.hpp"
-
-/* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
-
-RType::RType( void ) :
-	AGame("RType") {
-}
-
-RType::RType( const RType & src ) {
-	*this = src;
-}
-
-RType::~RType( void ) {}
-
-
-/* OPERATOR OVERLOAD(S) - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-RType &			RType::operator = ( const RType & rhs ) {
-	return (*this);
-}
-
-
-/* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */
-
-void	RType::initializeGame  ( void ) {
-
-}
-
-void	RType::exitGame        ( void ) const {
-
-}
-
-void	RType::updateGameState ( void ) {
-
-}
-
-void	RType::renderGameFrame ( void ) const {
-
-}
-
-void	RType::getUserInput    ( void )
-{
-
-}
-
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -120,21 +51,13 @@ void	RType::getUserInput    ( void )
 
 /* TODO :
 
-	- set up multiple windows & their spacing
-	- implement pawn class
-	- get infoscreen to display : score, lives, time played
+	- get infoscreen to display : score, lives
 	- place player on the right window and get him to move
 	- get the spaceship to shoot
 	- implement enemy class
 	- implement different enemy classes
 	- implement collision with border
 	- implement distant star background
-
-
-
-
-
-
 
 /// IDEA OF LEVELS
 

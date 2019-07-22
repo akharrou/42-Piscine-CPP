@@ -8,21 +8,14 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-struct IUserInput { };
-struct IGameState { };
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
 class AGame {
 
 	private:
-		AGame( void );
 		std::string	m_name;
 
 	protected:
-		bool		m_GameOver;
-		IUserInput	m_input;
-		IGameState	m_state;
+		AGame( void );
+		bool		m_gameScreenOver;
 
 	public:
 		AGame( std::string name );
@@ -33,10 +26,10 @@ class AGame {
 
 		std::string		getName() const;
 
-		void			runGame         ( void );
+		void			run         ( void );
 
-		virtual void	initializeGame  ( void )       = 0;
-		virtual void	exitGame        ( void ) const = 0;
+		virtual int		initialize  ( void )           = 0;
+		virtual void	exit        ( void ) const     = 0;
 
 		virtual void	getUserInput    ( void )       = 0;
 		virtual void	updateGameState ( void )       = 0;

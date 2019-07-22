@@ -8,18 +8,16 @@
 /*                                                    ###   ########.fr       */
 /* ************************************************************************** */
 
-#include "../Includes/game.hpp"
+#include "../Includes/RType.class.hpp"
 
-int	main(int av, char** ac)
+int	main(void)
 {
-	int init_status = init();
+	RType game;
 
-	if (init_status == 0)
-		run();
+	if (game.initialize())
+		game.run();
 
-	close();
+	while (1);
 
-	(void)ac;
-	(void)av;
 	return (0);
 }

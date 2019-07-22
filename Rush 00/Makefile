@@ -2,7 +2,7 @@
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
 CC          =   clang++ -std=c++2a
-CFLAGS      =   -W -Wall -Wextra -Werror -pedantic -lncurses
+CFLAGS      =   -W -Wall -Wextra -Werror -pedantic -lncurses $(DEBUG_FLAGS)
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
@@ -14,11 +14,11 @@ DEBUG_FLAGS = -O0 -g                                                          \
                                                                               \
               -fsanitize=address                                              \
               -fsanitize=undefined                                            \
-              -fsanitize=bounds                                               \
-              -fsanitize=nullability-arg                                      \
-              -fsanitize=nullability-return                                   \
-              -fsanitize=nullability-assign                                   \
-              -fsanitize-address-use-after-scope                              \
+            #   -fsanitize=bounds                                               \
+            #   -fsanitize=nullability-arg                                      \
+            #   -fsanitize=nullability-return                                   \
+            #   -fsanitize=nullability-assign                                   \
+            #   -fsanitize-address-use-after-scope                              \
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
@@ -27,15 +27,24 @@ NAME        =   a
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
 HEADERS     =                                                                 \
-                Includes/game.hpp                                             \
-                Includes/ObjectField.hpp                                      \
+                Includes/AGame.class.hpp                                      \
+                Includes/RType.class.hpp                                      \
+                Includes/APawn.class.hpp                                      \
+                Includes/Spaceship.class.hpp                                  \
+                Includes/EnemyA.class.hpp                                     \
+                Includes/Enemy.class.hpp                                      \
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
 SOURCES     =                                                                 \
                 Sources/main.cpp                                              \
-                Sources/game.cpp                                              \
-                Sources/ObjectField.cpp                                       \
+                                                                              \
+                Sources/AGame.class.cpp                                       \
+                Sources/RType.class.cpp                                       \
+                Sources/APawn.class.cpp                                       \
+                Sources/SpaceShip.class.cpp                                   \
+                Sources/EnemyA.class.cpp                                      \
+                Sources/Enemy.class.cpp                                       \
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
