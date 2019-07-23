@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "AForm.hpp"
+#include "OfficeBlock.hpp"
 
 /* PROTECTED CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - */
 
@@ -118,9 +119,9 @@ bool	AForm::beSigned( Bureaucrat &bureaucrat ) {
 		throw GradeTooLowException();
 
 	if ( _signed ) {
-		throw "form already signed";
+		throw OfficeBlock::FormAlreadySigned();
 	} else if ( bureaucratGrade > _sign_grade_required ) {
-		throw "signature grade requirement not met";
+		throw OfficeBlock::FormSigningGradeNotMet();
 	} else {
 		return ((_signed = true));
 	}
