@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Form.hpp                                           :+:      :+:    :+:   */
+/*   AForm.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -24,7 +24,7 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-class Form {
+class AForm {
 
 	private:
 		const std::string	_name;
@@ -38,7 +38,7 @@ class Form {
 		const int	_lowest_grade;
 
 	protected:
-		Form( void );
+		AForm( void );
 
 	public:
 
@@ -48,11 +48,11 @@ class Form {
 		class GradeTooLowException	:
 			public Bureaucrat::GradeTooLowException { };
 
-		Form( std::string name, const int signGradeReq, const int exeGradeReq );
-		Form( const Form & src );
-		~Form( void );
+		AForm( std::string name, const int signGradeReq, const int exeGradeReq );
+		AForm( const AForm & src );
+		~AForm( void );
 
-		Form &		operator = ( const Form & rhs );
+		AForm &		operator = ( const AForm & rhs );
 
 		std::string		getName          () const;
 		bool			getSigned        () const;
@@ -63,7 +63,7 @@ class Form {
 
 };
 
-std::ostream & operator << ( std::ostream & out, const Form & in );
+std::ostream & operator << ( std::ostream & out, const AForm & in );
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 

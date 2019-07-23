@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:40:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/22 15:49:37 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/22 18:33:34 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-class Form;
+class AForm;
 class Bureaucrat {
 
 	private:
@@ -64,7 +64,8 @@ class Bureaucrat {
 		void	incrementGrade ();
 		void	decrementGrade ();
 
-		void	signForm ( Form & );
+		void	signForm    ( AForm & );
+		void	executeForm ( AForm const & );
 
 };
 

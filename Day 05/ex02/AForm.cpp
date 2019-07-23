@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Form.cpp                                           :+:      :+:    :+:   */
+/*   AForm.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 15:19:00 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/22 15:58:15 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/22 18:22:15 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Form.hpp"
+#include "AForm.hpp"
 
 /* PROTECTED CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - */
 
-Form::Form( void ) :
+AForm::AForm( void ) :
 	_name("n/a"), _signed(false),
 	_sign_grade_required(1),
 	_execute_grade_required(1),
@@ -25,7 +25,7 @@ Form::Form( void ) :
 
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
-Form::Form( std::string name, const int signGradeReq, const int exeGradeReq ) :
+AForm::AForm( std::string name, const int signGradeReq, const int exeGradeReq ) :
 	_name(name), _signed(false),
 	_sign_grade_required(signGradeReq),
 	_execute_grade_required(exeGradeReq),
@@ -43,7 +43,7 @@ Form::Form( std::string name, const int signGradeReq, const int exeGradeReq ) :
 		throw GradeTooLowException();
 }
 
-Form::Form( const Form & src ) :
+AForm::AForm( const AForm & src ) :
 	_name(src._name),
 	_sign_grade_required(src._sign_grade_required),
 	_execute_grade_required(src._execute_grade_required),
@@ -63,22 +63,22 @@ Form::Form( const Form & src ) :
 	*this = src;
 }
 
-Form::~Form( void ) { }
+AForm::~AForm( void ) { }
 
 
 /* OPERATOR OVERLOAD(S) - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-Form &			Form::operator = ( const Form & rhs ) {
+AForm &			AForm::operator = ( const AForm & rhs ) {
 
 	if (this != &rhs)
 		_signed = rhs._signed;
 	return (*this);
 }
 
-std::ostream &		operator << ( std::ostream& out, const Form & in ) {
+std::ostream &		operator << ( std::ostream& out, const AForm & in ) {
 
 	out << "————————————————————————————————————————————————————————————\n"
-		<< "<Form> " << in.getName()                                  << "\n"
+		<< "<AForm> " << in.getName()                                  << "\n"
 		<< "State : " << ((in.getSigned()) ? "Signed" : "not Signed") << "\n"
 		<< "Signature Grade Req. : " << in.getSignGradeReq()          << "\n"
 		<< "Execution Grade Req. : " << in.getExeGradeReq()           << "\n"
@@ -89,26 +89,26 @@ std::ostream &		operator << ( std::ostream& out, const Form & in ) {
 
 /* ACCESSOR(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-std::string		Form::getName() const {
+std::string		AForm::getName() const {
 	return (_name);
 }
 
-bool			Form::getSigned() const {
+bool			AForm::getSigned() const {
 	return (_signed);
 }
 
-int				Form::getSignGradeReq() const {
+int				AForm::getSignGradeReq() const {
 	return (_sign_grade_required);
 }
 
-int				Form::getExeGradeReq() const {
+int				AForm::getExeGradeReq() const {
 	return (_execute_grade_required);
 }
 
 
 /* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */
 
-bool	Form::beSigned( Bureaucrat &bureaucrat ) {
+void	AForm::beSigned( Bureaucrat const & bureaucrat ) {
 
 	int bureaucratGrade = bureaucrat.getGrade();
 
@@ -122,6 +122,26 @@ bool	Form::beSigned( Bureaucrat &bureaucrat ) {
 	} else if ( bureaucratGrade > _sign_grade_required ) {
 		throw "signature grade requirement not met";
 	} else {
-		return ((_signed = true));
+		_signed = true;
+	}
+}
+
+void	AForm::execute  ( Bureaucrat const & bureaucrat ) const {
+
+	int bureaucratGrade = bureaucrat.getGrade();
+
+	if ( bureaucratGrade < _highest_grade)
+		throw GradeTooHighException();
+	if ( bureaucratGrade > _lowest_grade )
+		throw GradeTooLowException();
+
+	if ( bureaucratGrade < _execute_grade_required ) {
+
+		if ( !_signed )
+			throw "form is not signed";
+		action ( _name );
+
+	} else {
+		throw "the execution grade requirement was not met";
 	}
 }

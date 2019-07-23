@@ -6,12 +6,12 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:40:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/22 15:58:57 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/22 18:31:28 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bureaucrat.hpp"
-#include "Form.hpp"
+#include "AForm.hpp"
 
 /* PRIVATE CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - */
 
@@ -113,19 +113,19 @@ void	Bureaucrat::decrementGrade() {
 	++_grade;
 }
 
-void	Bureaucrat::signForm ( Form &form ) {
+void	Bureaucrat::signForm ( AForm &form ) {
 
 	try {
 
 		if ( form.beSigned(*this) )
 			std::cout << "<Bureaucrat> " << this->getName()
-					<< " signs <Form> " << form.getName()
+					<< " signs <AForm> " << form.getName()
 					<< std::endl;
 
 	} catch ( const char *reason ) {
 
 		std::cout << "<Bureaucrat> " << this->getName()
-				<< " cannot sign <Form> " << form.getName()
+				<< " cannot sign <AForm> " << form.getName()
 				<< " because " << reason << "."
 				<< std::endl;
 	}

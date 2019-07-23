@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Form.hpp                                           :+:      :+:    :+:   */
+/*   AForm.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 14:20:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/22 16:01:01 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/22 18:23:27 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-class Form {
+class AForm {
 
 	private:
 		const std::string	_name;
@@ -38,7 +38,7 @@ class Form {
 		const int	_lowest_grade;
 
 	protected:
-		Form( void );
+		AForm( void );
 
 	public:
 
@@ -48,22 +48,24 @@ class Form {
 		class GradeTooLowException	:
 			public Bureaucrat::GradeTooLowException { };
 
-		Form( std::string name, const int signGradeReq, const int exeGradeReq );
-		Form( const Form & src );
-		~Form( void );
+		AForm( std::string name, const int signGradeReq, const int exeGradeReq );
+		AForm( const AForm & src );
+		virtual ~AForm( void );
 
-		Form &		operator = ( const Form & rhs );
+		AForm &		operator = ( const AForm & rhs );
 
 		std::string		getName          () const;
 		bool			getSigned        () const;
 		int				getSignGradeReq  () const;
 		int				getExeGradeReq   () const;
 
-		bool	beSigned( Bureaucrat & );
+		void	beSigned ( Bureaucrat const & );
+		void	execute  ( Bureaucrat const & ) const;
 
+		virtual void	action ( std::string target ) const = 0;
 };
 
-std::ostream & operator << ( std::ostream & out, const Form & in );
+std::ostream & operator << ( std::ostream & out, const AForm & in );
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
