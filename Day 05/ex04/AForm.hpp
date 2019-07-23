@@ -21,9 +21,11 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 # include "Bureaucrat.hpp"
+# include "OfficeBlock.hpp"
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+class Bureaucrat;
 class AForm {
 
 	private:
@@ -41,12 +43,6 @@ class AForm {
 		AForm( void );
 
 	public:
-
-		class GradeTooHighException	:
-			public Bureaucrat::GradeTooHighException { };
-
-		class GradeTooLowException	:
-			public Bureaucrat::GradeTooLowException { };
 
 		AForm( std::string name, const int signGradeReq, const int exeGradeReq );
 		AForm( const AForm & src );

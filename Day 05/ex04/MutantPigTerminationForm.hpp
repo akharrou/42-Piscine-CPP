@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   PresidentialPardonForm.hpp                         :+:      :+:    :+:   */
+/*   MutantPigTerminationForm.hpp                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 16:32:33 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/23 00:15:00 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/23 00:41:06 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PRESIDENTIALPARDONFORM_HPP
-# define PRESIDENTIALPARDONFORM_HPP
+#ifndef MUTANTPIGTERMINATIONFORM_HPP
+# define MUTANTPIGTERMINATIONFORM_HPP
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -25,21 +25,21 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 class AForm;
-class PresidentialPardonForm :
+class MutantPigTerminationForm :
 	public AForm {
 
 	protected:
-		PresidentialPardonForm( void );
+		MutantPigTerminationForm( void );
 		std::string	_target;
 
 	public:
-		PresidentialPardonForm( std::string name );
-		PresidentialPardonForm( std::string name,
+		MutantPigTerminationForm( std::string name );
+		MutantPigTerminationForm( std::string name,
 			const int signGradeReq, const int exeGradeReq );
-		PresidentialPardonForm( const PresidentialPardonForm & src );
-		~PresidentialPardonForm( void );
+		MutantPigTerminationForm( const MutantPigTerminationForm & src );
+		~MutantPigTerminationForm( void );
 
-		PresidentialPardonForm &	operator = ( const PresidentialPardonForm & rhs );
+		MutantPigTerminationForm &	operator = ( const MutantPigTerminationForm & rhs );
 
 		void	action() const;
 
@@ -47,4 +47,4 @@ class PresidentialPardonForm :
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#endif /* PRESIDENTIALPARDONFORM_HPP */
+#endif /* MUTANTPIGTERMINATIONFORM_HPP */

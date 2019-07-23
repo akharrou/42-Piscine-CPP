@@ -6,11 +6,20 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 20:15:50 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/22 20:33:16 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/23 00:43:28 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Intern.hpp"
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#include "PresidentialPardonForm.hpp"
+#include "RobotomyRequestForm.hpp"
+#include "ShrubberyCreationForm.hpp"
+#include "MutantPigTerminationForm.hpp"
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
@@ -38,7 +47,7 @@ typedef struct {
 	AForm *(*form)( std::string target );
 } form_t;
 
-#define FORM_TYPES (3)
+#define FORM_TYPES (4)
 form_t	types[FORM_TYPES] = {
 
 	{
@@ -58,7 +67,13 @@ form_t	types[FORM_TYPES] = {
 		[]( std::string target ) {
 			return ( (AForm *) new PresidentialPardonForm( target ));
 		}
-	}
+	},
+	{
+		"mutant pig termination",
+		[]( std::string target ) {
+			return ( (AForm *) new MutantPigTerminationForm( target ));
+		}
+	},
 };
 
 AForm	*Intern::makeForm( std::string formName,
@@ -70,22 +85,11 @@ AForm	*Intern::makeForm( std::string formName,
 
 		if ( formName == types[i].name ) {
 
-			try {
-
-				someForm = types[i].form( formTarget );
-				std::cout << "Intern creates <Form> " << someForm->getName()
-						<< std::endl;
-
-			} catch ( std::bad_alloc ) {
-
-				std::cout << "~ Creation of \'" << formName << "\' Form Failed ~" << std::endl;
-				someForm = NULL;
-			}
-
+			someForm = types[i].form( formTarget );
+			std::cout << "Intern creates <Form> " << someForm->getName()
+					  << std::endl;
 			return (someForm);
 		}
 	}
-
-	std::cout << "~ Unknown Form Type ~" << std::endl;
-	return (NULL);
+	throw OfficeBlock::FormUnknown();
 }

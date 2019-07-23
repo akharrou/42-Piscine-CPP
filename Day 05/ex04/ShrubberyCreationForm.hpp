@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 16:32:33 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/22 19:15:44 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/23 00:15:05 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,9 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-class ShrubberyCreationForm : public AForm {
+class AForm;
+class ShrubberyCreationForm :
+	public AForm {
 
 	protected:
 		ShrubberyCreationForm( void );

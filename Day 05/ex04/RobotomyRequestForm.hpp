@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 16:32:33 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/22 20:16:15 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/23 00:15:08 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,9 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-class RobotomyRequestForm : public AForm {
+class AForm;
+class RobotomyRequestForm :
+	public AForm {
 
 	protected:
 		RobotomyRequestForm( void );

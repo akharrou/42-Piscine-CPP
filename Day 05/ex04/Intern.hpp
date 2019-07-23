@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 19:04:05 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/22 20:16:10 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/23 00:16:25 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,9 @@
 
 # include "AForm.hpp"
 
-# include "ShrubberyCreationForm.hpp"
-# include "RobotomyRequestForm.hpp"
-# include "PresidentialPardonForm.hpp"
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+class AForm;
 class Intern {
 
 	public:
@@ -36,7 +33,7 @@ class Intern {
 		Intern( const Intern & src );
 		~Intern( void );
 
-		Intern &	operator = ( const Intern & rhs );
+		Intern & operator = ( const Intern & rhs );
 
 		AForm	*makeForm( std::string formName , std::string formTarget ) const;
 

@@ -33,14 +33,14 @@ AForm::AForm( std::string name, const int signGradeReq, const int exeGradeReq ) 
 	_lowest_grade(LOWEST_GRADE) {
 
 	if ( _sign_grade_required < _highest_grade )
-		throw GradeTooHighException();
+		throw Bureaucrat::GradeTooHighException();
 	if ( _sign_grade_required > _lowest_grade )
-		throw GradeTooLowException();
+		throw Bureaucrat::GradeTooLowException();
 
 	if ( _execute_grade_required < _highest_grade )
-		throw GradeTooHighException();
+		throw Bureaucrat::GradeTooHighException();
 	if ( _execute_grade_required > _lowest_grade )
-		throw GradeTooLowException();
+		throw Bureaucrat::GradeTooLowException();
 }
 
 AForm::AForm( const AForm & src ) :
@@ -51,14 +51,14 @@ AForm::AForm( const AForm & src ) :
 	_lowest_grade(LOWEST_GRADE) {
 
 	if ( _sign_grade_required < _highest_grade )
-		throw GradeTooHighException();
+		throw Bureaucrat::GradeTooHighException();
 	if ( _sign_grade_required > _lowest_grade )
-		throw GradeTooLowException();
+		throw Bureaucrat::GradeTooLowException();
 
 	if ( _execute_grade_required < _highest_grade )
-		throw GradeTooHighException();
+		throw Bureaucrat::GradeTooHighException();
 	if ( _execute_grade_required > _lowest_grade )
-		throw GradeTooLowException();
+		throw Bureaucrat::GradeTooLowException();
 
 	*this = src;
 }
@@ -113,14 +113,14 @@ void	AForm::beSigned( Bureaucrat const & bureaucrat ) {
 	int bureaucratGrade = bureaucrat.getGrade();
 
 	if ( bureaucratGrade < _highest_grade)
-		throw GradeTooHighException();
+		throw Bureaucrat::GradeTooHighException();
 	if ( bureaucratGrade > _lowest_grade )
-		throw GradeTooLowException();
+		throw Bureaucrat::GradeTooLowException();
 
 	if ( _signed ) {
-		throw "form already signed";
+		throw OfficeBlock::FormAlreadySigned();
 	} else if ( bureaucratGrade > _sign_grade_required ) {
-		throw "signature grade requirement not met";
+		throw OfficeBlock::FormSigningGradeNotMet();
 	} else {
 		_signed = true;
 	}
@@ -131,17 +131,17 @@ void	AForm::execute  ( Bureaucrat const & bureaucrat ) const {
 	int bureaucratGrade = bureaucrat.getGrade();
 
 	if ( bureaucratGrade < _highest_grade)
-		throw GradeTooHighException();
+		throw Bureaucrat::GradeTooHighException();
 	if ( bureaucratGrade > _lowest_grade )
-		throw GradeTooLowException();
+		throw Bureaucrat::GradeTooLowException();
 
 	if ( bureaucratGrade < _execute_grade_required ) {
 
 		if ( !_signed )
-			throw "form is not signed";
+			throw OfficeBlock::FormNotSigned();
 		action ();
 
 	} else {
-		throw "the execution grade requirement was not met";
+		throw OfficeBlock::FormExecutingGradeNotMet();
 	}
 }

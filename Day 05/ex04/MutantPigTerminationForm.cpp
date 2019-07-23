@@ -1,57 +1,54 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   PresidentialPardonForm.cpp                         :+:      :+:    :+:   */
+/*   MutantPigTerminationForm.cpp                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 19:15:29 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/23 00:42:26 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/23 00:43:54 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "PresidentialPardonForm.hpp"
+#include "MutantPigTerminationForm.hpp"
 
 /* PRIVATE CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - */
 
-PresidentialPardonForm::PresidentialPardonForm( void ) { }
+MutantPigTerminationForm::MutantPigTerminationForm( void ) { }
 
 
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
-PresidentialPardonForm::PresidentialPardonForm( std::string name ) :
-	AForm ("PresidentialPardonForm", 25, 5), _target(name) {
+MutantPigTerminationForm::MutantPigTerminationForm( std::string name ) :
+	AForm ("MutantPigTerminationForm", 130, 50), _target(name) {
 }
 
-PresidentialPardonForm::PresidentialPardonForm( std::string name,
+MutantPigTerminationForm::MutantPigTerminationForm( std::string name,
 	const int signGradeReq, const int exeGradeReq ) :
-	AForm ("PresidentialPardonForm", signGradeReq, exeGradeReq),
+	AForm ("MutantPigTerminationForm", signGradeReq, exeGradeReq),
 	_target(name) {
 }
 
-PresidentialPardonForm::PresidentialPardonForm( const PresidentialPardonForm & src ) {
+MutantPigTerminationForm::MutantPigTerminationForm( const MutantPigTerminationForm & src ) {
 	*this = src;
 }
 
-PresidentialPardonForm::~PresidentialPardonForm( void ) { }
+MutantPigTerminationForm::~MutantPigTerminationForm( void ) { }
 
 
 /* OPERATOR OVERLOAD(S) - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-PresidentialPardonForm &	PresidentialPardonForm::operator = (
-		const PresidentialPardonForm & rhs ) {
+MutantPigTerminationForm &	MutantPigTerminationForm::operator = (
+		const MutantPigTerminationForm & rhs ) {
 	(void) rhs;
 	return (*this);
 }
 
 /* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */
 
-void	PresidentialPardonForm::action() const {
+void	MutantPigTerminationForm::action() const {
 
-	/*  Tells us <target> has been pardoned by Zaphod
-	Beeblebrox. */
-
-	std::cout << _target << " has been pardoned by Zaphod Beeblebrox"
+	std::cout << " That'll do, " << _target << ". That'll do ..."
 	          << std::endl;
 }
 

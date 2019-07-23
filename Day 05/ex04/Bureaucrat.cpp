@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:40:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/22 18:45:59 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/23 00:10:54 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,47 +115,27 @@ void	Bureaucrat::decrementGrade() {
 
 void	Bureaucrat::signForm ( AForm & form ) {
 
-	try {
-
-		form.beSigned(*this);
-		std::cout << "<Bureaucrat> " << this->getName()
-				  << " signs <Form> " << form.getName()
-				  << std::endl;
-
-	} catch ( const char *reason ) {
-
-		std::cout << "<Bureaucrat> " << this->getName()
-				<< " cannot sign <Form> " << form.getName()
-				<< " because " << reason << "."
+	form.beSigned(*this);
+	std::cout << "<Bureaucrat> " << this->getName()
+				<< " signs <Form> " << form.getName()
 				<< std::endl;
-	}
 }
 
 void	Bureaucrat::executeForm ( AForm const & form ) {
 
-	try {
-
-		form.execute( *this );
-		std::cout << "<Bureaucrat> " << this->getName()
-				  << " executed <Form> " << form.getName()
-				  << std::endl;
-
-	} catch ( const char *reason ) {
-
-		std::cout << "<Bureaucrat> " << this->getName()
-				<< " cannot execute <Form> " << form.getName()
-				<< " because " << reason << "."
+	form.execute( *this );
+	std::cout << "<Bureaucrat> " << this->getName()
+				<< " executed <Form> " << form.getName()
 				<< std::endl;
-	}
 }
 
 
 /* EXCEPTION(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 const char	*Bureaucrat::GradeTooHighException::what() const throw() {
-	return ("GradeTooHighException");
+	return ("~ Bureaucratic grade too high ~");
 }
 
 const char	*Bureaucrat::GradeTooLowException::what() const throw() {
-	return ("GradeTooLowException");
+	return ("~ Bureaucratic grade too low ~");
 }
