@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:40:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/23 09:20:39 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/23 12:13:30 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ Bureaucrat::Bureaucrat( const Bureaucrat & src ) :
 	*this = src;
 }
 
-Bureaucrat::~Bureaucrat( void ) { }
+Bureaucrat::~Bureaucrat( void ) {}
 
 
 /* OPERATOR OVERLOAD(S) - - - - - - - - - - - - - - - - - - - - - - - - - - */

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 11:22:57 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/23 11:22:58 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/23 11:41:30 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,49 +71,56 @@ CentralBureaucracy &	CentralBureaucracy::operator = ( const CentralBureaucracy &
 
 bool	CentralBureaucracy::recruitBureaucrat( Bureaucrat *recruit ) {
 
-	/* Check Waiting Room */
-	for (int j = 0; j < _maxWaitingRoomCapacity; ++j) {
+	Bureaucrat *chosen = NULL;
+	int j = 0;
 
-		if (_WaitingBureaucrats[j] != NULL) {
-
-			for (int i = 0; i < _maxOfficeBlocks; ++i) {
-
-				if ( _OfficeBlocks[i]->isActive() == false ) {
-
-					if (_OfficeBlocks[i]->getIntern() == NULL) {
-						_OfficeBlocks[i]->setIntern( new Intern );
-					}
-					if (_OfficeBlocks[i]->getSigningBureaucrat() == NULL) {
-						_OfficeBlocks[i]->setSigningBureaucrat( _WaitingBureaucrats[j] );
-						_WaitingBureaucrats[j] = NULL;
-						break ;
-					}
-					else if (_OfficeBlocks[i]->getExecutingBureaucrat() == NULL) {
-						_OfficeBlocks[i]->setExecutingBureaucrat( _WaitingBureaucrats[j] );
-						_WaitingBureaucrats[j] = NULL;
-						break ;
-					}
-				}
-			}
-		}
-	}
-
-	/* Else recruit */
 	for (int i = 0; i < _maxOfficeBlocks; ++i) {
 
 		if ( _OfficeBlocks[i]->isActive() == false ) {
 
+			/* Choose From Waiting Room */
+			for (; j < _maxWaitingRoomCapacity; ++j) {
+
+				if (_WaitingBureaucrats[j] != NULL) {
+					chosen = _WaitingBureaucrats[j];
+				}
+			}
+
+			/* Else Choose Recruit */
+			if (j == _maxWaitingRoomCapacity)
+				chosen = recruit;
+
+			/* No Waiting Bureaucrats & Recruit points to NULL */
+			if (chosen == NULL)
+				return (false) ;
+
+			/* Place in an Office Seat */
 			if (_OfficeBlocks[i]->getIntern() == NULL) {
 				_OfficeBlocks[i]->setIntern( new Intern );
 			}
 			if (_OfficeBlocks[i]->getSigningBureaucrat() == NULL) {
-				_OfficeBlocks[i]->setSigningBureaucrat( recruit );
-				return (true);
+				_OfficeBlocks[i]->setSigningBureaucrat( chosen );
+				if (j != _maxWaitingRoomCapacity)
+					_WaitingBureaucrats[j++] = NULL;
+				else
+					return (true);
 			}
 			else if (_OfficeBlocks[i]->getExecutingBureaucrat() == NULL) {
-				_OfficeBlocks[i]->setExecutingBureaucrat( recruit );
-				return (true);
+				_OfficeBlocks[i]->setExecutingBureaucrat( chosen );
+				if (j != _maxWaitingRoomCapacity)
+					_WaitingBureaucrats[j++] = NULL;
+				else
+					return (true);
 			}
+		}
+	}
+
+	/* Else Place Recruit in Waiting List */
+	for ( int i = 0; i < _maxWaitingRoomCapacity; ++i ) {
+
+		if (_WaitingBureaucrats[i] == NULL) {
+			_WaitingBureaucrats[i] = recruit;
+			return (true);
 		}
 	}
 
