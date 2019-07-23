@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 16:32:33 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/23 00:15:08 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/23 09:33:53 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,10 @@ class RobotomyRequestForm :
 
 	protected:
 		RobotomyRequestForm( void );
-		std::string	_target;
 
 	public:
-		RobotomyRequestForm( std::string name );
-		RobotomyRequestForm( std::string name,
+		RobotomyRequestForm( std::string target );
+		RobotomyRequestForm( std::string target,
 			const int signGradeReq, const int exeGradeReq );
 		RobotomyRequestForm( const RobotomyRequestForm & src );
 		~RobotomyRequestForm( void );

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 16:32:33 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/23 00:41:06 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/23 09:34:04 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,10 @@ class MutantPigTerminationForm :
 
 	protected:
 		MutantPigTerminationForm( void );
-		std::string	_target;
 
 	public:
-		MutantPigTerminationForm( std::string name );
-		MutantPigTerminationForm( std::string name,
+		MutantPigTerminationForm( std::string target );
+		MutantPigTerminationForm( std::string target,
 			const int signGradeReq, const int exeGradeReq );
 		MutantPigTerminationForm( const MutantPigTerminationForm & src );
 		~MutantPigTerminationForm( void );

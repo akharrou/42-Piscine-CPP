@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:40:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/23 00:47:07 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/23 09:20:39 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,19 +114,11 @@ void	Bureaucrat::decrementGrade() {
 }
 
 void	Bureaucrat::signForm ( AForm & form ) {
-
 	form.beSigned(*this);
-	std::cout << "<Bureaucrat> " << this->getName()
-				<< " signs <Form> " << form.getName()
-				<< std::endl;
 }
 
 void	Bureaucrat::executeForm ( AForm const & form ) {
-
 	form.execute( *this );
-	std::cout << "<Bureaucrat> " << this->getName()
-				<< " executed <Form> " << form.getName()
-				<< std::endl;
 }
 
 

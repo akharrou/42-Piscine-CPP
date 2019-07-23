@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 19:15:29 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/23 00:42:26 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/23 09:33:29 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,13 @@ PresidentialPardonForm::PresidentialPardonForm( void ) { }
 
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
-PresidentialPardonForm::PresidentialPardonForm( std::string name ) :
-	AForm ("PresidentialPardonForm", 25, 5), _target(name) {
+PresidentialPardonForm::PresidentialPardonForm( std::string target ) :
+	AForm ("Presidential Pardon", target, 25, 5) {
 }
 
-PresidentialPardonForm::PresidentialPardonForm( std::string name,
+PresidentialPardonForm::PresidentialPardonForm( std::string target,
 	const int signGradeReq, const int exeGradeReq ) :
-	AForm ("PresidentialPardonForm", signGradeReq, exeGradeReq),
-	_target(name) {
+	AForm ("Presidential Pardon", target, signGradeReq, exeGradeReq) {
 }
 
 PresidentialPardonForm::PresidentialPardonForm( const PresidentialPardonForm & src ) {

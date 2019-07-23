@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 19:15:48 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/22 19:15:48 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/23 09:33:38 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@ ShrubberyCreationForm::ShrubberyCreationForm( void ) { }
 
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
-ShrubberyCreationForm::ShrubberyCreationForm( std::string name ) :
-	AForm ("ShrubberyCreationForm", 145, 137), _target(name) {
+ShrubberyCreationForm::ShrubberyCreationForm( std::string target ) :
+	AForm ("Shrubbery Creation", target, 145, 137) {
 }
 
-ShrubberyCreationForm::ShrubberyCreationForm( std::string name,
+ShrubberyCreationForm::ShrubberyCreationForm( std::string target,
 	const int signGradeReq, const int exeGradeReq ) :
-	AForm (name, signGradeReq, exeGradeReq), _target(name) {
+	AForm ("Shrubbery Creation", target, signGradeReq, exeGradeReq) {
 }
 
 ShrubberyCreationForm::ShrubberyCreationForm( const ShrubberyCreationForm & src ) {

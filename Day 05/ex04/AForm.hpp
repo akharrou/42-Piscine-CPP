@@ -41,10 +41,12 @@ class AForm {
 
 	protected:
 		AForm( void );
+		std::string	_target;
 
 	public:
 
-		AForm( std::string name, const int signGradeReq, const int exeGradeReq );
+		AForm( std::string name, std::string target,
+			const int signGradeReq, const int exeGradeReq );
 		AForm( const AForm & src );
 		virtual ~AForm( void );
 

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 16:32:33 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/23 00:15:05 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/23 09:33:50 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,10 @@ class ShrubberyCreationForm :
 
 	protected:
 		ShrubberyCreationForm( void );
-		std::string	_target;
 
 	public:
-		ShrubberyCreationForm( std::string name );
-		ShrubberyCreationForm( std::string name,
+		ShrubberyCreationForm( std::string target );
+		ShrubberyCreationForm( std::string target,
 			const int signGradeReq, const int exeGradeReq );
 		ShrubberyCreationForm( const ShrubberyCreationForm & src );
 		~ShrubberyCreationForm( void );

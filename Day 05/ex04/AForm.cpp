@@ -25,12 +25,14 @@ AForm::AForm( void ) :
 
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
-AForm::AForm( std::string name, const int signGradeReq, const int exeGradeReq ) :
+AForm::AForm( std::string name, std::string target,
+	const int signGradeReq, const int exeGradeReq ) :
 	_name(name), _signed(false),
 	_sign_grade_required(signGradeReq),
 	_execute_grade_required(exeGradeReq),
 	_highest_grade(HIGHEST_GRADE),
-	_lowest_grade(LOWEST_GRADE) {
+	_lowest_grade(LOWEST_GRADE),
+	_target(target) {
 
 	if ( _sign_grade_required < _highest_grade )
 		throw Bureaucrat::GradeTooHighException();
@@ -78,7 +80,9 @@ AForm &			AForm::operator = ( const AForm & rhs ) {
 std::ostream &		operator << ( std::ostream& out, const AForm & in ) {
 
 	out << "————————————————————————————————————————————————————————————\n"
-		<< "<AForm> " << in.getName()                                  << "\n"
+		<< "<AForm> " << in.getName()
+		<< "(s.grade "<< in.getSignGradeReq()
+		<< ", ex.grade " << in.getExeGradeReq() << ")"                << "\n"
 		<< "State : " << ((in.getSigned()) ? "Signed" : "not Signed") << "\n"
 		<< "Signature Grade Req. : " << in.getSignGradeReq()          << "\n"
 		<< "Execution Grade Req. : " << in.getExeGradeReq()           << "\n"
@@ -122,6 +126,13 @@ void	AForm::beSigned( Bureaucrat const & bureaucrat ) {
 	} else if ( bureaucratGrade > _sign_grade_required ) {
 		throw OfficeBlock::FormSigningGradeNotMet();
 	} else {
+		std::cout << "<Bureaucrat> " << bureaucrat.getName()
+					<< " signs <Form> " << this->getName()
+					<< " Form (s.grade " << this->getSignGradeReq()
+					<< ", ex.grade " << this->getExeGradeReq() << ") "
+					  << "targeted on " << _target
+					  << " (" << ((this->getSigned()) ? "Signed" : "Unsigned") << ")"
+					<< std::endl;
 		_signed = true;
 	}
 }
@@ -139,6 +150,13 @@ void	AForm::execute  ( Bureaucrat const & bureaucrat ) const {
 
 		if ( !_signed )
 			throw OfficeBlock::FormNotSigned();
+		std::cout << "<Bureaucrat> " << bureaucrat.getName()
+					<< " executes <Form> " << this->getName()
+					<< " Form (s.grade " << this->getSignGradeReq()
+					<< ", ex.grade " << this->getExeGradeReq() << ") "
+					  << "targeted on " << _target
+					  << " (" << ((this->getSigned()) ? "Signed" : "Unsigned") << ")"
+					<< std::endl;
 		action ();
 
 	} else {

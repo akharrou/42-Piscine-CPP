@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 16:32:33 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/23 00:15:00 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/23 09:33:59 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,10 @@ class PresidentialPardonForm :
 
 	protected:
 		PresidentialPardonForm( void );
-		std::string	_target;
 
 	public:
-		PresidentialPardonForm( std::string name );
-		PresidentialPardonForm( std::string name,
+		PresidentialPardonForm( std::string target );
+		PresidentialPardonForm( std::string target,
 			const int signGradeReq, const int exeGradeReq );
 		PresidentialPardonForm( const PresidentialPardonForm & src );
 		~PresidentialPardonForm( void );

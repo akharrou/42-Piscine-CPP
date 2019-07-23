@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 19:15:39 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/22 19:15:39 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/23 09:33:33 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,13 @@ RobotomyRequestForm::RobotomyRequestForm( void ) { }
 
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
-RobotomyRequestForm::RobotomyRequestForm( std::string name ) :
-	AForm ("RobotomyRequestForm", 72, 45), _target(name) {
+RobotomyRequestForm::RobotomyRequestForm( std::string target ) :
+	AForm ("Robotomy Request", target, 72, 45) {
 }
 
-RobotomyRequestForm::RobotomyRequestForm( std::string name,
+RobotomyRequestForm::RobotomyRequestForm( std::string target,
 	const int signGradeReq, const int exeGradeReq ) :
-	AForm ("RobotomyRequestForm", signGradeReq, exeGradeReq),
-	_target(name) {
+	AForm ("Robotomy Request", target, signGradeReq, exeGradeReq){
 }
 
 RobotomyRequestForm::RobotomyRequestForm( const RobotomyRequestForm & src ) {

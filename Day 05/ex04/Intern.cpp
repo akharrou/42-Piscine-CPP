@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 20:15:50 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/23 00:43:28 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/23 09:37:45 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,11 @@ AForm	*Intern::makeForm( std::string formName,
 		if ( formName == types[i].name ) {
 
 			someForm = types[i].form( formTarget );
-			std::cout << "Intern creates <Form> " << someForm->getName()
+			std::cout << "Intern creates " << someForm->getName()
+			          << " Form (s.grade " << someForm->getSignGradeReq()
+					  << ", ex.grade " << someForm->getExeGradeReq() << ") "
+					  << "targeted on " << formTarget
+					  << " (" << ((someForm->getSigned()) ? "Signed" : "Unsigned") << ")"
 					  << std::endl;
 			return (someForm);
 		}
