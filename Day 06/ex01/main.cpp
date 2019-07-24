@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 23:06:47 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/24 01:29:53 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/24 12:05:38 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,9 @@ Data * deserialize ( void * raw ) {
 	int		cooked_integer;
 	char	cooked_array_2[8];
 
-	*(unsigned long *)(&cooked_array_1[0]) = *reinterpret_cast <unsigned long *> (&reinterpret_cast <char*> (raw)[0]);
-	cooked_integer                         = *(reinterpret_cast <int *> (&reinterpret_cast <char*> (raw)[8]));
-	*(unsigned long *)(&cooked_array_2[0]) = *reinterpret_cast <unsigned long *> (&reinterpret_cast <char*> (raw)[12]);
+	*reinterpret_cast <unsigned long *>(&cooked_array_1[0]) = *reinterpret_cast <unsigned long *> (&reinterpret_cast <char*> (raw)[0]);
+	cooked_integer                                          = *(reinterpret_cast <int *> (&reinterpret_cast <char*> (raw)[8]));
+	*reinterpret_cast <unsigned long *>(&cooked_array_2[0]) = *reinterpret_cast <unsigned long *> (&reinterpret_cast <char*> (raw)[12]);
 
 	cooked->s1 = std::string(cooked_array_1);
 	cooked->n = cooked_integer;
