@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 19:22:36 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/23 23:00:27 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/24 16:32:25 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	main(int ac, char **av) {
     double	var_double;
 
 	std::cout.precision(decimals);
-	std::cout.setf( std::ios::fixed, std:: ios::floatfield );
+	std::cout.setf( std::ios::fixed, std::ios::floatfield );
 
 	try {
 

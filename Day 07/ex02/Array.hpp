@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 12:00:52 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/24 14:28:40 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/24 17:33:21 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,10 @@
 
 # include <iostream>
 # include <exception>
+# include <initializer_list>
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/*                            TEMPLATE DECLARATIONS                          */
+/*                            TEMPLATE DECLARATION                           */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 template < typename T >
@@ -31,19 +32,20 @@ class Array {
 
 	public:
 
-		class OutOfBounds :
+		class BadAccess :
 			public std::exception {
 				public: virtual const char *what() const throw();
 		};
 
 		Array( void );
 		Array( unsigned int n );
-		Array( const Array & src );
+		Array( std::initializer_list <T> );
+		Array( const Array<T> & src );
 		~Array( void );
 
-		Array &			operator =  ( const Array & rhs );
-		Array &			operator [] ( size_t idx );
-  		const Array &	operator [] ( size_t idx ) const;
+		Array &		operator =  ( const Array & rhs );
+		T &			operator [] ( size_t idx );
+  		const T &	operator [] ( size_t idx ) const;
 
 		size_t	size() const;
 
@@ -54,7 +56,7 @@ std::ostream &	operator << ( std::ostream & out, const Array<T> & in );
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/*                          TEMPLATE IMPLEMENTATIONS                         */
+/*                          TEMPLATE IMPLEMENTATION                          */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
@@ -62,16 +64,27 @@ std::ostream &	operator << ( std::ostream & out, const Array<T> & in );
 
 template < typename T >
 Array<T>::Array( void ) :
-	_array(NULL), _size(0) {
+	_array(nullptr), _size(0) {
 }
 
 template < typename T >
 Array<T>::Array( unsigned int n ) :
 	_array(new T[n]), _size(n) {
+	for (size_t i = 0; i < n; ++i)
+		_array[i] = 0;
 }
 
 template < typename T >
-Array<T>::Array( const Array & src ) {
+Array<T>::Array( std::initializer_list <T> list ) {
+
+	_array = new T [list.size()];
+	_size = list.size();
+	std::copy(list.begin(), list.end(), _array);
+}
+
+template < typename T >
+Array<T>::Array( const Array<T> & src ) :
+	_array(new T[src._size]), _size(src._size) {
 	*this = src;
 }
 
@@ -90,31 +103,35 @@ Array<T> &  Array<T>::operator = ( const Array<T> & rhs ) {
 	if (this != &rhs) {
 
 		if (_size != rhs._size) {
-			delete [] _array;
-			_size = 0;
-			_array = nullptr;
+
+			if (_array != nullptr) {
+
+				delete [] _array;
+				_size = 0;
+				_array = nullptr;
+			}
 			_array = new T[rhs._size];
 		}
-		std::copy(_array, _array + rhs._size, rhs._array);
+		std::copy(rhs._array, rhs._array + rhs._size, _array);
 	}
 	return (*this);
 }
 
 template < typename T >
-Array<T> &  Array<T>::operator [] ( size_t idx ) {
+T &  Array<T>::operator [] ( size_t idx ) {
 
 	if (idx >= _size) {
-		throw std::exception();
+		throw BadAccess();
 	} else {
 		return _array[idx];
 	}
 }
 
 template < typename T >
-const Array<T> &  Array<T>::operator [] ( size_t idx ) const {
+const T &  Array<T>::operator [] ( size_t idx ) const {
 
 	if (idx >= _size) {
-		throw OutOfBounds();
+		throw BadAccess();
 	} else {
 		return _array[idx];
 	}
@@ -123,8 +140,9 @@ const Array<T> &  Array<T>::operator [] ( size_t idx ) const {
 template < typename T >
 std::ostream &	operator << ( std::ostream& out, const Array<T> & in ) {
 
-	for ( size_t i = 0; i < in.size(); ++i )
-		out << in[i] << "\n";
+	if (in.size() > 0)
+		for ( size_t i = 0; i < in.size(); ++i )
+			out << in[i] << "\n";
 	return (out);
 }
 
@@ -139,8 +157,8 @@ size_t	Array<T>::size() const {
 /* EXCEPTION(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 template < typename T >
-const char	*Array<T>::OutOfBounds::what() const throw() {
-	return ("~ Out of Bounds Access ~");
+const char	*Array<T>::BadAccess::what() const throw() {
+	return ("~ Bad Access ~");
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
