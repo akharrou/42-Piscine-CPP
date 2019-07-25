@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 23:06:47 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/24 12:05:38 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/24 23:31:17 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,23 +29,49 @@ Data * deserialize ( void * raw );
 
 int	main() {
 
+	srand(time(0));
+
 	void * raw       = serialize();
 	Data * proofData = deserialize(raw);
 
+	std::cout << "\n/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */\n";
+	std::cout << "After Deserialization :\n\n";
 	std::cout << proofData->s1 << "\n"
 			  << proofData->n  << "\n"
-			  << proofData->s2 << "\n";
+			  << proofData->s2 << "\n\n";
 
 	return (0);
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+char * generateRandom8CharacterString ( void ) {
+
+	std::string chars =
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZ"\
+		"abcdefghijklmnopqrstuvwxyz"\
+		"0123456789";
+
+	char * randomArray = new char [8];
+
+	for ( size_t i = 0; i < 7; ++i )
+		randomArray[i] = chars[rand() % chars.size()];
+	randomArray[7] = '\0';
+
+	return (randomArray);
+}
+
 void * serialize ( void ) {
 
-	char	random_array_1[8] = { 'r','a','s','d','0','m','3','\0' };
-	int		random_integer    = 726;
-	char	random_array_2[8] = { 'o','t','h','e','r','4','r','\0' };
+	char * random_array_1 = generateRandom8CharacterString();
+	int    random_integer = rand() % 1000;
+	char * random_array_2 = generateRandom8CharacterString();
+
+	std::cout << "/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */\n";
+	std::cout << "Pre-Serialization :\n\n";
+	std::cout << random_array_1 << std::endl;
+	std::cout << random_integer << std::endl;
+	std::cout << random_array_2 << std::endl;
 
 	char * data = new char[20];
 

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 19:22:36 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/24 16:32:25 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/24 23:00:34 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int	main(int ac, char **av) {
 
 	try {
 
-		var_float = (std::stof(param));
+		var_float = static_cast <float> (std::stof(param));
 		std::cout << "float: " << var_float << "f\n";
 
 	} catch( const std::exception ) {
@@ -87,7 +87,7 @@ int	main(int ac, char **av) {
 
 	try {
 
-		var_double = (std::stod(param));
+		var_double = static_cast <double> (std::stod(param));
 		std::cout << "double: " << var_double << "\n";
 
 	} catch( const std::exception ) {

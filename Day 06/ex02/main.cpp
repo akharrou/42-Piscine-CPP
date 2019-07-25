@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 01:08:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/24 01:26:58 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/24 23:34:41 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,15 @@ void	identify_from_reference ( Base & p ) {
 
 Base * generate(void) {
 
-	return ( dynamic_cast <Base*> (new A()) );
-	// return ( dynamic_cast <Base*> (new B()) );
-	// return ( dynamic_cast <Base*> (new C()) );
+	srand(time(0));
+
+	int i = rand() % 3;
+
+	if (i == 0) {
+		return ( dynamic_cast <Base*> ( new A() ));
+	} else if (i == 1) {
+		return ( dynamic_cast <Base*> ( new B() ));
+	} else {
+		return ( dynamic_cast <Base*> ( new C() ));
+	}
 }
