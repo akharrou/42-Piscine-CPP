@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 19:40:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 11:35:57 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 11:36:31 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ class MutantStack :
 		std::stack instance, under the identifier 'c'.
 
 		See '/Library/Developer/CommandLineTools/usr/include/c++/v1/stack'
-		@line 31.
+		@line 31 (for Macs).
 
 		So we'll just be accessing it; and here we are just
 		giving a slightly more readable name */
