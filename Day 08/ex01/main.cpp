@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 16:30:46 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/25 19:36:08 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/25 21:50:45 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,27 @@ int	main() {
 	std::cout << "\n/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */\n\n";
 
 	{
-		int max      = 50; /* try 10000 + 1 */
-		int mul      = 1;
-		int maxTimes = max * mul;
+		// int max      = 50;
+		// int mul      = 1;
+		// int maxTimes = max * mul;
+
+		// Span sp = Span( max );
+
+		// for (int i = 0; i < maxTimes; i += mul)
+		// 	sp.addNumber(i);
+
+		// for_each(sp.begin(), sp.end(), [](int a) {
+		// 	std::cout << a << std::endl;
+		// });
+
+	std::cout << "\n/ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - /\n\n";
+
+		int max = 100;
 
 		Span sp = Span( max );
+		std::vector<int> vec(max, 5);
 
-		for (int i = 0; i < maxTimes; i += mul)
-			sp.addNumber(i);
+		sp.addNumber(vec.begin(), vec.end());
 
 		for_each(sp.begin(), sp.end(), [](int a) {
 			std::cout << a << std::endl;

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 18:23:42 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/25 19:28:13 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/25 21:50:57 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,11 @@ Span &	Span::operator = ( const Span & rhs ) {
 
 /* ACCESSOR(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-std::vector<int>::iterator	Span::begin() {
+std::unordered_multiset<int>::iterator	Span::begin() {
 	return (_container.begin());
 }
 
-std::vector<int>::iterator	Span::end() {
+std::unordered_multiset<int>::iterator	Span::end() {
 	return (_container.end());
 }
 
@@ -62,10 +62,22 @@ unsigned int	Span::maxsize() const {
 
 /* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */
 
+template < class IterType >
+void	Span::addNumber( IterType Begin , IterType End ) {
+
+	int elemCount = std::distance( Begin , End );
+
+	if (_container.size() + elemCount < _N) {
+		std::copy( Begin, End, _container.begin() );
+	} else {
+		throw Span::MaxCapacityReached();
+	}
+}
+
 void	Span::addNumber( int n ) {
 
 	if (_container.size() < _N) {
-		_container.push_back(n);
+		_container.insert(n);
 	} else {
 		throw Span::MaxCapacityReached();
 	}
@@ -73,15 +85,13 @@ void	Span::addNumber( int n ) {
 
 int		Span::shortestSpan() {
 
-	std::vector<int>::iterator iter_min;
 	int first_min;
 	int second_min;
 
-	iter_min  = std::min_element(_container.begin(), _container.end());
-	first_min = *iter_min;
-	_container.erase(iter_min);
+	first_min  = *std::min_element(_container.begin(), _container.end());
+	_container.erase(first_min);
 	second_min = *std::min_element(_container.begin(), _container.end());
-	_container.push_back(first_min);
+	_container.insert(first_min);
 
 	return ( second_min - first_min );
 }
