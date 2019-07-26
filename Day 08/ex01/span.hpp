@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 16:40:11 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/25 21:47:48 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 00:24:09 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 # include <algorithm>
-# include <unordered_set>
+# include <set>
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -29,7 +29,7 @@ class Span {
 
 	private:
 
-		std::unordered_multiset<int> _container;
+		std::multiset<int, std::less<int>> _container;
 		unsigned int _N;
 
 	public:
@@ -45,13 +45,13 @@ class Span {
 
 		Span &	operator = ( const Span & rhs );
 
-		std::unordered_multiset<int>::iterator	begin ();
-		std::unordered_multiset<int>::iterator	end   ();
+		std::multiset<int>::iterator	begin ();
+		std::multiset<int>::iterator	end   ();
 
 		unsigned int	size    () const;
 		unsigned int	maxsize () const;
 
-		template < class IterType = std::unordered_multiset<int>::iterator >
+		template < class IterType = std::multiset<int>::iterator >
 		void	addNumber( IterType Begin , IterType End );
 		void	addNumber( int );
 
@@ -59,6 +59,19 @@ class Span {
 		int	longestSpan  ();
 
 };
+
+template < class IterType >
+void	Span::addNumber( IterType Begin , IterType End ) {
+
+	int elemCount = std::distance( Begin , End );
+
+	if (_container.size() + elemCount <= _N) {
+		while (Begin != End)
+			_container.insert(*Begin++);
+	} else {
+		throw Span::MaxCapacityReached();
+	}
+}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 18:23:42 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/25 21:50:57 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 00:22:43 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,11 @@ Span &	Span::operator = ( const Span & rhs ) {
 
 /* ACCESSOR(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-std::unordered_multiset<int>::iterator	Span::begin() {
+std::multiset<int>::iterator	Span::begin() {
 	return (_container.begin());
 }
 
-std::unordered_multiset<int>::iterator	Span::end() {
+std::multiset<int>::iterator	Span::end() {
 	return (_container.end());
 }
 
@@ -62,46 +62,17 @@ unsigned int	Span::maxsize() const {
 
 /* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */
 
-template < class IterType >
-void	Span::addNumber( IterType Begin , IterType End ) {
-
-	int elemCount = std::distance( Begin , End );
-
-	if (_container.size() + elemCount < _N) {
-		std::copy( Begin, End, _container.begin() );
-	} else {
-		throw Span::MaxCapacityReached();
-	}
-}
-
 void	Span::addNumber( int n ) {
-
-	if (_container.size() < _N) {
-		_container.insert(n);
-	} else {
-		throw Span::MaxCapacityReached();
-	}
+	(_container.size() < _N) ?
+		_container.insert(n) : throw Span::MaxCapacityReached();
 }
 
 int		Span::shortestSpan() {
-
-	int first_min;
-	int second_min;
-
-	first_min  = *std::min_element(_container.begin(), _container.end());
-	_container.erase(first_min);
-	second_min = *std::min_element(_container.begin(), _container.end());
-	_container.insert(first_min);
-
-	return ( second_min - first_min );
+	return ( *(++_container.begin()) - *_container.begin() );
 }
 
 int		Span::longestSpan() {
-	return (
-		*std::max_element(_container.begin(), _container.end())
-		                     -
-		*std::min_element(_container.begin(), _container.end())
-	);
+	return ( *(--_container.end()) - *_container.begin() );
 }
 
 

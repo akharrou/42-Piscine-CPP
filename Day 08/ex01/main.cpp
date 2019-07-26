@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 16:30:46 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/25 21:50:45 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 00:27:57 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,25 +39,15 @@ int	main() {
 	std::cout << "\n/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */\n\n";
 
 	{
-		// int max      = 50;
-		// int mul      = 1;
-		// int maxTimes = max * mul;
-
-		// Span sp = Span( max );
-
-		// for (int i = 0; i < maxTimes; i += mul)
-		// 	sp.addNumber(i);
-
-		// for_each(sp.begin(), sp.end(), [](int a) {
-		// 	std::cout << a << std::endl;
-		// });
-
-	std::cout << "\n/ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - /\n\n";
-
-		int max = 100;
+		int max      = 20000;
+		int mul      = 9000;
+		int maxTimes = max * mul;
 
 		Span sp = Span( max );
-		std::vector<int> vec(max, 5);
+		std::vector<int> vec;
+
+		for (int i = 0; i < maxTimes; i += mul)
+			vec.push_back(i);
 
 		sp.addNumber(vec.begin(), vec.end());
 
