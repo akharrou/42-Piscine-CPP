@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 19:40:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 11:25:54 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 11:35:57 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,8 @@ template < typename T >
 class MutantStack :
 	public std::stack< T, std::deque<T> > {
 
-	typedef std::deque<T> _Container;
-
 	public:
-		typedef typename _Container::iterator iterator;
+		typedef typename std::deque<T>::iterator iterator;
 
 		/* std::stacks are implemented under the hood with
 		a certain container (in this case we insured that
