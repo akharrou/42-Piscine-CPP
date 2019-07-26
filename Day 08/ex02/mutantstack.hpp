@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 19:40:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/25 20:30:10 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 11:25:54 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,133 +15,56 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-# include <iostream>
-# include <deque>
 # include <stack>
-# include <exception>
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/*                            TEMPLATE DECLARATION                           */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-template < typename T, class _Container = std::deque<T> >
-class MutantStack {
+template < typename T >
+class MutantStack :
+	public std::stack< T, std::deque<T> > {
 
-	private:
-
-		_Container _container;
-
-		typedef _Container	container_type;
-		typedef size_t		size_type;
-		typedef T			value_type;
-
-		typedef typename container_type::reference			reference;
-		typedef typename container_type::const_reference	const_reference;
+	typedef std::deque<T> _Container;
 
 	public:
+		typedef typename _Container::iterator iterator;
 
-		MutantStack( void );
-		MutantStack( const MutantStack & src );
-		~MutantStack( void );
+		/* std::stacks are implemented under the hood with
+		a certain container (in this case we insured that
+		it will be implemented with a std::deque<T>).
 
-		MutantStack<T, _Container> &	operator =  ( const MutantStack <T, _Container> & rhs );
-		bool	operator == ( const MutantStack <T, _Container> & rhs );
-		bool	operator != ( const MutantStack <T, _Container> & rhs );
-		bool	operator <  ( const MutantStack <T, _Container> & rhs );
-		bool	operator <= ( const MutantStack <T, _Container> & rhs );
-		bool	operator >  ( const MutantStack <T, _Container> & rhs );
-		bool	operator >= ( const MutantStack <T, _Container> & rhs );
+		This container is a 'protected' member to the
+		std::stack instance, under the identifier 'c'.
 
-		void push ( const value_type& val );
-		void push ( value_type&& val );
+		See '/Library/Developer/CommandLineTools/usr/include/c++/v1/stack'
+		@line 31.
 
-		void pop();
+		So we'll just be accessing it; and here we are just
+		giving a slightly more readable name */
 
-		reference & 		top();
-		const_reference &	top() const;
+#		define container c
 
-		bool empty() const;
-
-		size_type size() const;
-
-		void swap (MutantStack<T,_Container> & x, MutantStack<T,_Container> & y) noexcept(noexcept(x.swap(y)));
+		iterator	begin ();
+		iterator	end   ();
 
 };
 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/*                          TEMPLATE IMPLEMENTATION                          */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#include "MutantStack.hpp"
-
-
-/* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
-
-template <class T, class _Container>
-MutantStack<T, _Container>::MutantStack( void ) {}
-
-template <class T, class _Container>
-MutantStack<T, _Container>::MutantStack( const MutantStack & src ) {
-	*this = src;
+template < typename T >
+typename MutantStack< T >::iterator		MutantStack< T >::begin ()
+{
+	return ( this->container.begin() );
 }
 
-template <class T, class _Container>
-MutantStack<T, _Container>::~MutantStack( void ) { }
-
-
-/* OPERATOR OVERLOAD(S) - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-template <class T, class _Container>
-MutantStack<T, _Container> &	MutantStack<T, _Container>::operator = ( const MutantStack & rhs ) {
-
-	if (this != &rhs) {
-		/* IMPLEMENT */
-	}
-	return (*this);
+template < typename T >
+typename MutantStack< T >::iterator		MutantStack< T >::end   ()
+{
+	return ( this->container.end() );
 }
-
-template <class T, class _Container>
-bool	MutantStack<T, _Container>::operator == ( const MutantStack <T, _Container> & rhs ) {
-	return (true);
-}
-
-template <class T, class _Container>
-bool	MutantStack<T, _Container>::operator != ( const MutantStack <T, _Container> & rhs ) {
-	return (true);
-}
-
-template <class T, class _Container>
-bool	MutantStack<T, _Container>::operator <  ( const MutantStack <T, _Container> & rhs ) {
-	return (true);
-}
-
-template <class T, class _Container>
-bool	MutantStack<T, _Container>::operator <= ( const MutantStack <T, _Container> & rhs ) {
-	return (true);
-}
-
-template <class T, class _Container>
-bool	MutantStack<T, _Container>::operator >  ( const MutantStack <T, _Container> & rhs ) {
-	return (true);
-}
-
-template <class T, class _Container>
-bool	MutantStack<T, _Container>::operator >= ( const MutantStack <T, _Container> & rhs ) {
-	return (true);
-}
-
-
-
-/* ACCESSOR(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-
-
-
-/* PRIVATE MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - */
-
-
-
-
-/* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */
-
-
-
-/* EXCEPTION(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
