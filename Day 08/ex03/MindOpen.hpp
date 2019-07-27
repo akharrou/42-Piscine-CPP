@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 13:00:33 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 18:16:35 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 18:18:48 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,18 +49,8 @@ class MindOpen {
 
 		};
 
-		class AInstruction {
-
-			public:
-
-				AInstruction( void );
-				AInstruction( const AInstruction & src );
-				virtual ~AInstruction( void );
-
-				AInstruction &	operator = ( const AInstruction & rhs );
-
-				virtual void	execute( Program & ) const = 0;
-
+		struct AInstruction {
+			virtual void execute( Program & ) const = 0;
 		};
 
 	private:
@@ -69,8 +59,8 @@ class MindOpen {
 
 	public:
 
-		MindOpen(void);
-		~MindOpen(void);
+		MindOpen();
+		~MindOpen();
 
 		void	load       ( std::string Filename );
 		void	execute    ( std::string Filename );
@@ -88,78 +78,41 @@ class MindOpen {
 
 };
 
-std::ostream & operator << ( std::ostream & out, const MindOpen::AInstruction & in );
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-class IncrementPointer :
+struct IncrementPointer :
 	public MindOpen::AInstruction {
-
-		public:
-			IncrementPointer();
-			~IncrementPointer();
-
-			void execute( MindOpen::Program & ) const;
+		void execute( MindOpen::Program & ) const;
 };
 
-class DecrementPointer :
+struct DecrementPointer :
 	public MindOpen::AInstruction {
-
-		public:
-			DecrementPointer();
-			~DecrementPointer();
-
-			void execute( MindOpen::Program & ) const;
+		void execute( MindOpen::Program & ) const;
 };
 
-class IncrementByte :
+struct IncrementByte :
 	public MindOpen::AInstruction {
-
-		public:
-			IncrementByte();
-			~IncrementByte();
-
-			void execute( MindOpen::Program & ) const;
+		void execute( MindOpen::Program & ) const;
 };
 
-class DecrementByte :
+struct DecrementByte :
 	public MindOpen::AInstruction {
-
-		public:
-			DecrementByte();
-			~DecrementByte();
-
-			void execute( MindOpen::Program & ) const;
+		void execute( MindOpen::Program & ) const;
 };
 
-class PrintByte :
+struct PrintByte :
 	public MindOpen::AInstruction {
-
-		public:
-			PrintByte();
-			~PrintByte();
-
-			void execute( MindOpen::Program & ) const;
+		void execute( MindOpen::Program & ) const;
 };
 
-class GotoRightBracket :
+struct GotoRightBracket :
 	public MindOpen::AInstruction {
-
-		public:
-			GotoRightBracket();
-			~GotoRightBracket();
-
-			void execute( MindOpen::Program & ) const;
+		void execute( MindOpen::Program & ) const;
 };
 
-class GotoLeftBracket :
+struct GotoLeftBracket :
 	public MindOpen::AInstruction {
-
-		public:
-			GotoLeftBracket();
-			~GotoLeftBracket();
-
-			void execute( MindOpen::Program & ) const;
+		void execute( MindOpen::Program & ) const;
 };
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
