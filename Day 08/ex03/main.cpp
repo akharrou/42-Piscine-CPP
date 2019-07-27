@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 11:38:32 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 19:51:20 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 20:28:58 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,28 @@ int	main() {
 
 		std::cout << "\nProgram #3 Output :\n";
 		interpreter.execute ( "test3.mdp" );
+
+	std::cout << "\n\n/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */\n\n";
+
+		try {
+
+			interpreter.execute ( "doesn't exist" );
+
+		} catch ( std::exception & e ) {
+			std::cout << e.what();
+		}
+
+	std::cout << "\n\n/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */\n\n";
+
+		try {
+
+			interpreter.load    ( "some non existant file" );
+			interpreter.execute ( "some non existant file" );
+
+		} catch ( std::exception & e ) {
+			std::cout << e.what();
+		}
+
 	}
 
 	std::cout << "\n\n/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */\n\n";
