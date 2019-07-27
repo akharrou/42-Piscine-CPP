@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 13:00:33 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 18:18:48 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 18:21:17 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ class MindOpen {
 			Program( std::string Filename );
 			~Program();
 
-			void execute( MindOpen::Program );
+			void execute();
 
 		};
 

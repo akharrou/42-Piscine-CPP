@@ -6,37 +6,12 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 13:21:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 18:16:53 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 18:20:08 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "MindOpen.hpp"
 
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/*                         ABSTRACT CLASS DEFINITION                         */
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-/* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
-
-MindOpen::AInstruction::AInstruction( void ) {}
-
-MindOpen::AInstruction::AInstruction( const AInstruction & src ) {
-	*this = src;
-}
-
-MindOpen::AInstruction::~AInstruction( void ) {}
-
-
-/* OPERATOR OVERLOAD(S) - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-MindOpen::AInstruction &
-	MindOpen::AInstruction::operator = ( const AInstruction & rhs ) {
-	return (*this);
-}
-
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/*                        CONCRETE CLASS DEFINITIONS                         */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 void	IncrementPointer::execute( MindOpen::Program & prog ) const
