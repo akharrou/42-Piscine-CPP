@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 20:46:42 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/27 01:49:19 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/27 01:52:38 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,7 +224,7 @@ int	RPN_Calculator::evaluatePostfix ( std::deque <RPN_Calculator::Token *> postf
 
 			tmpStack.push(postfixDeque.front());
 			std::cout << "I " << *postfixDeque.front()
-			          << " | OP Push | ST";
+			          << " | OP Push\t| ST";
 			printStack(tmpStack);
 			std::cout << "]\n";
 
@@ -254,7 +254,7 @@ int	RPN_Calculator::evaluatePostfix ( std::deque <RPN_Calculator::Token *> postf
 
 					std::cout << "I " << *postfixDeque.front()
 					          << "  | OP " << operations[i].name
-							  << " | ST";
+							  << "\t| ST";
 					printStack(tmpStack);
 					std::cout << "]\n";
 				}
