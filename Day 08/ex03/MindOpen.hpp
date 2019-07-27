@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 13:00:33 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 19:42:56 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 19:58:14 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ class MindOpen {
 			std::queue <AInstruction *> _instructionQueue;
 
 			std::string	_filename;
+			Byte *		_init_ptr;
 			Byte *		_ptr;
 
 			void execute();

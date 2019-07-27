@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 15:41:55 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 19:43:12 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 20:03:12 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,11 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "MindOpen.hpp"
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+static void		GotoRightBracket ( std::string sourceCode, size_t & idx );
+static void		GotoLeftBracket  ( std::string sourceCode, size_t & idx );
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -33,15 +38,13 @@ MindOpen::~MindOpen() {
 
 /* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */
 
-static void		GotoRightBracket ( std::string sourceCode, size_t & idx );
-static void		GotoLeftBracket  ( std::string sourceCode, size_t & idx );
-
 void	MindOpen::load ( std::string Filename ) {
 
 	MindOpen::Program	prog   ( Filename );
 	std::ifstream		infile ( Filename );
 
 	std::string			sourceCode;
+	Byte *				init_ptr;
 	Byte *				ptr;
 
 	if (!infile.is_open())
@@ -52,11 +55,13 @@ void	MindOpen::load ( std::string Filename ) {
 
 	size_t n_bytes = std::count(sourceCode.begin(), sourceCode.end(), '>');
 
-	ptr = new Byte [ n_bytes * 2 ] ;
-	bzero(ptr, n_bytes * 2);
+	init_ptr = new Byte [ n_bytes * 2 ] ;
+	bzero(init_ptr, n_bytes * 2);
+	ptr = init_ptr;
 
-	prog._ptr = new Byte [ n_bytes * 2 ] ;
-	bzero(prog._ptr, n_bytes * 2);
+	prog._init_ptr = new Byte [ n_bytes * 2 ] ;
+	bzero(prog._init_ptr, n_bytes * 2);
+	prog._ptr = prog._init_ptr;
 
 	for (size_t i = 0; i < sourceCode.size(); ++i)
 
@@ -97,8 +102,8 @@ void	MindOpen::load ( std::string Filename ) {
 				break ;
 		}
 
-	// delete [] ptr;
-	_programs.push_back(prog);
+	delete init_ptr;
+	_programs.push_back( prog );
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -108,6 +113,7 @@ void	MindOpen::executeAll( void ) {
 	std::for_each(_programs.begin(), _programs.end(), [](Program program) {
 		program.execute();
 	});
+	_programs.clear();
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -120,7 +126,10 @@ void	MindOpen::execute( std::string Filename ) {
 		});
 
 	if (it != _programs.end()) {
+
 		(*it).execute();
+		_programs.erase(it);
+
 	} else {
 		throw FileNotFound();
 	}
@@ -142,20 +151,9 @@ MindOpen::Program::Program( std::string Filename ) :
 	_filename(Filename) {
 }
 
-MindOpen::Program::~Program() {
+MindOpen::Program::~Program() {}
 
-	// delete [] _ptr;
-
-	// AInstruction * tmp;
-
-	// while (!_instructionQueue.empty())
-	// {
-	// 	tmp = _instructionQueue.front();
-	// 	if (tmp != NULL)
-	// 		delete tmp;
-	// 	_instructionQueue.pop();
-	// }
-}
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 void	MindOpen::Program::execute() {
 
@@ -168,6 +166,7 @@ void	MindOpen::Program::execute() {
 		delete tmp;
 		_instructionQueue.pop();
 	}
+	delete _init_ptr;
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
