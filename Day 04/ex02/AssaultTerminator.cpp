@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/19 17:49:24 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/19 20:49:13 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 21:17:46 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,4 +62,3 @@ void	AssaultTerminator::rangedAttack() const {
 void	AssaultTerminator::meleeAttack() const {
 	std::cout << "* attacks with chainfists *" << std::endl;
 }
-

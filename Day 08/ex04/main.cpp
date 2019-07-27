@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 20:08:26 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 20:13:40 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 20:47:57 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	main(int ac, char **av) {
 	RPN_Calculator inst;
 
 	if (ac == 2)
-		inst.evaluate(av[1]);
+		inst.evaluateInfix(av[1]);
 
 	return (0);
 }
