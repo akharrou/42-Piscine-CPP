@@ -6,12 +6,12 @@
 #    By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/23 12:26:27 by akharrou          #+#    #+#              #
-#    Updated: 2019/07/27 01:07:32 by akharrou         ###   ########.fr        #
+#    Updated: 2019/07/27 01:30:05 by akharrou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC          =   clang++ -std=c++2a
-CFLAGS      =   -W -Wall -Wextra -Werror $(DEBUG_FLAGS)
+CFLAGS      =   -W -Wall -Wextra -Werror $(OPTIM_FLAGS)
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
