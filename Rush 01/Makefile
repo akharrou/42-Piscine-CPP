@@ -6,7 +6,7 @@
 #    By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/23 12:26:27 by akharrou          #+#    #+#              #
-#    Updated: 2019/07/27 13:12:40 by akharrou         ###   ########.fr        #
+#    Updated: 2019/07/27 16:12:41 by akharrou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,39 +35,45 @@ NAME        =   ft_gkrellm
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
-HEADERS     =   Includes/GKrellM.hpp                                          \
-                                                                              \
+HEADERS     =                                                                 \
                 Includes/IMonitorModule.hpp                                   \
                 Includes/IMonitorDisplay.hpp                                  \
+                                                                              \
+                Includes/GKrellM.hpp                                          \
+                Includes/GKrellM_Shell.hpp                                    \
+                Includes/GKrellM_Graphical.hpp                                \
                                                                               \
                 # Includes/_______.hpp                                        \
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
-SOURCES     =   Sources/main.cpp                                              \
+SOURCES     =                                                                 \
+                Sources/main.cpp                                              \
                                                                               \
                 Sources/GKrellM.cpp                                           \
+                Sources/GKrellM_Shell.cpp                                     \
+                Sources/GKrellM_Graphical.cpp                                 \
                                                                               \
                 Sources/Errors.cpp                                            \
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
-OBJECTS     =   $(SOURCES:.c=.o)
+OBJECTS     =   $(SOURCES:.cpp=.o)
 
 # Main — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
 all: $(NAME)
 
 $(NAME): $(OBJECTS)
-	@$(CC) $(CFLAGS) $^ -o $@
-	@echo && echo $(GREEN) "[√]     [$(NAME) Successfully Compiled!]"
+	@$(CC) $(CFLAGS) $^ -pedantic -lncurses -o $@
+	@echo && echo $(GREEN) "  [√]\t[$(NAME) Successfully Compiled!]"
 	@echo $(WHITE)
 
-%.o: %.c $(HEADERS)
+%.o: %.cpp $(HEADERS)
 	@$(CC) $(CFLAGS) -pipe -c $< -o $@
 	@echo $(WHITE) "Compiling => " $<
 
-run:
+run: $(NAME)
 	@./$(NAME)
 
 # House Keeping — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —

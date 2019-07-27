@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 13:29:01 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/27 13:38:27 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/27 16:48:12 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@
 class IMonitorDisplay {
 
 	public:
-		virtual void	run           ()       = 0;
-		virtual void	initDisplay   ()       = 0;
-		virtual void	updateModules ()       = 0;
-		virtual void	renderModules () const = 0;
-		virtual void	exit          ()       = 0;
+		virtual ~IMonitorDisplay();
+
+		virtual void	run           () = 0;
+		virtual void	updateModules () = 0;
+		virtual void	renderModules () = 0;
 
 };
 

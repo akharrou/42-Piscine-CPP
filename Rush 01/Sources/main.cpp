@@ -6,13 +6,18 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 12:18:39 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/27 13:39:57 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/27 16:02:42 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "../Includes/GKrellM.hpp"
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+# include "../Includes/GKrellM_Shell.hpp"
+# include "../Includes/GKrellM_Graphical.hpp"
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -24,12 +29,19 @@ int	main(int ac, char **av) {
 
 	} else {
 
-		if (strcmp(av[1], "--shell") == 0)
+		if (strcmp(av[1], "--shell") == 0) {
+
 			GKrellM_Shell().run();
-		else if (strcmp(av[1], "--graphical") == 0)
+
+		} else if (strcmp(av[1], "--graphical") == 0) {
+
 			GKrellM_Graphical().run();
-		else
+
+		} else {
+
 			EXIT(usage());
+
+		}
 	}
 
 	return (0);
