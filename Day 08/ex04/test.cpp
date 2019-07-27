@@ -3,7 +3,7 @@
 
 # include <iostream>
 # include <sstream>
-# include <vector>
+# include <deque>
 # include <stack>
 # include <algorithm>
 
@@ -14,10 +14,10 @@
 #define IS_PRECEDENCE_LVL_3(tok) (tok == "*" || tok == "/")
 #define IS_PARCLOSE(tok) (tok == ")")
 
-std::vector <std::string>
+std::deque <std::string>
 	tokenize ( std::string infix_expression )
 {
-	std::vector <std::string> tokens;
+	std::deque <std::string> tokens;
 
     std::string expr(infix_expression);
 	std::string	tmp;
@@ -57,13 +57,13 @@ std::vector <std::string>
 	return (tokens);
 }
 
-std::vector <std::string>
-	postfixify ( std::vector <std::string> infixTokens ) {
+std::deque <std::string>
+	postfixify ( std::deque <std::string> infixTokens ) {
 
-	std::vector <std::string> postfixVec;
-	std::vector <std::string> tmpStack;
+	std::deque <std::string> postfixVec;
+	std::deque <std::string> tmpStack;
 
-	std::vector<std::string>::iterator it;
+	std::deque<std::string>::iterator it;
 
 	for (it = infixTokens.begin(); it != infixTokens.end(); ++it)
 	{
@@ -132,8 +132,8 @@ std::vector <std::string>
 
 int	main(int ac, char **av) {
 
-	std::vector<std::string> infixTokens = tokenize(av[1]);
-	std::vector<std::string> postfixTokens = postfixify(infixTokens);
+	std::deque<std::string> infixTokens = tokenize(av[1]);
+	std::deque<std::string> postfixTokens = postfixify(infixTokens);
 
 	(void)ac;
 	return (0);
