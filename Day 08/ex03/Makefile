@@ -6,7 +6,7 @@
 #    By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/23 12:26:27 by akharrou          #+#    #+#              #
-#    Updated: 2019/07/26 20:03:29 by akharrou         ###   ########.fr        #
+#    Updated: 2019/07/26 20:07:31 by akharrou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,6 +41,7 @@ HEADERS     =   MindOpen.hpp                                                  \
 
 SOURCES     =   main.cpp                                                      \
                 MindOpen.cpp                                                  \
+                Program.cpp                                                   \
                 Instructions.cpp                                              \
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —

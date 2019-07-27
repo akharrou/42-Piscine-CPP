@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 15:41:55 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 20:03:12 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 20:06:44 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,30 +143,6 @@ const char *MindOpen::FileNotFound::what () const throw() {
 
 const char *MindOpen::InvalidFile::what () const throw() {
 	return ("~ Invalid File ~");
-}
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-MindOpen::Program::Program( std::string Filename ) :
-	_filename(Filename) {
-}
-
-MindOpen::Program::~Program() {}
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-void	MindOpen::Program::execute() {
-
-	AInstruction * tmp;
-
-	while (!_instructionQueue.empty())
-	{
-		tmp = _instructionQueue.front();
-		tmp->execute(*this);
-		delete tmp;
-		_instructionQueue.pop();
-	}
-	delete _init_ptr;
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
