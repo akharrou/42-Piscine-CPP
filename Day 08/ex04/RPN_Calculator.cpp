@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 20:46:42 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/27 01:47:35 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/27 01:49:19 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,7 +217,6 @@ int	RPN_Calculator::evaluatePostfix ( std::deque <RPN_Calculator::Token *> postf
 	if (it == postfixDeque.end())
 		return (res);
 
-	// for (; it != postfixDeque.end(); ++it)
 	while (!postfixDeque.empty())
 	{
 
