@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 15:41:55 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 18:52:02 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 19:04:43 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,47 +49,38 @@ void	MindOpen::load ( std::string Filename ) {
 	prog._ptr = new Byte [ n_bytes * 2 ] ;
 	bzero(&prog._ptr, n_bytes * 2);
 
-	for (char c : prog._sourceCode)
+	for (prog._idx = 0; prog._idx < prog._sourceCode.size(); ++prog._idx)
 
-		switch (c) {
+		switch (prog._sourceCode[prog._idx]) {
 
 			case '>':
 				prog._instructionQueue.push( new IncrementPointer() );
-				++prog._idx;
 				break ;
 
 			case '<':
 				prog._instructionQueue.push( new DecrementPointer() );
-				++prog._idx;
 				break ;
 
 			case '+':
 				prog._instructionQueue.push( new IncrementByte() );
-				++prog._idx;
 				break ;
 
 			case '-':
 				prog._instructionQueue.push( new DecrementByte() );
-				++prog._idx;
 				break ;
 
 			case '.':
 				prog._instructionQueue.push( new PrintByte() );
-				++prog._idx;
 				break ;
 
 			case '[':
 				if (*prog._ptr == '\0')
-					prog._instructionQueue.push( new GotoRightBracket() );
+					GotoRightBracket(prog);
 				break ;
 
 			case ']':
 				if (*prog._ptr != '\0')
-					prog._instructionQueue.push( new GotoLeftBracket() );
-				break ;
-
-			default:
-				++prog._idx;
+					GotoLeftBracket(prog);
 				break ;
 		}
 }
@@ -137,24 +128,71 @@ MindOpen::Program::Program( std::string Filename ) :
 
 MindOpen::Program::~Program() {
 
-	while (!_instructionQueue.empty()) {
+	AInstruction * tmp;
 
-		_instructionQueue.front();
+	while (!_instructionQueue.empty())
+	{
+		tmp = _instructionQueue.front();
+		delete tmp;
 		_instructionQueue.pop();
 	}
 }
 
 void	MindOpen::Program::execute() {
 
-	AInstruction *tmp;
+	AInstruction * tmp;
 
-	while (!_instructionQueue.empty()) {
-
+	while (!_instructionQueue.empty())
+	{
 		tmp = _instructionQueue.front();
-
 		tmp->execute(*this);
 		delete tmp;
-
 		_instructionQueue.pop();
+	}
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/*                             UTILITY FUNCTIONS                             */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+static void		GotoRightBracket( MindOpen::Program & prog ) {
+
+	unsigned int brackets_to_skip;
+
+	brackets_to_skip = 1;
+	prog._idx++;
+	while (brackets_to_skip != 0)
+	{
+		if (prog._sourceCode[prog._idx] == ']')
+		{
+			--brackets_to_skip;
+			if (brackets_to_skip == 0)
+				return ;
+		}
+		else if (prog._sourceCode[prog._idx] == '[')
+			++brackets_to_skip;
+		prog._idx++;
+	}
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+static void		GotoLeftBracket( MindOpen::Program & prog ) {
+
+	unsigned int brackets_to_skip;
+
+	brackets_to_skip = 1;
+	prog._idx--;
+	while (brackets_to_skip != 0)
+	{
+		if (prog._sourceCode[prog._idx] == '[')
+		{
+			--brackets_to_skip;
+			if (brackets_to_skip == 0)
+				return ;
+		}
+		else if (prog._sourceCode[prog._idx] == ']')
+			++brackets_to_skip;
+		prog._idx--;
 	}
 }
