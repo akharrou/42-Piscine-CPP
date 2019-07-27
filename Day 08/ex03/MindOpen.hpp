@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 13:00:33 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 18:10:17 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 18:14:10 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class MindOpen {
 
 			std::string			_sourceCode;
 			std::string			_filename;
-			std::deque<Byte>	_memory;
+			Byte *				_ptr;
 			size_t				_idx;
 
 			Program( std::string Filename );

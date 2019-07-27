@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 13:21:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 18:12:09 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 18:15:14 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,9 @@ std::string		MindOpen::AInstruction::getType() const {
 IncrementPointer::IncrementPointer  () : AInstruction ("IncrementPointer") {}
 IncrementPointer::~IncrementPointer () {}
 
-void	IncrementPointer::execute( MindOpen::Program &prog ) const
+void	IncrementPointer::execute( MindOpen::Program & prog ) const
 {
-	++byte;
+	++prog._ptr;
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -73,9 +73,9 @@ void	IncrementPointer::execute( MindOpen::Program &prog ) const
 DecrementPointer::DecrementPointer  () : AInstruction ("DecrementPointer") {}
 DecrementPointer::~DecrementPointer () {}
 
-void	DecrementPointer::execute( MindOpen::Program &prog ) const
+void	DecrementPointer::execute( MindOpen::Program & prog ) const
 {
-	--byte;
+	--prog._ptr;
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -83,9 +83,9 @@ void	DecrementPointer::execute( MindOpen::Program &prog ) const
 IncrementByte::IncrementByte  () : AInstruction ("IncrementByte") {}
 IncrementByte::~IncrementByte () {}
 
-void	IncrementByte::execute( MindOpen::Program &prog ) const
+void	IncrementByte::execute( MindOpen::Program & prog ) const
 {
-	++(*byte);
+	++(*prog._ptr);
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -93,9 +93,9 @@ void	IncrementByte::execute( MindOpen::Program &prog ) const
 DecrementByte::DecrementByte  () : AInstruction ("DecrementByte") {}
 DecrementByte::~DecrementByte () {}
 
-void	DecrementByte::execute( MindOpen::Program &prog ) const
+void	DecrementByte::execute( MindOpen::Program & prog ) const
 {
-	--(*byte);
+	--(*prog._ptr);
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -103,9 +103,9 @@ void	DecrementByte::execute( MindOpen::Program &prog ) const
 PrintByte::PrintByte  () : AInstruction ("PrintByte") {}
 PrintByte::~PrintByte () {}
 
-void	PrintByte::execute( MindOpen::Program &prog ) const
+void	PrintByte::execute( MindOpen::Program & prog ) const
 {
-	std::cout << *byte;
+	std::cout << *prog._ptr;
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -113,7 +113,7 @@ void	PrintByte::execute( MindOpen::Program &prog ) const
 GotoRightBracket::GotoRightBracket  () : AInstruction ("GotoRightBracket") {}
 GotoRightBracket::~GotoRightBracket () {}
 
-void	GotoRightBracket::execute( MindOpen::Program &prog ) const {
+void	GotoRightBracket::execute( MindOpen::Program & prog ) const {
 
 	unsigned int brackets_to_skip;
 
@@ -138,7 +138,7 @@ void	GotoRightBracket::execute( MindOpen::Program &prog ) const {
 GotoLeftBracket::GotoLeftBracket  () : AInstruction ("GotoLeftBracket") {}
 GotoLeftBracket::~GotoLeftBracket () {}
 
-void	GotoLeftBracket::execute( MindOpen::Program &prog ) const {
+void	GotoLeftBracket::execute( MindOpen::Program & prog ) const {
 
 	unsigned int brackets_to_skip;
 
