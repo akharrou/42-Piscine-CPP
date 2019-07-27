@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 20:46:42 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/27 01:28:08 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/27 01:47:35 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,6 +176,7 @@ std::deque  <RPN_Calculator::Token *>
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 typedef struct {
+	const char *name;
 	const char *op;
 	int (*ft_op)(int, int);
 } op_t;
@@ -183,15 +184,24 @@ typedef struct {
 #define TOTAL_OPERATIONS (4)
 op_t operations[TOTAL_OPERATIONS] = {
 
-	{ "+", [](int a, int b) { return a + b; } },
-	{ "-", [](int a, int b) { return a - b; } },
-	{ "*", [](int a, int b) { return a * b; } },
-	{ "/", [](int a, int b) {
+	{ "Add",       "+", [](int a, int b) { return a + b; } },
+	{ "Substract", "-", [](int a, int b) { return a - b; } },
+	{ "Multiply",  "*", [](int a, int b) { return a * b; } },
+	{ "Divide",    "/", [](int a, int b) {
 		if (b == 0)
 			throw RPN_Calculator::DivisionByZero();
 		return a / b;
 	}},
 };
+
+static void	printStack( std::stack <RPN_Calculator::Token *> st ) {
+
+	while (!st.empty()) {
+
+		std::cout << " " << st.top()->tokVal;
+		st.pop();
+	}
+}
 
 int	RPN_Calculator::evaluatePostfix ( std::deque <RPN_Calculator::Token *> postfixDeque ) {
 
@@ -207,20 +217,23 @@ int	RPN_Calculator::evaluatePostfix ( std::deque <RPN_Calculator::Token *> postf
 	if (it == postfixDeque.end())
 		return (res);
 
-	for (; it != postfixDeque.end(); ++it)
+	// for (; it != postfixDeque.end(); ++it)
+	while (!postfixDeque.empty())
 	{
 
-		if (!ISOPERATOR((*it)->tokVal)) {
+		if (!ISOPERATOR((postfixDeque.front())->tokVal)) {
 
-			tmpStack.push(*it);
+			tmpStack.push(postfixDeque.front());
+			std::cout << "I " << *postfixDeque.front()
+			          << " | OP Push | ST";
+			printStack(tmpStack);
+			std::cout << "]\n";
 
 		} else {
 
 			for (int i = 0; i < TOTAL_OPERATIONS; ++i) {
 
-				if ((*it)->tokVal == operations[i].op) {
-
-					postfixDeque.pop_front();
+				if ((postfixDeque.front())->tokVal == operations[i].op) {
 
 					rhs_operand = 0;
 					lhs_operand = 0;
@@ -239,9 +252,16 @@ int	RPN_Calculator::evaluatePostfix ( std::deque <RPN_Calculator::Token *> postf
 					tmpStack.push(
 						new Num(std::to_string(operations[i].ft_op(lhs_operand, rhs_operand)))
 					);
+
+					std::cout << "I " << *postfixDeque.front()
+					          << "  | OP " << operations[i].name
+							  << " | ST";
+					printStack(tmpStack);
+					std::cout << "]\n";
 				}
 			}
 		}
+		postfixDeque.pop_front();
 	}
 
 	try {
