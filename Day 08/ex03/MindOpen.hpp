@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 13:00:33 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 19:00:06 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 19:42:56 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,10 @@ class MindOpen {
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		struct AInstruction {
-			virtual ~AInstruction();
+
+			AInstruction() {};
+			virtual ~AInstruction() {};
+
 			virtual void execute( MindOpen::Program & ) const = 0;
 		};
 
@@ -43,15 +46,13 @@ class MindOpen {
 
 		struct Program {
 
-			std::queue <AInstruction *> _instructionQueue;
-
-			std::string			_sourceCode;
-			std::string			_filename;
-			Byte *				_ptr;
-			size_t				_idx;
-
 			Program( std::string Filename );
 			~Program();
+
+			std::queue <AInstruction *> _instructionQueue;
+
+			std::string	_filename;
+			Byte *		_ptr;
 
 			void execute();
 		};
@@ -86,36 +87,46 @@ class MindOpen {
 
 struct IncrementPointer :
 	public MindOpen::AInstruction {
+
+		IncrementPointer();
+		~IncrementPointer();
+
 		void execute( MindOpen::Program & ) const;
 };
 
 struct DecrementPointer :
 	public MindOpen::AInstruction {
+
+		DecrementPointer();
+		~DecrementPointer();
+
 		void execute( MindOpen::Program & ) const;
 };
 
 struct IncrementByte :
 	public MindOpen::AInstruction {
+
+		IncrementByte();
+		~IncrementByte();
+
 		void execute( MindOpen::Program & ) const;
 };
 
 struct DecrementByte :
 	public MindOpen::AInstruction {
+
+		DecrementByte();
+		~DecrementByte();
+
 		void execute( MindOpen::Program & ) const;
 };
 
 struct PrintByte :
 	public MindOpen::AInstruction {
-		void execute( MindOpen::Program & ) const;
-};
 
-struct GotoRightBracket :
-	public MindOpen::AInstruction {
-		void execute( MindOpen::Program & ) const;
-};
+		PrintByte();
+		~PrintByte();
 
-struct GotoLeftBracket :
-	public MindOpen::AInstruction {
 		void execute( MindOpen::Program & ) const;
 };
 

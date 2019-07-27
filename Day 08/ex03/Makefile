@@ -6,7 +6,7 @@
 #    By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/23 12:26:27 by akharrou          #+#    #+#              #
-#    Updated: 2019/07/26 11:38:12 by akharrou         ###   ########.fr        #
+#    Updated: 2019/07/26 19:05:59 by akharrou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,11 +31,17 @@ DEBUG_FLAGS =   -O0 -g                                                        \
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
-NAME        =   a
+NAME        =   mindopen
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
-SOURCES     =   main.cpp
+HEADERS     =   MindOpen.hpp                                                  \
+
+# — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
+
+SOURCES     =   main.cpp                                                      \
+                MindOpen.cpp                                                  \
+                Instructions.cpp                                              \
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 

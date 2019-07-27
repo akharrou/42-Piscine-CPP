@@ -6,16 +6,14 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 15:41:55 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 19:04:43 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 19:43:12 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include <algorithm>
-#include <ostream>
 #include <fstream>
-#include <sstream>
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -35,37 +33,52 @@ MindOpen::~MindOpen() {
 
 /* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */
 
+static void		GotoRightBracket ( std::string sourceCode, size_t & idx );
+static void		GotoLeftBracket  ( std::string sourceCode, size_t & idx );
+
 void	MindOpen::load ( std::string Filename ) {
 
 	MindOpen::Program	prog   ( Filename );
 	std::ifstream		infile ( Filename );
 
+	std::string			sourceCode;
+	Byte *				ptr;
+
 	if (!infile.is_open())
 		throw InvalidFile();
 
-	std::getline(infile, prog._sourceCode, '\0');
-	size_t n_bytes = std::count (prog._sourceCode.begin(), prog._sourceCode.end(), '>');
+	std::getline(infile, sourceCode, '\0');
+	infile.close();
+
+	size_t n_bytes = std::count(sourceCode.begin(), sourceCode.end(), '>');
+
+	ptr = new Byte [ n_bytes * 2 ] ;
+	bzero(ptr, n_bytes * 2);
 
 	prog._ptr = new Byte [ n_bytes * 2 ] ;
-	bzero(&prog._ptr, n_bytes * 2);
+	bzero(prog._ptr, n_bytes * 2);
 
-	for (prog._idx = 0; prog._idx < prog._sourceCode.size(); ++prog._idx)
+	for (size_t i = 0; i < sourceCode.size(); ++i)
 
-		switch (prog._sourceCode[prog._idx]) {
+		switch (sourceCode[i]) {
 
 			case '>':
+				++ptr;
 				prog._instructionQueue.push( new IncrementPointer() );
 				break ;
 
 			case '<':
+				--ptr;
 				prog._instructionQueue.push( new DecrementPointer() );
 				break ;
 
 			case '+':
+				++(*ptr);
 				prog._instructionQueue.push( new IncrementByte() );
 				break ;
 
 			case '-':
+				--(*ptr);
 				prog._instructionQueue.push( new DecrementByte() );
 				break ;
 
@@ -74,15 +87,18 @@ void	MindOpen::load ( std::string Filename ) {
 				break ;
 
 			case '[':
-				if (*prog._ptr == '\0')
-					GotoRightBracket(prog);
+				if (*ptr == '\0')
+					GotoRightBracket( sourceCode, i );
 				break ;
 
 			case ']':
-				if (*prog._ptr != '\0')
-					GotoLeftBracket(prog);
+				if (*ptr != '\0')
+					GotoLeftBracket( sourceCode, i );
 				break ;
 		}
+
+	// delete [] ptr;
+	_programs.push_back(prog);
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -128,14 +144,17 @@ MindOpen::Program::Program( std::string Filename ) :
 
 MindOpen::Program::~Program() {
 
-	AInstruction * tmp;
+	// delete [] _ptr;
 
-	while (!_instructionQueue.empty())
-	{
-		tmp = _instructionQueue.front();
-		delete tmp;
-		_instructionQueue.pop();
-	}
+	// AInstruction * tmp;
+
+	// while (!_instructionQueue.empty())
+	// {
+	// 	tmp = _instructionQueue.front();
+	// 	if (tmp != NULL)
+	// 		delete tmp;
+	// 	_instructionQueue.pop();
+	// }
 }
 
 void	MindOpen::Program::execute() {
@@ -155,44 +174,44 @@ void	MindOpen::Program::execute() {
 /*                             UTILITY FUNCTIONS                             */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-static void		GotoRightBracket( MindOpen::Program & prog ) {
+static void		GotoRightBracket( std::string sourceCode, size_t & idx ) {
 
 	unsigned int brackets_to_skip;
 
 	brackets_to_skip = 1;
-	prog._idx++;
+	idx++;
 	while (brackets_to_skip != 0)
 	{
-		if (prog._sourceCode[prog._idx] == ']')
+		if (sourceCode[idx] == ']')
 		{
 			--brackets_to_skip;
 			if (brackets_to_skip == 0)
 				return ;
 		}
-		else if (prog._sourceCode[prog._idx] == '[')
+		else if (sourceCode[idx] == '[')
 			++brackets_to_skip;
-		prog._idx++;
+		idx++;
 	}
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-static void		GotoLeftBracket( MindOpen::Program & prog ) {
+static void		GotoLeftBracket( std::string sourceCode, size_t & idx ) {
 
 	unsigned int brackets_to_skip;
 
 	brackets_to_skip = 1;
-	prog._idx--;
+	idx--;
 	while (brackets_to_skip != 0)
 	{
-		if (prog._sourceCode[prog._idx] == '[')
+		if (sourceCode[idx] == '[')
 		{
 			--brackets_to_skip;
 			if (brackets_to_skip == 0)
 				return ;
 		}
-		else if (prog._sourceCode[prog._idx] == ']')
+		else if (sourceCode[idx] == ']')
 			++brackets_to_skip;
-		prog._idx--;
+		idx--;
 	}
 }
