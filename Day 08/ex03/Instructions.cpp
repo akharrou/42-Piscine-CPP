@@ -6,11 +6,11 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 13:21:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 13:25:07 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 15:44:47 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Instructions.hpp"
+#include "MindOpen.hpp"
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /*                         ABSTRACT CLASS DEFINITION                         */
@@ -18,31 +18,31 @@
 
 /* PROTECTED CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - */
 
-AInstruction::AInstruction( void ) {}
+MindOpen::AInstruction::AInstruction( void ) {}
 
 
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
-AInstruction::AInstruction( std::string type ) :
+MindOpen::AInstruction::AInstruction( std::string type ) :
 	_type(type) {
 }
 
-AInstruction::AInstruction( const AInstruction & src ) {
+MindOpen::AInstruction::AInstruction( const AInstruction & src ) {
 	*this = src;
 }
 
-AInstruction::~AInstruction( void ) { }
+MindOpen::AInstruction::~AInstruction( void ) {}
 
 
 /* OPERATOR OVERLOAD(S) - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-AInstruction &	AInstruction::operator = ( const AInstruction & rhs ) {
+MindOpen::AInstruction &	MindOpen::AInstruction::operator = ( const AInstruction & rhs ) {
 	if (this != &rhs)
 		_type = rhs._type;
 	return (*this);
 }
 
-std::ostream &		operator << ( std::ostream& out, const AInstruction & in ) {
+std::ostream &	operator << ( std::ostream& out, const MindOpen::AInstruction & in ) {
 	out << std::string("<AInstruction> ") << in.getType();
 	return (out);
 }
@@ -50,7 +50,7 @@ std::ostream &		operator << ( std::ostream& out, const AInstruction & in ) {
 
 /* ACCESSOR(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-std::string		AInstruction::getType() const {
+std::string		MindOpen::AInstruction::getType() const {
 	return (_type);
 }
 
@@ -60,42 +60,121 @@ std::string		AInstruction::getType() const {
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
-void	IncrementPointer::execute const {
+IncrementPointer::IncrementPointer() :
+	AInstruction ("IncrementPointer") {
+}
 
+IncrementPointer::~IncrementPointer() {}
+
+void	IncrementPointer::execute( Byte * byte ) const
+{
+	++byte;
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-void	DecrementPointer::execute const {
+DecrementPointer::DecrementPointer() :
+	AInstruction ("DecrementPointer") {
+}
 
+DecrementPointer::~DecrementPointer() {}
+
+void	DecrementPointer::execute( Byte * byte ) const
+{
+	--byte;
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-void	IncrementByte::execute const {
+IncrementByte::IncrementByte() :
+	AInstruction ("IncrementByte") {
+}
 
+IncrementByte::~IncrementByte() {}
+
+void	IncrementByte::execute( Byte * byte ) const
+{
+	++(*byte);
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-void	DecrementByte::execute const {
+DecrementByte::DecrementByte() :
+	AInstruction ("DecrementByte") {
+}
 
+DecrementByte::~DecrementByte() {}
+
+void	DecrementByte::execute( Byte * byte ) const
+{
+	--(*byte);
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-void	PrintByte::execute const {
+PrintByte::PrintByte() :
+	AInstruction ("PrintByte") {
+}
 
+PrintByte::~PrintByte() {}
+
+void	PrintByte::execute( Byte * byte ) const
+{
+	std::cout << *byte;
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-void	GotoRightBracket::execute const {
+GotoRightBracket::GotoRightBracket() :
+	AInstruction ("GotoRightBracket") {
+}
 
+GotoRightBracket::~GotoRightBracket() {}
+
+void	GotoRightBracket::execute( std::string Source, size_t & idx ) const {
+
+	unsigned int brackets_to_skip;
+
+	brackets_to_skip = 1;
+	idx++;
+	while (brackets_to_skip != 0)
+	{
+		if (Source[idx] == ']')
+		{
+			--brackets_to_skip;
+			if (brackets_to_skip == 0)
+				return ;
+		}
+		else if (Source[idx] == '[')
+			++brackets_to_skip;
+		idx++;
+	}
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-void	GotoLeftBracket::execute const {
+GotoLeftBracket::GotoLeftBracket() :
+	AInstruction ("GotoLeftBracket") {
+}
 
+GotoLeftBracket::~GotoLeftBracket() {}
+
+void	GotoLeftBracket::execute( std::string Source, size_t & idx ) const {
+
+	unsigned int brackets_to_skip;
+
+	brackets_to_skip = 1;
+	idx--;
+	while (brackets_to_skip != 0)
+	{
+		if (Source[idx] == '[')
+		{
+			--brackets_to_skip;
+			if (brackets_to_skip == 0)
+				return ;
+		}
+		else if (Source[idx] == ']')
+			++brackets_to_skip;
+		idx--;
+	}
 }

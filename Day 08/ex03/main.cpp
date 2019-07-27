@@ -6,19 +6,29 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 11:38:32 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 13:14:13 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 16:11:28 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#include <vector>
+#include "MindOpen.hpp"
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 int	main() {
 
+	MindOpen	interpreter;
 
+	interpreter.load( "test0.mdp" );
+	interpreter.load( "test1.mdp" );
+	interpreter.load( "test2.mdp" );
+	interpreter.load( "test3.mdp" );
+	interpreter.load( "test4.mdp" );
+	interpreter.load( "test5.mdp" );
+
+	interpreter.execute( "test3.mdp" );
+	interpreter.executeAll();
 
 	return (0);
 }
