@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 20:46:42 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/27 01:52:38 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/27 02:05:13 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,7 @@ RPN_Calculator & RPN_Calculator::operator = ( const RPN_Calculator & rhs ) {
 
 int		RPN_Calculator::evaluateInfix   ( std::string expression ) {
 
-	std::deque<RPN_Calculator::Token *> postfixDeq;
-
-	postfixDeq = postfixify(tokenize(expression));
-	return ( evaluatePostfix( postfixDeq ) );
+	return ( evaluatePostfix( postfixify ( tokenize ( expression ) ) ) );
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -152,6 +149,9 @@ std::deque  <RPN_Calculator::Token *>
 				}
 				if (tmpStack.empty())
 					throw RPN_Calculator::InvalidExpression();
+
+				delete (*it);
+				delete tmpStack.top();
 				tmpStack.pop();
 			}
 
@@ -240,10 +240,12 @@ int	RPN_Calculator::evaluatePostfix ( std::deque <RPN_Calculator::Token *> postf
 					if (!tmpStack.empty()) {
 
 						rhs_operand = std::stoi(tmpStack.top()->tokVal);
+						delete tmpStack.top();
 						tmpStack.pop();
 
 						if (!tmpStack.empty()) {
 							lhs_operand = std::stoi(tmpStack.top()->tokVal);
+							delete tmpStack.top();
 							tmpStack.pop();
 						}
 					}
@@ -259,6 +261,7 @@ int	RPN_Calculator::evaluatePostfix ( std::deque <RPN_Calculator::Token *> postf
 					std::cout << "]\n";
 				}
 			}
+			delete postfixDeque.front();
 		}
 		postfixDeque.pop_front();
 	}
