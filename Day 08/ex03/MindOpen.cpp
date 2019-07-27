@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 15:41:55 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 17:02:37 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 18:09:39 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,48 +45,42 @@ void	MindOpen::load ( std::string Filename ) {
 
 	std::getline(infile, prog._sourceCode, '\0');
 
-	for (size_t i; i < prog._sourceCode.size(); ++i)
+	ptr = malloc(sizeof(char) * 2100);
+	ft_memset(&ptr, 2100);
+
+	for (auto c : prog._sourceCode)// (prog._idx = 0; prog._idx < prog._sourceCode.size(); ++prog._idx)
 	{
-		str = av[1];
-		ptr = malloc(sizeof(char) * 2100);
-		ft_memset(&ptr, 2100);
-		i = 0;
+		switch (c)
 
-		while (str[i])
+		if (c == '>')
 		{
-			switch ()
-
-			if (str[i] == '>')
-			{
-				ptr++;
-			}
-			else if (str[i] == '<')
-			{
-				ptr--;
-			}
-			else if (str[i] == '+')
-			{
-				(*ptr)++;
-			}
-			else if (str[i] == '-')
-			{
-				(*ptr)--;
-			}
-			else if (str[i] == '.')
-			{
-				ft_putchar(*ptr);
-			}
-			else if (str[i] == '[' && *ptr == 0)
-			{
-				i = ft_go_to_matching_right_bracket(str, i);
-			}
-			else if (str[i] == ']' && *ptr != 0)
-			{
-				i = ft_go_to_matching_left_bracket(str, i);
-			}
-			i++;
+			prog._instructionQueue.push(IncrementPointer());
 		}
-		return ;
+		else if (c == '<')
+		{
+			ptr--;
+		}
+		else if (c == '+')
+		{
+			(*ptr)++;
+		}
+		else if (c == '-')
+		{
+			(*ptr)--;
+		}
+		else if (c == '.')
+		{
+			ft_putchar(*ptr);
+		}
+		else if (str[i] == '[' && *ptr == 0)
+		{
+			i = ft_go_to_matching_right_bracket(str, i);
+		}
+		else if (str[i] == ']' && *ptr != 0)
+		{
+			i = ft_go_to_matching_left_bracket(str, i);
+		}
+		i++;
 	}
 }
 

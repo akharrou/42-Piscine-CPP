@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 13:21:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 15:44:47 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 18:12:09 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,121 +60,100 @@ std::string		MindOpen::AInstruction::getType() const {
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
-IncrementPointer::IncrementPointer() :
-	AInstruction ("IncrementPointer") {
-}
+IncrementPointer::IncrementPointer  () : AInstruction ("IncrementPointer") {}
+IncrementPointer::~IncrementPointer () {}
 
-IncrementPointer::~IncrementPointer() {}
-
-void	IncrementPointer::execute( Byte * byte ) const
+void	IncrementPointer::execute( MindOpen::Program &prog ) const
 {
 	++byte;
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-DecrementPointer::DecrementPointer() :
-	AInstruction ("DecrementPointer") {
-}
+DecrementPointer::DecrementPointer  () : AInstruction ("DecrementPointer") {}
+DecrementPointer::~DecrementPointer () {}
 
-DecrementPointer::~DecrementPointer() {}
-
-void	DecrementPointer::execute( Byte * byte ) const
+void	DecrementPointer::execute( MindOpen::Program &prog ) const
 {
 	--byte;
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-IncrementByte::IncrementByte() :
-	AInstruction ("IncrementByte") {
-}
+IncrementByte::IncrementByte  () : AInstruction ("IncrementByte") {}
+IncrementByte::~IncrementByte () {}
 
-IncrementByte::~IncrementByte() {}
-
-void	IncrementByte::execute( Byte * byte ) const
+void	IncrementByte::execute( MindOpen::Program &prog ) const
 {
 	++(*byte);
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-DecrementByte::DecrementByte() :
-	AInstruction ("DecrementByte") {
-}
+DecrementByte::DecrementByte  () : AInstruction ("DecrementByte") {}
+DecrementByte::~DecrementByte () {}
 
-DecrementByte::~DecrementByte() {}
-
-void	DecrementByte::execute( Byte * byte ) const
+void	DecrementByte::execute( MindOpen::Program &prog ) const
 {
 	--(*byte);
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-PrintByte::PrintByte() :
-	AInstruction ("PrintByte") {
-}
+PrintByte::PrintByte  () : AInstruction ("PrintByte") {}
+PrintByte::~PrintByte () {}
 
-PrintByte::~PrintByte() {}
-
-void	PrintByte::execute( Byte * byte ) const
+void	PrintByte::execute( MindOpen::Program &prog ) const
 {
 	std::cout << *byte;
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-GotoRightBracket::GotoRightBracket() :
-	AInstruction ("GotoRightBracket") {
-}
+GotoRightBracket::GotoRightBracket  () : AInstruction ("GotoRightBracket") {}
+GotoRightBracket::~GotoRightBracket () {}
 
-GotoRightBracket::~GotoRightBracket() {}
-
-void	GotoRightBracket::execute( std::string Source, size_t & idx ) const {
+void	GotoRightBracket::execute( MindOpen::Program &prog ) const {
 
 	unsigned int brackets_to_skip;
 
 	brackets_to_skip = 1;
-	idx++;
+	prog._idx++;
 	while (brackets_to_skip != 0)
 	{
-		if (Source[idx] == ']')
+		if (prog._sourceCode[prog._idx] == ']')
 		{
 			--brackets_to_skip;
 			if (brackets_to_skip == 0)
 				return ;
 		}
-		else if (Source[idx] == '[')
+		else if (prog._sourceCode[prog._idx] == '[')
 			++brackets_to_skip;
-		idx++;
+		prog._idx++;
 	}
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-GotoLeftBracket::GotoLeftBracket() :
-	AInstruction ("GotoLeftBracket") {
-}
+GotoLeftBracket::GotoLeftBracket  () : AInstruction ("GotoLeftBracket") {}
+GotoLeftBracket::~GotoLeftBracket () {}
 
-GotoLeftBracket::~GotoLeftBracket() {}
-
-void	GotoLeftBracket::execute( std::string Source, size_t & idx ) const {
+void	GotoLeftBracket::execute( MindOpen::Program &prog ) const {
 
 	unsigned int brackets_to_skip;
 
 	brackets_to_skip = 1;
-	idx--;
+	prog._idx--;
 	while (brackets_to_skip != 0)
 	{
-		if (Source[idx] == '[')
+		if (prog._sourceCode[prog._idx] == '[')
 		{
 			--brackets_to_skip;
 			if (brackets_to_skip == 0)
 				return ;
 		}
-		else if (Source[idx] == ']')
+		else if (prog._sourceCode[prog._idx] == ']')
 			++brackets_to_skip;
-		idx--;
+		prog._idx--;
 	}
 }
