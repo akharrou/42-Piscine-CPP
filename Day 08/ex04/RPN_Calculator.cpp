@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 20:46:42 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/27 01:14:50 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/27 01:28:08 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,10 @@ RPN_Calculator & RPN_Calculator::operator = ( const RPN_Calculator & rhs ) {
 
 int		RPN_Calculator::evaluateInfix   ( std::string expression ) {
 
-	return ( evaluatePostfix ( postfixify ( tokenize ( expression ) ) ) );
+	std::deque<RPN_Calculator::Token *> postfixDeq;
+
+	postfixDeq = postfixify(tokenize(expression));
+	return ( evaluatePostfix( postfixDeq ) );
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -106,7 +109,7 @@ std::deque <RPN_Calculator::Token *>
 std::deque  <RPN_Calculator::Token *>
 	RPN_Calculator::postfixify ( std::deque <RPN_Calculator::Token *> tokenObjs )
 {
-	std::deque <RPN_Calculator::Token *> postfixVector;
+	std::deque <RPN_Calculator::Token *> postfixDeque;
 	std::stack  <RPN_Calculator::Token *> tmpStack;
 
 	std::deque<RPN_Calculator::Token *>::iterator it = tokenObjs.begin();
@@ -123,7 +126,7 @@ std::deque  <RPN_Calculator::Token *>
 			while (!tmpStack.empty() && IS_PRECEDENCE_LVL_2(tmpStack.top()->tokVal)) {
 
 				std::cout << *(tmpStack.top()) << " ";
-				postfixVector.push_back(tmpStack.top());
+				postfixDeque.push_back(tmpStack.top());
 				tmpStack.pop();
 			}
 			tmpStack.push((*it));
@@ -133,7 +136,7 @@ std::deque  <RPN_Calculator::Token *>
 			while (!tmpStack.empty() && IS_PRECEDENCE_LVL_3(tmpStack.top()->tokVal)) {
 
 				std::cout << *(tmpStack.top()) << " ";
-				postfixVector.push_back(tmpStack.top());
+				postfixDeque.push_back(tmpStack.top());
 				tmpStack.pop();
 			}
 			tmpStack.push((*it));
@@ -144,7 +147,7 @@ std::deque  <RPN_Calculator::Token *>
 				while (!tmpStack.empty() && !IS_PAROPEN(tmpStack.top()->tokVal)) {
 
 					std::cout << *(tmpStack.top()) << " ";
-					postfixVector.push_back(tmpStack.top());
+					postfixDeque.push_back(tmpStack.top());
 					tmpStack.pop();
 				}
 				if (tmpStack.empty())
@@ -155,18 +158,19 @@ std::deque  <RPN_Calculator::Token *>
 		} else {
 
 			std::cout << *(*it) << " ";
-			postfixVector.push_back((*it));
+			postfixDeque.push_back((*it));
 		}
 	}
 
 	while (!tmpStack.empty()) {
 
 		std::cout << *tmpStack.top() << " ";
-		postfixVector.push_back(tmpStack.top());
+		postfixDeque.push_back(tmpStack.top());
 		tmpStack.pop();
 	}
+	std::cout << std::endl;
 
-	return (postfixVector);
+	return (postfixDeque);
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -189,7 +193,7 @@ op_t operations[TOTAL_OPERATIONS] = {
 	}},
 };
 
-int	RPN_Calculator::evaluatePostfix ( std::deque <RPN_Calculator::Token *> postfixVector ) {
+int	RPN_Calculator::evaluatePostfix ( std::deque <RPN_Calculator::Token *> postfixDeque ) {
 
 	std::stack<RPN_Calculator::Token *> tmpStack;
 
@@ -197,15 +201,16 @@ int	RPN_Calculator::evaluatePostfix ( std::deque <RPN_Calculator::Token *> postf
 	int rhs_operand;
 	int res = 0;
 
-	std::deque<RPN_Calculator::Token *>::iterator it = postfixVector.begin();
+	std::deque<RPN_Calculator::Token *>::iterator it = postfixDeque.begin();
+	std::string it_clone;
 
-	if (it == postfixVector.end())
+	if (it == postfixDeque.end())
 		return (res);
 
-	for (; it != postfixVector.end(); ++it)
+	for (; it != postfixDeque.end(); ++it)
 	{
 
-		if (!ISOPERATOR(postfixVector.front()->tokVal)) {
+		if (!ISOPERATOR((*it)->tokVal)) {
 
 			tmpStack.push(*it);
 
@@ -213,9 +218,9 @@ int	RPN_Calculator::evaluatePostfix ( std::deque <RPN_Calculator::Token *> postf
 
 			for (int i = 0; i < TOTAL_OPERATIONS; ++i) {
 
-				if (postfixVector.front()->tokVal == operations[i].op) {
+				if ((*it)->tokVal == operations[i].op) {
 
-					postfixVector.pop_front();
+					postfixDeque.pop_front();
 
 					rhs_operand = 0;
 					lhs_operand = 0;
@@ -232,7 +237,7 @@ int	RPN_Calculator::evaluatePostfix ( std::deque <RPN_Calculator::Token *> postf
 					}
 
 					tmpStack.push(
-						new Num(std::to_string(operations[i].ft_op(rhs_operand, lhs_operand)))
+						new Num(std::to_string(operations[i].ft_op(lhs_operand, rhs_operand)))
 					);
 				}
 			}
@@ -244,7 +249,7 @@ int	RPN_Calculator::evaluatePostfix ( std::deque <RPN_Calculator::Token *> postf
 		res = std::stoi(tmpStack.top()->tokVal);
 		tmpStack.pop();
 
-	} catch ( std::exception & e ) {
+	} catch ( std::exception & ) {
 		throw RPN_Calculator::InvalidExpression();
 	}
 
