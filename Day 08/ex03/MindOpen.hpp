@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 13:00:33 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 18:21:17 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 18:51:48 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,21 @@ typedef char Byte;
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-class AInstruction;
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
 class MindOpen {
 
 	public:
+
+		struct AInstruction;
+		struct Program;
+
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+		struct AInstruction {
+			virtual ~AInstruction();
+			virtual void execute( MindOpen::Program & ) const = 0;
+		};
+
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		struct Program {
 
@@ -46,15 +54,11 @@ class MindOpen {
 			~Program();
 
 			void execute();
-
 		};
 
-		struct AInstruction {
-			virtual void execute( Program & ) const = 0;
-		};
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 	private:
-
 		std::vector <Program> _programs;
 
 	public:

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 15:41:55 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 18:21:20 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 18:52:02 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,44 +44,54 @@ void	MindOpen::load ( std::string Filename ) {
 		throw InvalidFile();
 
 	std::getline(infile, prog._sourceCode, '\0');
+	size_t n_bytes = std::count (prog._sourceCode.begin(), prog._sourceCode.end(), '>');
 
-	ptr = malloc(sizeof(char) * 2100);
-	ft_memset(&ptr, 2100);
+	prog._ptr = new Byte [ n_bytes * 2 ] ;
+	bzero(&prog._ptr, n_bytes * 2);
 
-	for (auto c : prog._sourceCode)// (prog._idx = 0; prog._idx < prog._sourceCode.size(); ++prog._idx)
-	{
-		switch (c)
+	for (char c : prog._sourceCode)
 
-		if (c == '>')
-		{
-			prog._instructionQueue.push(IncrementPointer());
+		switch (c) {
+
+			case '>':
+				prog._instructionQueue.push( new IncrementPointer() );
+				++prog._idx;
+				break ;
+
+			case '<':
+				prog._instructionQueue.push( new DecrementPointer() );
+				++prog._idx;
+				break ;
+
+			case '+':
+				prog._instructionQueue.push( new IncrementByte() );
+				++prog._idx;
+				break ;
+
+			case '-':
+				prog._instructionQueue.push( new DecrementByte() );
+				++prog._idx;
+				break ;
+
+			case '.':
+				prog._instructionQueue.push( new PrintByte() );
+				++prog._idx;
+				break ;
+
+			case '[':
+				if (*prog._ptr == '\0')
+					prog._instructionQueue.push( new GotoRightBracket() );
+				break ;
+
+			case ']':
+				if (*prog._ptr != '\0')
+					prog._instructionQueue.push( new GotoLeftBracket() );
+				break ;
+
+			default:
+				++prog._idx;
+				break ;
 		}
-		else if (c == '<')
-		{
-			ptr--;
-		}
-		else if (c == '+')
-		{
-			(*ptr)++;
-		}
-		else if (c == '-')
-		{
-			(*ptr)--;
-		}
-		else if (c == '.')
-		{
-			ft_putchar(*ptr);
-		}
-		else if (str[i] == '[' && *ptr == 0)
-		{
-			i = ft_go_to_matching_right_bracket(str, i);
-		}
-		else if (str[i] == ']' && *ptr != 0)
-		{
-			i = ft_go_to_matching_left_bracket(str, i);
-		}
-		i++;
-	}
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -129,7 +139,22 @@ MindOpen::Program::~Program() {
 
 	while (!_instructionQueue.empty()) {
 
-		delete _instructionQueue.front();
+		_instructionQueue.front();
+		_instructionQueue.pop();
+	}
+}
+
+void	MindOpen::Program::execute() {
+
+	AInstruction *tmp;
+
+	while (!_instructionQueue.empty()) {
+
+		tmp = _instructionQueue.front();
+
+		tmp->execute(*this);
+		delete tmp;
+
 		_instructionQueue.pop();
 	}
 }
