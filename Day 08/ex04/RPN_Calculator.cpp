@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 20:46:42 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/27 02:05:13 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/27 02:07:33 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ RPN_Calculator & RPN_Calculator::operator = ( const RPN_Calculator & rhs ) {
 
 int		RPN_Calculator::evaluateInfix   ( std::string expression ) {
 
-	return ( evaluatePostfix( postfixify ( tokenize ( expression ) ) ) );
+	return ( evaluatePostfix ( postfixify ( tokenize ( expression ) ) ) );
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
