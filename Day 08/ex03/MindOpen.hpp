@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 13:00:33 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 18:14:10 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 18:16:35 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,19 +51,13 @@ class MindOpen {
 
 		class AInstruction {
 
-			protected:
-				AInstruction( void );
-				std::string _type;
-
 			public:
 
-				AInstruction( std::string type );
+				AInstruction( void );
 				AInstruction( const AInstruction & src );
 				virtual ~AInstruction( void );
 
 				AInstruction &	operator = ( const AInstruction & rhs );
-
-				std::string		getType() const;
 
 				virtual void	execute( Program & ) const = 0;
 

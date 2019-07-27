@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 13:21:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 18:15:14 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/26 18:16:53 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,9 @@
 /*                         ABSTRACT CLASS DEFINITION                         */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-/* PROTECTED CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - */
-
-MindOpen::AInstruction::AInstruction( void ) {}
-
-
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
-MindOpen::AInstruction::AInstruction( std::string type ) :
-	_type(type) {
-}
+MindOpen::AInstruction::AInstruction( void ) {}
 
 MindOpen::AInstruction::AInstruction( const AInstruction & src ) {
 	*this = src;
@@ -36,32 +29,15 @@ MindOpen::AInstruction::~AInstruction( void ) {}
 
 /* OPERATOR OVERLOAD(S) - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-MindOpen::AInstruction &	MindOpen::AInstruction::operator = ( const AInstruction & rhs ) {
-	if (this != &rhs)
-		_type = rhs._type;
+MindOpen::AInstruction &
+	MindOpen::AInstruction::operator = ( const AInstruction & rhs ) {
 	return (*this);
-}
-
-std::ostream &	operator << ( std::ostream& out, const MindOpen::AInstruction & in ) {
-	out << std::string("<AInstruction> ") << in.getType();
-	return (out);
-}
-
-
-/* ACCESSOR(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-std::string		MindOpen::AInstruction::getType() const {
-	return (_type);
 }
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /*                        CONCRETE CLASS DEFINITIONS                         */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-
-IncrementPointer::IncrementPointer  () : AInstruction ("IncrementPointer") {}
-IncrementPointer::~IncrementPointer () {}
 
 void	IncrementPointer::execute( MindOpen::Program & prog ) const
 {
@@ -70,18 +46,12 @@ void	IncrementPointer::execute( MindOpen::Program & prog ) const
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-DecrementPointer::DecrementPointer  () : AInstruction ("DecrementPointer") {}
-DecrementPointer::~DecrementPointer () {}
-
 void	DecrementPointer::execute( MindOpen::Program & prog ) const
 {
 	--prog._ptr;
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-IncrementByte::IncrementByte  () : AInstruction ("IncrementByte") {}
-IncrementByte::~IncrementByte () {}
 
 void	IncrementByte::execute( MindOpen::Program & prog ) const
 {
@@ -90,9 +60,6 @@ void	IncrementByte::execute( MindOpen::Program & prog ) const
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-DecrementByte::DecrementByte  () : AInstruction ("DecrementByte") {}
-DecrementByte::~DecrementByte () {}
-
 void	DecrementByte::execute( MindOpen::Program & prog ) const
 {
 	--(*prog._ptr);
@@ -100,18 +67,12 @@ void	DecrementByte::execute( MindOpen::Program & prog ) const
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-PrintByte::PrintByte  () : AInstruction ("PrintByte") {}
-PrintByte::~PrintByte () {}
-
 void	PrintByte::execute( MindOpen::Program & prog ) const
 {
 	std::cout << *prog._ptr;
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-GotoRightBracket::GotoRightBracket  () : AInstruction ("GotoRightBracket") {}
-GotoRightBracket::~GotoRightBracket () {}
 
 void	GotoRightBracket::execute( MindOpen::Program & prog ) const {
 
@@ -134,9 +95,6 @@ void	GotoRightBracket::execute( MindOpen::Program & prog ) const {
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-GotoLeftBracket::GotoLeftBracket  () : AInstruction ("GotoLeftBracket") {}
-GotoLeftBracket::~GotoLeftBracket () {}
 
 void	GotoLeftBracket::execute( MindOpen::Program & prog ) const {
 
