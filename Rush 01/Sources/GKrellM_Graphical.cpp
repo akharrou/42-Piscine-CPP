@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 14:38:01 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 14:02:05 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/28 16:44:27 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,21 +21,9 @@ GKrellM_Graphical::GKrellM_Graphical( void ) {
 	/* init graphical window(s) */
 }
 
-GKrellM_Graphical::GKrellM_Graphical( const GKrellM_Graphical & src ) {
-	*this = src;
-}
-
 GKrellM_Graphical::~GKrellM_Graphical( void ) {
 
 	/* exit graphical mode */
-}
-
-
-/* OPERATOR OVERLOAD(S) - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-GKrellM_Graphical &	GKrellM_Graphical::operator = ( const GKrellM_Graphical & rhs ) {
-	(void)rhs;
-	return (*this);
 }
 
 

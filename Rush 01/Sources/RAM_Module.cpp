@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:52:52 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 14:52:55 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/28 16:31:54 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,13 @@
 
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
-RAM_Module::RAM_Module( void ) {
+RAM_Module::RAM_Module( screen_t win ) :
+	AMonitorModule(win) {
+
 	name = "RAM Module";
 }
 
-RAM_Module::RAM_Module( const RAM_Module & src ) {
-	*this = src;
-}
-
 RAM_Module::~RAM_Module( void ) {}
-
-
-/* OPERATOR OVERLOAD(S) - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-RAM_Module &	RAM_Module::operator = ( const RAM_Module & rhs ) {
-	(void)rhs;
-	return (*this);
-}
 
 
 /* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */

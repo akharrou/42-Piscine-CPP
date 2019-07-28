@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 14:38:23 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/27 16:48:26 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/28 16:41:04 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-# include "IMonitorDisplay.hpp"
-# include "IMonitorModule.hpp"
+# include "AMonitorDisplay.hpp"
+# include "AMonitorModule.hpp"
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -29,18 +29,14 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 class GKrellM_Graphical :
-	public IMonitorDisplay {
+	public AMonitorDisplay {
 
 	private:
-		GKrellM_Graphical &  operator = ( const GKrellM_Graphical & rhs );
-
-	private:
-		IMonitorModule *_modules[TOTAL_MODULES];
+		std::deque <AMonitorModule *> _modules;
 
 	public:
 
 		GKrellM_Graphical( void );
-		GKrellM_Graphical( const GKrellM_Graphical & src );
 		~GKrellM_Graphical( void );
 
 		void	run           ();

@@ -1,27 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IMonitorDisplay.hpp                                :+:      :+:    :+:   */
+/*   AMonitorDisplay.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/27 13:29:01 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 16:35:12 by akharrou         ###   ########.fr       */
+/*   Created: 2019/07/28 16:35:29 by akharrou          #+#    #+#             */
+/*   Updated: 2019/07/28 16:35:53 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef IMONITORDISPLAY_HPP
-# define IMONITORDISPLAY_HPP
+#ifndef AMONITORDISPLAY_HPP
+# define AMONITORDISPLAY_HPP
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-struct IMonitorDisplay {
+# include "IMonitorDisplay.hpp"
 
-	virtual void	run           () = 0;
-	virtual void	updateModules () = 0;
-	virtual void	renderModules () = 0;
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+struct AMonitorDisplay :
+	public IMonitorDisplay {
+
+	private:
+		AMonitorDisplay( const AMonitorDisplay & src );
+		AMonitorDisplay &  operator = ( const AMonitorDisplay & rhs );
+
+	public:
+		AMonitorDisplay( void );
+		virtual ~AMonitorDisplay ();
+
 };
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#endif /* IMONITORDISPLAY_HPP */
+#endif /* AMONITORDISPLAY_HPP */

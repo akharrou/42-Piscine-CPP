@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:53:15 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 14:59:30 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/28 16:31:25 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,13 @@
 
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
-Processes_Module::Processes_Module( void ) {
+Processes_Module::Processes_Module( screen_t win ) :
+	AMonitorModule(win) {
+
 	name = "Processes Module";
 }
 
-Processes_Module::Processes_Module( const Processes_Module & src ) {
-	*this = src;
-}
-
 Processes_Module::~Processes_Module( void ) {}
-
-
-/* OPERATOR OVERLOAD(S) - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-Processes_Module &	Processes_Module::operator = ( const Processes_Module & rhs ) {
-	(void)rhs;
-	return (*this);
-}
 
 
 /* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 14:44:27 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 14:54:28 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/28 16:50:00 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
 GKrellM_Shell::GKrellM_Shell( void ) {
-
-	(void)_modules;
 
 	// initscr();
     // cbreak();
@@ -28,21 +26,20 @@ GKrellM_Shell::GKrellM_Shell( void ) {
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-	_modules.push_front( new Zaz_Module         );
-	_modules.push_front( new Network_Module     );
-	_modules.push_front( new Processes_Module   );
-	_modules.push_front( new RAM_Module         );
-	_modules.push_front( new CPU_Module         );
-	_modules.push_front( new GeneralInfo_Module );
+	screen_t newScreen = { stdscr, 0 , 0 };
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-	// mvprintw(5, 5, "HELLO WORLD !");
-    // refresh();
-}
+	_modules.push_front( new Zaz_Module         ( newScreen ) );
+	_modules.push_front( new Processes_Module   ( newScreen ) );
+	_modules.push_front( new Network_Module     ( newScreen ) );
+	_modules.push_front( new RAM_Module         ( newScreen ) );
+	_modules.push_front( new CPU_Module         ( newScreen ) );
+	_modules.push_front( new GeneralInfo_Module ( newScreen ) );
 
-GKrellM_Shell::GKrellM_Shell( const GKrellM_Shell & src ) {
-	*this = src;
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+    // refresh();
 }
 
 GKrellM_Shell::~GKrellM_Shell( void ) {
@@ -58,15 +55,6 @@ GKrellM_Shell::~GKrellM_Shell( void ) {
 
 	// endwin();
 }
-
-/* OPERATOR OVERLOAD(S) - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-GKrellM_Shell &	GKrellM_Shell::operator = ( const GKrellM_Shell & rhs ) {
-
-	(void)rhs;
-	return (*this);
-}
-
 
 /* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */
 

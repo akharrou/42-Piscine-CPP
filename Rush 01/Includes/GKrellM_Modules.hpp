@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 10:56:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 15:03:37 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/28 16:27:53 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,16 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-# include <string>
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-# include "IMonitorModule.hpp"
 # include "GKrellM.hpp"
+# include "AMonitorModule.hpp"
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 struct GeneralInfo_Module :
-	public IMonitorModule {
+	public AMonitorModule {
 
 	private:
-		GeneralInfo_Module( const GeneralInfo_Module & src );
-		GeneralInfo_Module & operator = ( const GeneralInfo_Module & rhs );
+		GeneralInfo_Module( void );
 
 		time_t timestr;
 
@@ -41,8 +36,7 @@ struct GeneralInfo_Module :
 		std::string Platform;
 
 	public:
-
-		GeneralInfo_Module( void );
+		GeneralInfo_Module( screen_t );
 		~GeneralInfo_Module( void );
 
 		void	update ();
@@ -53,11 +47,10 @@ struct GeneralInfo_Module :
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 struct CPU_Module :
-	public IMonitorModule {
+	public AMonitorModule {
 
 	private:
-		CPU_Module(const CPU_Module &src);
-		CPU_Module &operator=(const CPU_Module &rhs);
+		CPU_Module( void );
 
 		std::ifstream CPU_infile;
 		std::string   CPU_usage;
@@ -68,7 +61,7 @@ struct CPU_Module :
 		int32_t CPU_cacheSize;
 
 	public:
-		CPU_Module( void );
+		CPU_Module( screen_t );
 		~CPU_Module( void );
 
 		void	update ();
@@ -79,17 +72,16 @@ struct CPU_Module :
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 struct RAM_Module :
-	public IMonitorModule {
+	public AMonitorModule {
 
 	private:
-		RAM_Module( const RAM_Module & src );
-		RAM_Module & operator = ( const RAM_Module & rhs );
+		RAM_Module( void );
 
 		std::ifstream RAM_infile;
 		std::string   RAM_usage;
 
 	public:
-		RAM_Module( void );
+		RAM_Module( screen_t );
 		~RAM_Module( void );
 
 		void	update ();
@@ -100,17 +92,16 @@ struct RAM_Module :
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 struct Network_Module :
-	public IMonitorModule {
+	public AMonitorModule {
 
 	private:
-		Network_Module( const Network_Module & src );
-		Network_Module & operator = ( const Network_Module & rhs );
+		Network_Module( void );
 
 		std::ifstream NETWORK_infile;
 		std::string   NETWORK_activity;
 
 	public:
-		Network_Module( void );
+		Network_Module( screen_t );
 		~Network_Module( void );
 
 		void	update ();
@@ -121,17 +112,16 @@ struct Network_Module :
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 struct Processes_Module :
-	public IMonitorModule {
+	public AMonitorModule {
 
 	private:
-		Processes_Module( const Processes_Module & src );
-		Processes_Module & operator = ( const Processes_Module & rhs );
+		Processes_Module( void );
 
 		std::ifstream PROCESSES_infile;
 		std::string   PROCESSES_activity;
 
 	public:
-		Processes_Module( void );
+		Processes_Module( screen_t );
 		~Processes_Module( void );
 
 		void	update ();
@@ -142,17 +132,16 @@ struct Processes_Module :
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 struct Zaz_Module :
-	public IMonitorModule {
+	public AMonitorModule {
 
 	private:
-		Zaz_Module( const Zaz_Module & src );
-		Zaz_Module & operator = ( const Zaz_Module & rhs );
+		Zaz_Module( void );
 
 		std::string unicornFrame[5];
 		std::string unicorn;
 
 	public:
-		Zaz_Module( void );
+		Zaz_Module( screen_t );
 		~Zaz_Module( void );
 
 		void	update ();

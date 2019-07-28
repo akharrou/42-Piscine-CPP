@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 13:29:01 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 15:03:40 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/28 16:02:17 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,10 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-# include <string>
+struct IMonitorModule {
 
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-class IMonitorModule {
-
-	public:
-		virtual ~IMonitorModule() {}
-
-		std::string name;
-
-		virtual void update ()    = 0;
-		virtual void render ()    = 0;
-
+	virtual void update () = 0;
+	virtual void render () = 0;
 };
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

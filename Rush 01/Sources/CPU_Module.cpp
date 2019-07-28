@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:51:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 14:52:35 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/28 16:28:36 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
-CPU_Module::CPU_Module( void ) {
+CPU_Module::CPU_Module( screen_t win ) :
+	AMonitorModule(win) {
 
 	name = "CPU Module";
 
@@ -30,20 +31,8 @@ CPU_Module::CPU_Module( void ) {
 	sysctlbyname("machdep.cpu.brand_string", CPU_model, &len, NULL, 0);
 }
 
-CPU_Module::CPU_Module( const CPU_Module & src ) {
-	*this = src;
-}
-
 CPU_Module::~CPU_Module( void ) {
 	delete [] CPU_model;
-}
-
-
-/* OPERATOR OVERLOAD(S) - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-CPU_Module &	CPU_Module::operator = ( const CPU_Module & rhs ) {
-	(void)rhs;
-	return (*this);
 }
 
 

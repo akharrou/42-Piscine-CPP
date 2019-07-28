@@ -6,7 +6,7 @@
 #    By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/23 12:26:27 by akharrou          #+#    #+#              #
-#    Updated: 2019/07/28 15:04:36 by akharrou         ###   ########.fr        #
+#    Updated: 2019/07/28 16:42:19 by akharrou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,12 +36,15 @@ NAME        =   ft_gkrellm
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
 HEADERS     =                                                                 \
-                Includes/IMonitorModule.hpp                                   \
-                Includes/IMonitorDisplay.hpp                                  \
-                                                                              \
                 Includes/GKrellM.hpp                                          \
-                Includes/GKrellM_Modules.hpp                                  \
                                                                               \
+                Includes/IMonitorModule.hpp                                   \
+                Includes/AMonitorModule.hpp                                   \
+                                                                              \
+                Includes/IMonitorDisplay.hpp                                  \
+                Includes/AMonitorDisplay.hpp                                  \
+                                                                              \
+                Includes/GKrellM_Modules.hpp                                  \
                 Includes/GKrellM_Shell.hpp                                    \
                 Includes/GKrellM_Graphical.hpp                                \
 
@@ -50,6 +53,9 @@ HEADERS     =                                                                 \
 SOURCES     =                                                                 \
                 Sources/main.cpp                                              \
                 Sources/Errors.cpp                                            \
+                                                                              \
+                Sources/AMonitorModule.cpp                                    \
+                Sources/AMonitorDisplay.cpp                                   \
                                                                               \
                 Sources/GKrellM_Shell.cpp                                     \
                 Sources/GKrellM_Graphical.cpp                                 \

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 14:50:56 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 14:51:08 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/28 16:29:31 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
-GeneralInfo_Module::GeneralInfo_Module( void ) {
+GeneralInfo_Module::GeneralInfo_Module( screen_t win ) :
+	AMonitorModule(win) {
 
 	name = "GeneralInfo Module";
 
@@ -30,19 +31,7 @@ GeneralInfo_Module::GeneralInfo_Module( void ) {
     Platform   = uts.machine;
 }
 
-GeneralInfo_Module::GeneralInfo_Module( const GeneralInfo_Module & src ) {
-	*this = src;
-}
-
 GeneralInfo_Module::~GeneralInfo_Module( void ) {}
-
-
-/* OPERATOR OVERLOAD(S) - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-GeneralInfo_Module &	GeneralInfo_Module::operator = ( const GeneralInfo_Module & rhs ) {
-	(void)rhs;
-	return (*this);
-}
 
 
 /* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */

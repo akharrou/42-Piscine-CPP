@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 12:19:56 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 13:52:07 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/28 15:49:45 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,14 @@
 # include <array>
 # include <vector>
 # include <deque>
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+typedef struct {
+	WINDOW *win;
+	int yMax;
+	int xMax;
+} screen_t;
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
