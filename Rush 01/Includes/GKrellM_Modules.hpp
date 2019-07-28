@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 10:56:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 14:56:56 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/28 15:03:37 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@
 
 struct GeneralInfo_Module :
 	public IMonitorModule {
-
-	std::string name;
 
 	private:
 		GeneralInfo_Module( const GeneralInfo_Module & src );
@@ -57,8 +55,6 @@ struct GeneralInfo_Module :
 struct CPU_Module :
 	public IMonitorModule {
 
-	std::string name;
-
 	private:
 		CPU_Module(const CPU_Module &src);
 		CPU_Module &operator=(const CPU_Module &rhs);
@@ -85,8 +81,6 @@ struct CPU_Module :
 struct RAM_Module :
 	public IMonitorModule {
 
-	std::string name;
-
 	private:
 		RAM_Module( const RAM_Module & src );
 		RAM_Module & operator = ( const RAM_Module & rhs );
@@ -107,8 +101,6 @@ struct RAM_Module :
 
 struct Network_Module :
 	public IMonitorModule {
-
-	std::string name;
 
 	private:
 		Network_Module( const Network_Module & src );
@@ -131,8 +123,6 @@ struct Network_Module :
 struct Processes_Module :
 	public IMonitorModule {
 
-	std::string name;
-
 	private:
 		Processes_Module( const Processes_Module & src );
 		Processes_Module & operator = ( const Processes_Module & rhs );
@@ -153,8 +143,6 @@ struct Processes_Module :
 
 struct Zaz_Module :
 	public IMonitorModule {
-
-	std::string name;
 
 	private:
 		Zaz_Module( const Zaz_Module & src );

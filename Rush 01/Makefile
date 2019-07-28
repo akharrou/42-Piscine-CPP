@@ -6,7 +6,7 @@
 #    By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/23 12:26:27 by akharrou          #+#    #+#              #
-#    Updated: 2019/07/28 14:56:47 by akharrou         ###   ########.fr        #
+#    Updated: 2019/07/28 15:04:36 by akharrou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,7 +51,6 @@ SOURCES     =                                                                 \
                 Sources/main.cpp                                              \
                 Sources/Errors.cpp                                            \
                                                                               \
-                Sources/GKrellM.cpp                                           \
                 Sources/GKrellM_Shell.cpp                                     \
                 Sources/GKrellM_Graphical.cpp                                 \
                                                                               \
