@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 13:29:01 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/27 16:33:42 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/28 14:02:55 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,17 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+# include <string>
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
 class IMonitorModule {
 
 	public:
-		virtual ~IMonitorModule()    = 0;
+		virtual ~IMonitorModule() = 0;
 
-		virtual void update ()       = 0;
-		virtual void render () const = 0;
+		virtual void update ()    = 0;
+		virtual void render ()    = 0;
 
 };
 

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 12:19:56 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/27 16:30:41 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/28 13:52:07 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,29 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+# include <stdlib.h>
 # include <unistd.h>
 # include <ncurses.h>
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-# include <iostream>
+#include <sys/syslimits.h>
+#include <sys/utsname.h>
+#include <sys/types.h>
+#include <sys/sysctl.h>
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+# include <iostream>
+# include <fstream>
+# include <thread>
+
+# include <chrono>
+# include <ctime>
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+# include <array>
 # include <vector>
 # include <deque>
 
@@ -34,13 +48,10 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-
-
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-
-
+# define CPU_USAGE_FILENAME           "/tmp/cpu_usage.txt"
+# define RAM_USAGE_FILENAME           "/tmp/ram_usage.txt"
+# define PROCESSES_ACTIVITY_FILENAME  "/tmp/processes_activity.txt"
+# define NETWORK_ACTIVITY_FILENAME    "/tmp/newtork_activity.txt"
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 

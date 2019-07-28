@@ -6,7 +6,7 @@
 #    By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/23 12:26:27 by akharrou          #+#    #+#              #
-#    Updated: 2019/07/27 16:12:41 by akharrou         ###   ########.fr        #
+#    Updated: 2019/07/28 13:58:12 by akharrou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,6 +40,7 @@ HEADERS     =                                                                 \
                 Includes/IMonitorDisplay.hpp                                  \
                                                                               \
                 Includes/GKrellM.hpp                                          \
+                Includes/GKrellM_Modules.hpp                                  \
                 Includes/GKrellM_Shell.hpp                                    \
                 Includes/GKrellM_Graphical.hpp                                \
                                                                               \
@@ -52,6 +53,7 @@ SOURCES     =                                                                 \
                                                                               \
                 Sources/GKrellM.cpp                                           \
                 Sources/GKrellM_Shell.cpp                                     \
+                Sources/GKrellM_Modules.cpp                                   \
                 Sources/GKrellM_Graphical.cpp                                 \
                                                                               \
                 Sources/Errors.cpp                                            \

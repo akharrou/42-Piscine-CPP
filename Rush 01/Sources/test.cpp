@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 00:05:50 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 00:05:57 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/28 10:54:08 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,6 @@ using namespace std::chrono;
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 int main() {
-
-    /* sysctlbyname(const char *name, void *oldp, size_t *oldlenp, void *newp, size_t newlen) */
 
 	struct utsname uts;
 	size_t len = 100;

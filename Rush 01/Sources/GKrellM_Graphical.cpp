@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 14:38:01 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/27 14:48:27 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/28 14:02:05 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	GKrellM_Graphical::updateModules() {
 
 }
 
-void	GKrellM_Graphical::renderModules() const {
+void	GKrellM_Graphical::renderModules() {
 
 }
 

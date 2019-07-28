@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 13:41:48 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/27 16:48:18 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/28 13:59:37 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-# define TOTAL_MODULES (4)
+# include "GKrellM_Modules.hpp"
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -32,15 +32,14 @@ class GKrellM_Shell :
 	public IMonitorDisplay {
 
 	private:
+		GKrellM_Shell( const GKrellM_Shell & src );
 		GKrellM_Shell &  operator = ( const GKrellM_Shell & rhs );
 
-	private:
-		IMonitorModule *_modules[TOTAL_MODULES];
+		std::deque <IMonitorModule *> _modules;
 
 	public:
 
 		GKrellM_Shell( void );
-		GKrellM_Shell( const GKrellM_Shell & src );
 		~GKrellM_Shell( void );
 
 		void	run           ();
