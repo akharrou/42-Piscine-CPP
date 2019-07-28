@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 10:56:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 14:03:50 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/28 14:56:56 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,10 @@ struct CPU_Module :
 		std::ifstream CPU_infile;
 		std::string   CPU_usage;
 
-	char	CPU_model[LINE_MAX];
-	int32_t CPU_coreCount;
-	int32_t CPU_threadCount;
-	int32_t CPU_cacheSize;
+		char	*CPU_model;
+		int32_t CPU_coreCount;
+		int32_t CPU_threadCount;
+		int32_t CPU_cacheSize;
 
 	public:
 		CPU_Module( void );

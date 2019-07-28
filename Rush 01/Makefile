@@ -6,7 +6,7 @@
 #    By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/23 12:26:27 by akharrou          #+#    #+#              #
-#    Updated: 2019/07/28 13:58:12 by akharrou         ###   ########.fr        #
+#    Updated: 2019/07/28 14:56:47 by akharrou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,22 +41,26 @@ HEADERS     =                                                                 \
                                                                               \
                 Includes/GKrellM.hpp                                          \
                 Includes/GKrellM_Modules.hpp                                  \
+                                                                              \
                 Includes/GKrellM_Shell.hpp                                    \
                 Includes/GKrellM_Graphical.hpp                                \
-                                                                              \
-                # Includes/_______.hpp                                        \
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
 SOURCES     =                                                                 \
                 Sources/main.cpp                                              \
+                Sources/Errors.cpp                                            \
                                                                               \
                 Sources/GKrellM.cpp                                           \
                 Sources/GKrellM_Shell.cpp                                     \
-                Sources/GKrellM_Modules.cpp                                   \
                 Sources/GKrellM_Graphical.cpp                                 \
                                                                               \
-                Sources/Errors.cpp                                            \
+                Sources/GeneralInfo_Module.cpp                                \
+                Sources/RAM_Module.cpp                                        \
+                Sources/CPU_Module.cpp                                        \
+                Sources/Processes_Module.cpp                                  \
+                Sources/Network_Module.cpp                                    \
+                Sources/Zaz_Module.cpp                                        \
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 

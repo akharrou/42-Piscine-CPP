@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 14:44:27 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 13:59:42 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/28 14:54:28 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ GKrellM_Shell &	GKrellM_Shell::operator = ( const GKrellM_Shell & rhs ) {
 /* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */
 
 static inline bool OneSecondPassed(std::chrono::high_resolution_clock::time_point t1) {
-	return ( (std::chrono::high_resolution_clock::now() - t1).count() < 1.0 /* seconds */ );
+	return ( std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - t1).count() > 1.0 /* seconds */ );
 }
 
 void	GKrellM_Shell::run() {
@@ -92,7 +92,7 @@ void	GKrellM_Shell::run() {
 			renderModules();
 
 			while ( ! OneSecondPassed(t1) );
-				/* wait for the rest of that second */
+
 		}
 
 	} catch ( std::exception & e ) {
@@ -102,68 +102,103 @@ void	GKrellM_Shell::run() {
 
 void	GKrellM_Shell::updateModules() {
 
+	std::thread thread_0;
+	std::thread thread_1;
+	std::thread thread_2;
+	std::thread thread_3;
+	std::thread thread_4;
+	std::thread thread_5;
+
 	if (_modules[0] != nullptr)
-		std::thread thread_0( [&]() {
+		thread_0 = std::thread( [&]() {
 			_modules[0]->update();
 		});
 
 	if (_modules[1] != nullptr)
-		std::thread thread_1( [&]() {
+		thread_1 = std::thread( [&]() {
 			_modules[1]->update();
 		});
 
 	if (_modules[2] != nullptr)
-		std::thread thread_2( [&]() {
+		thread_2 = std::thread( [&]() {
 			_modules[2]->update();
 		});
 
 	if (_modules[3] != nullptr)
-		std::thread thread_3( [&]() {
+		thread_3 = std::thread( [&]() {
 			_modules[3]->update();
 		});
 
 	if (_modules[4] != nullptr)
-		std::thread thread_4( [&]() {
+		thread_4 = std::thread( [&]() {
 			_modules[4]->update();
 		});
 
 	if (_modules[5] != nullptr)
-		std::thread thread_5( [&]() {
+		thread_5 = std::thread( [&]() {
 			_modules[5]->update();
 		});
+
+	thread_0.join();
+	thread_1.join();
+	thread_2.join();
+	thread_3.join();
+	thread_4.join();
+	thread_5.join();
 }
 
 void	GKrellM_Shell::renderModules() {
 
-	if (_modules[0] != nullptr)
-		std::thread thread_0( [&]() {
-			_modules[0]->render();
-		});
+	_modules[0]->render();
+	_modules[1]->render();
+	_modules[2]->render();
+	_modules[3]->render();
+	_modules[4]->render();
+	_modules[5]->render();
 
-	if (_modules[1] != nullptr)
-		std::thread thread_1( [&]() {
-			_modules[1]->render();
-		});
+	// std::thread thread_0,
+	//             thread_1,
+	//             thread_2,
+	//             thread_3,
+	//             thread_4,
+	//             thread_5;
 
-	if (_modules[2] != nullptr)
-		std::thread thread_2( [&]() {
-			_modules[2]->render();
-		});
+	// if (_modules[0] != nullptr)
+	// 	thread_0 = std::thread( [&]() {
+	// 		_modules[0]->render();
+	// 	});
 
-	if (_modules[3] != nullptr)
-		std::thread thread_3( [&]() {
-			_modules[3]->render();
-		});
+	// if (_modules[1] != nullptr)
+	// 	thread_1 = std::thread( [&]() {
+	// 		_modules[1]->render();
+	// 	});
 
-	if (_modules[4] != nullptr)
-		std::thread thread_4( [&]() {
-			_modules[4]->render();
-		});
+	// if (_modules[2] != nullptr)
+	// 	thread_2 = std::thread( [&]() {
+	// 		_modules[2]->render();
+	// 	});
 
-	if (_modules[5] != nullptr)
-		std::thread thread_5( [&]() {
-			_modules[5]->render();
-		});
+	// if (_modules[3] != nullptr)
+	// 	thread_3 = std::thread( [&]() {
+	// 		_modules[3]->render();
+	// 	});
+
+	// if (_modules[4] != nullptr)
+	// 	thread_4 = std::thread( [&]() {
+	// 		_modules[4]->render();
+	// 	});
+
+	// if (_modules[5] != nullptr)
+	// 	thread_5 = std::thread( [&]() {
+	// 		_modules[5]->render();
+	// 	});
+
+	// thread_0.join();
+	// thread_1.join();
+	// thread_2.join();
+	// thread_3.join();
+	// thread_4.join();
+	// thread_5.join();
 }
 
 
