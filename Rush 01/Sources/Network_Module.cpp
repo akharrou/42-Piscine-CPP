@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Network_Module.cpp                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/28 14:53:31 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 16:31:29 by akharrou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "../Includes/GKrellM.hpp"
 #include "../Includes/GKrellM_Modules.hpp"
@@ -35,15 +24,22 @@ void	Network_Module::update() {
 		std::getline(NETWORK_infile, NETWORK_activity, '\0');
 		NETWORK_infile.close();
 	}
-
-	/* Parse it here */
 }
 
 void	Network_Module::render() {
 
-	std::cout << "\n/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */\n";
-	std::cout << "/* NETWORK ACTIVITY INFORMATION */\n\n";
+	werase ( screen.win );
 
-	std::cout << "NETWORK Activity : " << NETWORK_activity << "\n";
+	std::string title ("|Network Info|");
 
+	mvwprintw(screen.win, 2, 2,
+	         "%s", NETWORK_activity.c_str());
+
+	box    ( screen.win, 0, 0 );
+
+	mvwprintw(screen.win, 0, (screen.max.x - screen.min.x - title.length()) / 2,
+	          "%s", title.c_str()
+	);
+
+	wrefresh ( screen.win );
 }

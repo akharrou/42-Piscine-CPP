@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   GKrellM.hpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/27 12:19:56 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 15:49:45 by akharrou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #ifndef GKRELLM_HPP
 # define GKRELLM_HPP
@@ -30,10 +19,12 @@
 
 # include <iostream>
 # include <fstream>
+# include <sstream>
 # include <thread>
 
 # include <chrono>
 # include <ctime>
+# include <istream>
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -43,10 +34,15 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-typedef struct {
+typedef struct coordinate {
+	int_fast16_t y;
+	int_fast16_t x;
+} coord_t;
+
+typedef struct windowScreen {
 	WINDOW *win;
-	int yMax;
-	int xMax;
+	coord_t min;
+	coord_t max;
 } screen_t;
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

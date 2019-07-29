@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Zaz_Module.cpp                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/28 14:53:57 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 16:48:35 by akharrou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "../Includes/GKrellM.hpp"
 #include "../Includes/GKrellM_Modules.hpp"
@@ -27,10 +16,22 @@ void	Zaz_Module::update() {
 
 void	Zaz_Module::render() {
 
-	std::cout << "\n/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */\n";
-	std::cout << "/* ZAZ'S FAVORITE ANIMAL */\n\n";
+	std::istringstream tmpUnicorn(unicorn);
+	std::string tmp;
 
-	std::cout << unicorn << "\n";
+	werase ( screen.win );
+
+	std::string title ("|Zaz's Favorite Animal|");
+
+	for (unsigned int i = 0; std::getline(tmpUnicorn, tmp, '\n'); ++i) {
+		mvwprintw(screen.win, 2 + i, ((((screen.max.x - screen.min.x) / 2 / 2) + ((screen.max.x - screen.min.x) / 2 / 2 / 2))), "%s", tmp.c_str());
+	}
+
+	box    ( screen.win, 0, 0 );
+	mvwprintw(screen.win, 0, (screen.max.x - screen.min.x - title.length()) / 2,
+				"%s", title.c_str());
+
+	wrefresh ( screen.win );
 }
 
 
@@ -42,28 +43,6 @@ Zaz_Module::Zaz_Module( screen_t win ) :
 	AMonitorModule(win) {
 
 	name = "Zaz Module";
-
-	// unicornFrame[0] =
-	// 	"        /'\n"
-	// 	"       //\n"
-	// 	"   .  //\n"
-	// 	"   |\\//7\n"
-	// 	"  /' \" \\\n"
-	// 	" .   . .\n"
-	// 	" | (    \\     '._\n"
-	// 	" |  '._  '    '. '\n"
-	// 	" /    \\'-'_---. ) )\n"
-	// 	".              :.'\n"
-	// 	"|               \\\n"
-	// 	"| .    .   .     .\n"
-	// 	"' .    |  |      |\n"
-	// 	" \\^   /_-':     /\n"
-	// 	" / | |    '\\  .'\n"
-	// 	"/ /| |     \\\\  |\n"
-	// 	"\\ \\( )     // /\n"
-	// 	" \\ | |    // /\n"
-	// 	"  L! !   // /\n"
-	// 	"   [_]  L[_|\n";
 
 	unicornFrame[0] =
         "                                 \n"
@@ -137,34 +116,4 @@ Zaz_Module::Zaz_Module( screen_t win ) :
         "         _/ /          \\_\\\n"
         "        /_!/            >_\\\n";
 
-	// unicornFrame[4] =
-        // "        \\\\\\\\                         ||\n"
-        // "         \\\\\\\\\\                       ||\n"
-        // "          \\\\\\\\                       ||\n"
-        // "           \\\\\\\\           \\\\\\\\\\      ||\n"
-        // "             \\\\\\         \\\\\\\\\\\\\\\\\\   ||\n"
-        // "      __    __\\\\\\__    \\\\\\\\\\\\\\|\\ \\\\\\\\||\n"
-        // "     /  |  /       \\  \\\\\\\\\\\\\\\\|\\\\ ___||_\n"
-        // "    / | | /         \\  \\\\\\\\\\\\\\\\_ \\     o \\____\n"
-        // " __/ /| |/      \\    \\\\\\\\\\\\\\\\\\/               \\\n"
-        // "|__L/ |________  \\    \\\\\\\\\\\\\\/     \\____/-----/\n"
-        // "       __/ /\\     \\    \\\\\\\\\\/        /\n"
-        // "      |__L/  \\ \\   \\    \\\\\\/      / /\n"
-        // "              \\ \\   \\_   \\/      / /\n"
-        // "               \\ \\       /      / /\n"
-        // "                \\ \\/           / /\n"
-        // "                 \\ |          / /\n"
-        // "                  \\|           /\n"
-        // "                   |    |     /\n"
-        // "                   \\    |____/|\n"
-        // "                    \\   |  \\  |\n"
-        // "                     \\  |   \\ \\\n"
-        // "                      \\ \\    \\ \\\n"
-        // "                       \\ \\    \\ \\\n"
-        // "                        \\ \\    \\ \\\n"
-        // "                         \\ \\    \\_\\\n"
-        // "                          \\_\\    | \\\n"
-        // "                           | \\   \\\\|\n"
-        // "                           \\\\|    \\|\n"
-        // "                            \\|\n";
 }

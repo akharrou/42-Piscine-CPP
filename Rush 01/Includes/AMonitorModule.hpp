@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/27 13:29:01 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 16:26:57 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/07/28 17:29:45 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ struct AMonitorModule :
 		virtual ~AMonitorModule ();
 
 		std::string name;
-		screen_t win;
+		screen_t screen;
 
 };
 

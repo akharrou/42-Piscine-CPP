@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   AMonitorModule.cpp                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/28 16:03:32 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 16:09:14 by akharrou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "../Includes/AMonitorModule.hpp"
 
@@ -20,7 +9,7 @@ AMonitorModule::AMonitorModule() {}
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
 AMonitorModule::AMonitorModule( screen_t window ) :
-	win( window ) {
+	screen( window ) {
 }
 
 AMonitorModule::AMonitorModule( const AMonitorModule & src ) {

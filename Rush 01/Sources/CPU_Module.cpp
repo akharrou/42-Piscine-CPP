@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   CPU_Module.cpp                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/28 14:51:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 16:28:36 by akharrou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "../Includes/GKrellM.hpp"
 #include "../Includes/GKrellM_Modules.hpp"
@@ -47,19 +36,34 @@ void	CPU_Module::update() {
 		std::getline(CPU_infile, CPU_usage, '\0');
 		CPU_infile.close();
 	}
-
-	/* Parse it here */
 }
 
 void	CPU_Module::render() {
 
-	std::cout << "\n/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */\n";
-	std::cout << "/* CPU INFORMATION */\n\n";
+	werase ( screen.win );
 
-	std::cout << "CPU Model : "         << CPU_model               << "\n";
-	std::cout << "CPU Core Count : "    << CPU_coreCount           << "\n";
-	std::cout << "CPU Thread Count : "  << CPU_threadCount         << "\n";
-	std::cout << "CPU Cache Size : "    << CPU_cacheSize << "KB"   << "\n\n";
 
-	std::cout << "CPU Usage : "         << CPU_usage               << "\n";
+	std::string title ("|CPU Info|");
+
+	mvwprintw(screen.win,	2,
+							2,
+						"CPU Model: %s", CPU_model);
+	mvwprintw(screen.win,	4,
+							2,
+						"CPU Core Count: %d", CPU_coreCount);
+	mvwprintw(screen.win,	6,
+							2,
+						"CPU Thread Count: %d", CPU_threadCount);
+	mvwprintw(screen.win,	8,
+							2,
+						"CPU Cache Size: %d", CPU_cacheSize);
+
+	mvwprintw( screen.win, 10, 2, "%s", CPU_usage.c_str() );
+
+	box    ( screen.win , 0 , 0 );
+	mvwprintw(screen.win,	0,
+						(screen.max.x - screen.min.x - title.length()) / 2,
+						"%s", title.c_str());
+
+	wrefresh ( screen.win );
 }

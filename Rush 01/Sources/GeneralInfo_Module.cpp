@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   GeneralInfo_Module.cpp                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/28 14:50:56 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/28 16:29:31 by akharrou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "../Includes/GKrellM.hpp"
 #include "../Includes/GKrellM_Modules.hpp"
@@ -49,13 +38,34 @@ void	GeneralInfo_Module::update() {
 
 void	GeneralInfo_Module::render() {
 
-	std::cout << "\n/* — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — */\n";
-	std::cout << "/* GENERAL INFORMATION */\n\n";
+    werase ( screen.win );
 
-	std::cout << Datetime    << "\n\n";
-	std::cout << Username    << "\n";
-	std::cout << Hostname    << "\n";
-	std::cout << OS_Name     << "\n";
-	std::cout << OS_Release  << "\n";
-	std::cout << Platform    << "\n";
+	std::string title ("|General Info|");
+
+	mvwprintw(screen.win,	2,
+							(screen.max.x - screen.min.x - Datetime.length()) / 2,
+						"%s", Datetime.c_str());
+	mvwprintw(screen.win,	4,
+							2,
+						"Username: %s", Username.c_str());
+	mvwprintw(screen.win,	6,
+							2,
+						"Hostname: %s", Hostname.c_str());
+	mvwprintw(screen.win,	8,
+							2,
+						"OS Name: %s", OS_Name.c_str());
+	mvwprintw(screen.win,	10,
+							2,
+						"OS Release: %s", OS_Release.c_str());
+	mvwprintw(screen.win,	12,
+							2,
+						"Platform: %s", Platform.c_str());
+
+	box    ( screen.win, 0, 0 );
+
+	mvwprintw(screen.win,	0,
+						(screen.max.x - screen.min.x - title.length()) / 2,
+						"%s", title.c_str());
+
+    wrefresh ( screen.win );
 }
