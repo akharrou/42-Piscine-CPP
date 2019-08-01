@@ -2,7 +2,7 @@
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
 CC          =   clang++ -std=c++2a
-CFLAGS      =   -W -Wall -Wextra -Werror -pedantic -lncurses $(DEBUG_FLAGS)
+CFLAGS      =   -W -Wall -Wextra -Werror $(DEBUG_FLAGS)
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
@@ -22,13 +22,14 @@ DEBUG_FLAGS = -O0 -g                                                          \
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
-NAME        =   a
+NAME        =   space_ships
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
 HEADERS     =                                                                 \
                 Includes/AGame.class.hpp                                      \
                 Includes/RType.class.hpp                                      \
+                                                                              \
                 Includes/APawn.class.hpp                                      \
                 Includes/Spaceship.class.hpp                                  \
                 Includes/EnemyA.class.hpp                                     \
@@ -41,6 +42,7 @@ SOURCES     =                                                                 \
                                                                               \
                 Sources/AGame.class.cpp                                       \
                 Sources/RType.class.cpp                                       \
+                                                                              \
                 Sources/APawn.class.cpp                                       \
                 Sources/SpaceShip.class.cpp                                   \
                 Sources/EnemyA.class.cpp                                      \
@@ -48,18 +50,18 @@ SOURCES     =                                                                 \
 
 # — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
-OBJECTS     =   $(SOURCES:.c=.o)
+OBJECTS     =   $(SOURCES:.cpp=.o)
 
 # Main — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —
 
 all: $(NAME)
 
 $(NAME): $(OBJECTS)
-	@$(CC) $(CFLAGS) $^ -o $@
+	@$(CC) $(CFLAGS) -pedantic -lncurses $^ -o $@
 	@echo && echo $(GREEN) "[√]     [$(NAME) Successfully Compiled!]"
 	@echo $(WHITE)
 
-%.o: %.c $(HEADERS)
+%.o: %.cpp $(HEADERS)
 	@$(CC) $(CFLAGS) -pipe -c $< -o $@
 	@echo $(WHITE) "Compiling => " $<
 

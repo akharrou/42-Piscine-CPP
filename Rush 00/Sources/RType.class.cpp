@@ -8,6 +8,7 @@
 
 RType::RType( void ) :
 	AGame("RType") {
+	initialize();
 }
 
 RType::RType( const RType & src ) {
@@ -47,7 +48,6 @@ int		RType::initialize  ( void )
 
     clear();                     			/* NOTE : clears the screen                                */
     refresh();                   			/* NOTE : renders the screen                               */
-
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -124,8 +124,8 @@ int		RType::initialize  ( void )
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-	m_GameState.score = 0;
-	m_GameState.tick  = 0;
+	m_GameState.score      = 0;
+	m_GameState.tick       = 0;
 	m_GameState.time_start = std::chrono::steady_clock::now();
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -135,7 +135,7 @@ int		RType::initialize  ( void )
 
 	m_GameState.pawns[SPACESHIPS][0] = new SpaceShip();
 	// m_GameState.pawns[SPACESHIPS][0] = new SpaceShip( 3, 100, m_gameScreen );
-	// m_GameState.pawns[ENEMIES] = new EnemyA()[100];
+	bzero(m_GameState.pawns[ENEMIES], sizeof(*m_GameState.pawns[ENEMIES]) * (100));
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -166,31 +166,31 @@ void	RType::updateGameState ( void ) {
 		{
 			for ( int j = 0; j < 100; ++j )
 			{
-				if (m_GameState.pawns[i][j])
+				if (m_GameState.pawns[i][j] != NULL)
 					m_GameState.pawns[i][j]->update( m_GameState, m_gameScreen );
 			}
 		}
 
-		if (m_GameState.tick % 30)
+		if (m_GameState.tick % 30 == 0)
 		{
 			for ( int j = 0; j < 100; ++j )
 			{
-				if (m_GameState.pawns[ENEMIES][j] != NULL)
+				if (m_GameState.pawns[ENEMIES][j] == NULL)
+				{
 					m_GameState.pawns[ENEMIES][j] = new EnemyA();
+					mvwprintw(m_gameScreen.window, j, 10, "Making enemies");
+				}
 			}
 		}
 
 	}
 
+	// wrefresh( m_gameScreen.window );
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 	/* INFO LOGIC */ {
 
-
-
-
 	}
-
 }
 
 void	RType::renderGameFrame ( void ) const
@@ -198,9 +198,10 @@ void	RType::renderGameFrame ( void ) const
 	werase( m_infoScreen.window );
 	werase( m_gameScreen.window );
 
-
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 	/* GAME SCREEN */ { box( m_gameScreen.window, 0, 0 );
+
+		// mvwprintw(m_gameScreen.window, 10, 10, "Making enemies");
 
 		for ( int i = 0; i < 4; ++i )
 		{

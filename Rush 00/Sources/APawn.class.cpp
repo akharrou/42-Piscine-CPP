@@ -30,7 +30,7 @@ APawn::~APawn( void ) { }
 
 /* OPERATOR OVERLOAD(S) - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-APawn &			APawn::operator = ( const APawn & rhs ) {
+APawn &		APawn::operator = ( const APawn & rhs ) {
 
 	if (this != &rhs) {
 		m_type = rhs.m_type;

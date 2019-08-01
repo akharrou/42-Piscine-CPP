@@ -5,8 +5,10 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 # include "Game.hpp"
+# include "IGame.class.hpp"
 
-# include "AGame.class.hpp"
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
 # include "APawn.class.hpp"
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -17,12 +19,12 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 class APawn;
-class RType
-	: public AGame {
+class RType {
 
 	private:
+		RType( const RType & src );
+		RType &	operator = ( const RType & rhs );
 
-		screen_t	m_mainScreen;
 		screen_t	m_gameScreen;
 		screen_t	m_infoScreen;
 
@@ -30,19 +32,22 @@ class RType
 
 	public:
 		RType( void );
-		RType( const RType & src );
 		~RType( void );
 
-		RType &		operator = ( const RType & rhs );
+		int		menu         ( void );
+		void	leaderboads  ( void );
+		void	gameplay     ( void );
+		void	gameover     ( void );
 
-		int		initialize      ( void );
-		void	exit            ( void ) const;
+		void	onUserInput  ( void );
+		void	onUserUpdate ( void );
 
-		void	getUserInput    ( void );
-		void	updateGameState ( void );
-		void	renderGameFrame ( void ) const;
+		/* Views */
+		void	render( WINDOW * , std::string msg );
+		void	render( WINDOW * , coord_t location , hitBoxUnit_t * );
 
 };
+#include <stack>
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
