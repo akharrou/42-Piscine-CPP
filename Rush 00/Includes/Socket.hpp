@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/01 17:48:36 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/01 21:46:07 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,15 @@ struct Socket {
 
 		struct sockaddr_in	address;
 		socklen_t			address_len;
+
+		void	socket  ( int Domain, int Type, int Protocol );
+		void	bind    ( std::string IP_Address, int Port   );
+
+		void	listen  ( int maxconn ) const;
+		void	connect ( Socket & )    const;
+		void	accept  ( Socket & )    const;
+
+		void	close   ();
 
 		class SocketError : public std::exception {
 
