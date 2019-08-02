@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/01 21:45:57 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/01 21:52:00 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void	Socket::socket( int Domain, int Type, int Protocol ) {
 
 	descriptor = ::socket( Domain, Type, Protocol );
 	if ( descriptor == -1 )
-		throw SocketError( strerror(errno) );
+		throw SocketError();
 
 }
 
@@ -138,20 +138,20 @@ void	Socket::bind( std::string IP_Address, int Port )
 	                  reinterpret_cast<struct sockaddr *>(&address),
 	                  address_len );
 	if ( ret == -1 )
-		throw SocketError( strerror(errno) );
+		throw SocketError();
 
 }
 
 void	Socket::close() {
 
 	if ( ::close( descriptor ) == -1 )
-		throw SocketError( strerror(errno) );
+		throw SocketError();
 }
 
 void	Socket::listen( int maxconn ) const {
 
 	if ( ::listen( descriptor, maxconn ) == -1 )
-		throw SocketError( strerror(errno) );
+		throw SocketError();
 }
 
 void	Socket::connect( Socket & sock ) const {
@@ -172,5 +172,5 @@ Socket::SocketError::SocketError( std::string ErrorMessage ) :
 }
 
 const char *Socket::SocketError::what() const noexcept {
-	return (std::string("~ Socket Error : " + err_msg + " ~").c_str());
+	return (std::string("~ Socket Error : " + std::string(strerror(errno)) + " ~").c_str());
 }

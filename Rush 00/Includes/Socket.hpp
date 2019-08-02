@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/01 21:46:07 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/01 21:51:41 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,9 @@ struct Socket {
 
 		class SocketError : public std::exception {
 
-			private:
-				SocketError(void);
-
 			public:
+				SocketError(void);
 				~SocketError(void);
-				SocketError( std::string err_msg );
 
 				std::string err_msg;
 				const char * what() const noexcept;
