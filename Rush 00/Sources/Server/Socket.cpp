@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/02 23:28:29 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/02 23:34:36 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,10 +109,13 @@ Socket &	Socket::socket( int Domain = DFLT_FAMILY,
 	                            a fixed (typically small) maximum length;
 	                            (you would use this for UDP).
 
+	        SOCK_RAW            [...] ; See socket(2)
+
 	    Protocol:
-	        #define IP  (0)   // ip  ; 0  ; IP  ; # internet protocol, pseudo protocol number
-	        #define TCP (6)   // tcp ; 6  ; TCP ; # transmission control protocol
-	        #define UDP (17)  // udp ; 17 ; UDP ; # user datagram protocol
+	        IPPROTO_IP   --> ip  ; 0  ; IP  ; # internet protocol, pseudo protocol number
+	        IPPROTO_TCP  --> tcp ; 6  ; TCP ; # transmission control protocol
+	        IPPROTO_UDP  --> udp ; 17 ; UDP ; # user datagram protocol
+	        ...
 
 	    See : socket(2), protocols(5), /etc/protocols
 

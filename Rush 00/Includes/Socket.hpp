@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/02 23:12:21 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/02 23:33:43 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ See : /etc/protocols, /usr/include/netinet/in.h
 		redstorm_join	2346/udp    # Game Connection Port
 		redstorm_join	2346/tcp    # Game Connection Port
 
-		#              	4/tcp    Unassigned
-		#	            6/tcp    Unassigned
+		n/a             4/tcp    Unassigned
+		n/a             6/tcp    Unassigned
 		...
 
 See : /etc/services
