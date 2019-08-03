@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/01 23:05:51 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/02 18:29:19 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,36 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+/* Ports:
+
+	redstorm_join	2346/udp    # Game Connection Port
+	redstorm_join	2346/tcp    # Game Connection Port
+
+	#              	4/tcp    Unassigned
+	#	            6/tcp    Unassigned
+	...
+
+See : /etc/services */
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+# define MAXCONN (65535)   /* "For most socket interfaces, the maximum
+                           number of sockets allowed per each connection
+                           between an application and the TCP/IP sockets
+                           interface is 65535."
+
+See : https://www.ibm.com/support/knowledgecenter/en/
+SSLTBW_2.1.0/com.ibm.zos.v2r1.hala001/maxsoc.htm
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+There are several special addresses:
+
+	- INADDR_LOOPBACK (127.0.0.1) or ("localhost") always refers to the local host
+	- INADDR_ANY (0.0.0.0)
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
 class Socket {
 
 	public:
@@ -39,38 +69,49 @@ class Socket {
 		Socket( const Socket & src );
 		~Socket( void );
 
+		Socket( int Port );
 		Socket( std::string IP_Address, int Port,
-			unsigned char Domain, unsigned char Type, unsigned char Protocol );
+			int Domain, int Type, int Protocol );
 
 		Socket & operator = ( const Socket & rhs );
 
 		std::string		ip_address;
 		int				port;
-		unsigned char	domain;
-		unsigned char	type;
-		unsigned char	protocol;
+		int				domain;
+		int				type;
+		int				protocol;
 		int				descriptor;
 
-		struct sockaddr_in	address;
+		struct sockaddr_in	address_IPv4;
+		struct sockaddr_in6	address_IPv6;
 		socklen_t			address_len;
 
-		void	socket  ( int Domain, int Type, int Protocol );
-		void	bind    ( std::string IP_Address, int Port   );
+		Socket &	socket   ( int Domain, int Type, int Protocol );
+		Socket &	bind     ( std::string IP_Address, int Port   );
 
-		void	listen  ( int maxconn ) const;
-		void	connect ( Socket & )    const;
-		void	accept  ( Socket & )    const;
+		Socket &	listen   ( int connections );
 
-		void	close   ();
+		Socket &	connect  ( Socket & );
+		Socket		accept   ( void ) const;
+
+		ssize_t		send     ( const void * buffer, size_t length , int flags )                    const;
+		ssize_t		sendto   ( Socket & receiver, const void * buffer, size_t length , int flags ) const;
+
+		ssize_t		recv     ( const void * buffer, size_t length , int flags )                    const;
+		ssize_t		recvfrom ( Socket & sender, const void * buffer, size_t length , int flags )   const;
+
+		void		shutdown ( int how ) const;
+		void		close    ( void )    const;
 
 		class SocketError : public std::exception {
 
 			public:
 				SocketError(void);
+				SocketError( std::string Error_Message );
 				~SocketError(void);
 
 				std::string err_msg;
-				const char * what() const noexcept;
+				const char * what() noexcept;
 		};
 };
 
