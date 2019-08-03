@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/02 20:06:17 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/02 23:28:29 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ Socket &	Socket::operator = ( const Socket & rhs ) {
 		descriptor   = rhs.descriptor;
 		IPv4_Address = rhs.IPv4_Address;
 		IPv6_Address = rhs.IPv6_Address;
+		address      = rhs.address;
 		address_len  = rhs.address_len;
 	}
 	return (*this);
@@ -126,7 +127,36 @@ Socket &	Socket::socket( int Domain = DFLT_FAMILY,
 
 Socket &	Socket::bind( std::string IP_Address, int Port ) {
 
-	/* Bind to an Address and Port (i.e to a highway) - - - - - - - - - - - - -
+	struct addrinfo hints;
+	struct addrinfo *head;
+	int ret;
+
+	bzero( &hints, sizeof(hints) );
+	hints.ai_family   = domain;
+	hints.ai_socktype = type;
+
+	ret = getaddrinfo( IP_Address.c_str(), std::to_string(port).c_str(), &hints, &head );
+
+	if ( ret != 0 ) {
+		this->close();
+		throw SocketError(gai_strerror(ret));
+	}
+
+	address     = hints.ai_addr;
+	address_len = hints.ai_addrlen;
+
+	freeaddrinfo(head);
+
+	ret = ::bind( descriptor, address, address_len );
+
+	if ( ret == -1 ) {
+		this->close();
+		throw SocketError();
+	}
+
+/*
+
+	/ Bind to an Address and Port (i.e to a highway) - - - - - - - - - - - - -
 
 	    int  bind( int socket,
 	               const struct sockaddr *address,
@@ -157,14 +187,12 @@ Socket &	Socket::bind( std::string IP_Address, int Port ) {
 	     See : bind(2) , /usr/include/netinet/in.h  @line 372 ,
 		                 /usr/include/netinet/in6.h @line 164
 
-	 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-	int ret;
+	 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - /
 
 	switch(domain)
 	{
 
-		/* IPv4 – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – */
+		/ IPv4 – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – /
 		case AF_INET:
 
 			bzero( & IPv4_Address, sizeof( IPv4_Address ) );
@@ -173,7 +201,7 @@ Socket &	Socket::bind( std::string IP_Address, int Port ) {
 
 			if ( ret == -1 ) {
 
-				(*this).close();
+				this->close();
 				throw SocketError();
 
 			} else if ( ret == 0 ) {
@@ -184,23 +212,22 @@ Socket &	Socket::bind( std::string IP_Address, int Port ) {
 			IPv4_Address.sin_len    = sizeof(domain);
 			IPv4_Address.sin_port   = htons( Port );
 
-            address     = reinterpret_cast <struct sockaddr *> (&IPv4_Address);
-            address_len = sizeof ( IPv4_Address );
+			address     = reinterpret_cast <struct sockaddr *> (&IPv4_Address);
+			address_len = sizeof ( IPv4_Address );
 
 			break;
 
-
-		/* IPv6 – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – */
+		/ IPv6 – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – /
 		case AF_INET6:
 
-	IPv6_Address:
+IPv6_Address:
 			bzero( & IPv6_Address, sizeof( IPv6_Address ) );
 
 			ret = inet_pton ( AF_INET6, IP_Address.c_str(), &(IPv6_Address.sin6_addr) );
 
 			if ( ret == -1 ) {
 
-				(*this).close();
+				this->close();
 				throw SocketError();
 
 			} else if ( ret == 0 ) {
@@ -210,30 +237,25 @@ Socket &	Socket::bind( std::string IP_Address, int Port ) {
 			IPv6_Address.sin6_family = domain;
 			IPv6_Address.sin6_len    = sizeof(domain);
 			IPv6_Address.sin6_port   = htons( Port );
-			/* IPv6_Address.sin6_flowinfo = ?  // IP6 flow information */
-			/* IPv6_Address.sin6_scope_id = ?  // scope zone index     */
+			/ IPv6_Address.sin6_flowinfo = ?  // IP6 flow information /
+			/ IPv6_Address.sin6_scope_id = ?  // scope zone index     /
 
-            address     = reinterpret_cast <struct sockaddr *> (&IPv6_Address);
-            address_len = sizeof ( IPv6_Address );
+			address     = reinterpret_cast <struct sockaddr *> (&IPv6_Address);
+			address_len = sizeof ( IPv6_Address );
 
 			break;
 
 
-		/* Invalid IP Address – – – – – – – – – – – – – – – – – – – – – – – – – */
+		/ Invalid IP Address – – – – – – – – – – – – – – – – – – – – – – – – – /
 		default:
 
-	Invalid_IPAddress:
-			(*this).close();
+Invalid_IPAddress:
+			this->close();
 			throw SocketError("Invalid Internet Protocol Address");
 
 	}
+*/
 
-	ret = ::bind( descriptor, address, address_len );
-
-	if ( ret == -1 ) {
-		(*this).close();
-		throw SocketError();
-	}
 	return (*this);
 }
 
@@ -260,7 +282,7 @@ Socket &	Socket::bind( unsigned int IP_Address, int Port) {
 			break;
 
 		default:
-			(*this).close();
+			this->close();
 			throw SocketError("Invalid Internet Protocol Address");
 
 	}
@@ -273,7 +295,7 @@ Socket &	Socket::listen( unsigned int connections = MAXCONN ) {
 	int ret = ::listen( descriptor, connections );
 
 	if ( ret == -1 ) {
-		(*this).close();
+		this->close();
 		throw SocketError();
 	}
 	return (*this);
@@ -284,7 +306,7 @@ Socket &	Socket::connect( Socket & peerSocket ) {
 	int ret = ::connect( descriptor, peerSocket.address, peerSocket.address_len );
 
 	if ( ret == -1 ) {
-		(*this).close();
+		this->close();
 		throw SocketError();
 	}
 	return (*this);

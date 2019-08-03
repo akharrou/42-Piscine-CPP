@@ -6,11 +6,12 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/02 20:05:59 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/02 23:12:21 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <arpa/inet.h>
+# include <netdb.h>
 # include <netinet/in.h>
 # include <sys/socket.h>
 # include <sys/stat.h>
@@ -23,28 +24,28 @@
 # include <iostream>
 # include <exception>
 
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# define IP  (0)   /* ip  ; 0  ; IP  ; # internet protocol             */
-# define TCP (6)   /* tcp ; 6  ; TCP ; # transmission control protocol */
-# define UDP (17)  /* udp ; 17 ; UDP ; # user datagram protocol        */
+   IPPROTO_IP   -->  ip  ; 0  ; IP  ; # internet protocol
+   IPPROTO_TCP  -->  tcp ; 6  ; TCP ; # transmission control protocol
+   IPPROTO_UDP  -->  udp ; 17 ; UDP ; # user datagram protocol
 
-/* See : /etc/protocols */
+See : /etc/protocols, /usr/include/netinet/in.h
 
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-/* Ports:
+	Ports:
 
-	redstorm_join	2346/udp    # Game Connection Port
-	redstorm_join	2346/tcp    # Game Connection Port
+		redstorm_join	2346/udp    # Game Connection Port
+		redstorm_join	2346/tcp    # Game Connection Port
 
-	#              	4/tcp    Unassigned
-	#	            6/tcp    Unassigned
-	...
+		#              	4/tcp    Unassigned
+		#	            6/tcp    Unassigned
+		...
 
-See : /etc/services */
+See : /etc/services
 
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 # define MAXCONN (65535)   /* "For most socket interfaces, the maximum
                            number of sockets allowed per each connection
@@ -59,19 +60,19 @@ SSLTBW_2.1.0/com.ibm.zos.v2r1.hala001/maxsoc.htm
 There are several special addresses:
 
 	- INADDR_LOOPBACK : IPv4 (127.0.0.1) or ("localhost")
-	                    IPv6 (0000:0000:0000:0000:0000:0000:0000:0001) or (::1)
+	- INADDR_ANY : IPv4 (0.0.0.0)
 
-	- INADDR_ANY      : IPv4 (0.0.0.0)
-	                    IPv6 (0000:0000:0000:0000:0000:0000:0000:0000) or (::0)
+    - IN6ADDR_LOOPBACK_INIT :IPv6 (0000:0000:0000:0000:0000:0000:0000:0001) or (::1)
+	- IN6ADDR_ANY_INIT :IPv6 (0000:0000:0000:0000:0000:0000:0000:0000) or (::0)
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-# define DFLT_IPADDR   ( "0.0.0.0"  )
-# define DFLT_PORT     ( 8080       )
+# define DFLT_IPADDR   ( "0.0.0.0"   )
+# define DFLT_PORT     ( 8080        )
 
-# define DFLT_FAMILY   ( AF_INET6   )
-# define DFLT_TYPE     ( SOCK_DGRAM )
-# define DFLT_PROTOCOL ( UDP        )
+# define DFLT_FAMILY   ( AF_UNSPEC   ) /* AF_INET, AF_INET6, AF_UNSPEC         */
+# define DFLT_TYPE     ( SOCK_STREAM ) /* SOCK_STREAM, SOCK_DGRAM, SOCK_RAW    */
+# define DFLT_PROTOCOL ( IPPROTO_TCP ) /* IPPROTO_IP, IPPROTO_TCP, IPPROTO_UDP */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -99,10 +100,8 @@ class Socket {
 		int				protocol;
 		int				descriptor;
 
-		struct sockaddr_in	IPv4_Address;
-		struct sockaddr_in6	IPv6_Address;
-		struct sockaddr	    *address;
-		socklen_t			address_len;
+		struct sockaddr	*address;
+		socklen_t		address_len;
 
 		Socket &	socket   ( int Domain, int Type, int Protocol );
 
