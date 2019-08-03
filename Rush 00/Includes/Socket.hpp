@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/02 20:00:53 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/02 20:05:59 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,10 +106,10 @@ class Socket {
 
 		Socket &	socket   ( int Domain, int Type, int Protocol );
 
-		Socket &	bind     ( std::string IP_Address, int Port   );
-		Socket &	bind     ( int IP_Address, int Port           );
+		Socket &	bind     ( std::string IP_Address,  int Port  );
+		Socket &	bind     ( unsigned int IP_Address, int Port  );
 
-		Socket &	listen   ( int connections );
+		Socket &	listen   ( unsigned int connections );
 
 		Socket &	connect  ( Socket & );
 		Socket		accept   ( void ) const;

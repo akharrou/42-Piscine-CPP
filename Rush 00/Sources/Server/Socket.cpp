@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/02 20:03:20 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/02 20:06:17 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,7 +237,7 @@ Socket &	Socket::bind( std::string IP_Address, int Port ) {
 	return (*this);
 }
 
-Socket &	Socket::bind( int IP_Address, int Port) {
+Socket &	Socket::bind( unsigned int IP_Address, int Port) {
 
 	switch( domain ) {
 
@@ -268,7 +268,7 @@ Socket &	Socket::bind( int IP_Address, int Port) {
 	return ( this->bind( ip_address, Port ) );
 }
 
-Socket &	Socket::listen( int connections = MAXCONN ) {
+Socket &	Socket::listen( unsigned int connections = MAXCONN ) {
 
 	int ret = ::listen( descriptor, connections );
 
