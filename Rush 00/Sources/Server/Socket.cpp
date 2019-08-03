@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/02 18:32:45 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/02 18:33:26 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,15 +48,15 @@ Socket &	Socket::operator = ( const Socket & rhs ) {
 
 	if (this != &rhs) {
 
-        ip_address   = rhs.ip_address;
-        port         = rhs.port;
-        domain       = rhs.domain;
-        type         = rhs.type;
-        protocol     = rhs.protocol;
-        descriptor   = rhs.descriptor;
-        address_IPv4 = rhs.address_IPv4;
-        address_IPv6 = rhs.address_IPv6;
-        address_len  = rhs.address_len;
+		ip_address   = rhs.ip_address;
+		port         = rhs.port;
+		domain       = rhs.domain;
+		type         = rhs.type;
+		protocol     = rhs.protocol;
+		descriptor   = rhs.descriptor;
+		address_IPv4 = rhs.address_IPv4;
+		address_IPv6 = rhs.address_IPv6;
+		address_len  = rhs.address_len;
 	}
 	return (*this);
 }
