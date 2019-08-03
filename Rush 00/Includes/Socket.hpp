@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/02 18:29:19 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/02 20:00:53 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,9 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-# define IP  (0)   /* ip  ; 0 ; IP  ; # internet protocol             */
-# define TCP (6)   /* tcp ; 6 ; TCP ; # transmission control protocol */
+# define IP  (0)   /* ip  ; 0  ; IP  ; # internet protocol             */
+# define TCP (6)   /* tcp ; 6  ; TCP ; # transmission control protocol */
+# define UDP (17)  /* udp ; 17 ; UDP ; # user datagram protocol        */
 
 /* See : /etc/protocols */
 
@@ -57,20 +58,36 @@ SSLTBW_2.1.0/com.ibm.zos.v2r1.hala001/maxsoc.htm
 
 There are several special addresses:
 
-	- INADDR_LOOPBACK (127.0.0.1) or ("localhost") always refers to the local host
-	- INADDR_ANY (0.0.0.0)
+	- INADDR_LOOPBACK : IPv4 (127.0.0.1) or ("localhost")
+	                    IPv6 (0000:0000:0000:0000:0000:0000:0000:0001) or (::1)
+
+	- INADDR_ANY      : IPv4 (0.0.0.0)
+	                    IPv6 (0000:0000:0000:0000:0000:0000:0000:0000) or (::0)
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+# define DFLT_IPADDR   ( "0.0.0.0"  )
+# define DFLT_PORT     ( 8080       )
+
+# define DFLT_FAMILY   ( AF_INET6   )
+# define DFLT_TYPE     ( SOCK_DGRAM )
+# define DFLT_PROTOCOL ( UDP        )
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 class Socket {
 
 	public:
-		Socket( void );
 		Socket( const Socket & src );
 		~Socket( void );
 
+		Socket( void );
 		Socket( int Port );
+
 		Socket( std::string IP_Address, int Port,
+			int Domain, int Type, int Protocol );
+
+		Socket( int IP_Address, int Port,
 			int Domain, int Type, int Protocol );
 
 		Socket & operator = ( const Socket & rhs );
@@ -82,12 +99,15 @@ class Socket {
 		int				protocol;
 		int				descriptor;
 
-		struct sockaddr_in	address_IPv4;
-		struct sockaddr_in6	address_IPv6;
+		struct sockaddr_in	IPv4_Address;
+		struct sockaddr_in6	IPv6_Address;
+		struct sockaddr	    *address;
 		socklen_t			address_len;
 
 		Socket &	socket   ( int Domain, int Type, int Protocol );
+
 		Socket &	bind     ( std::string IP_Address, int Port   );
+		Socket &	bind     ( int IP_Address, int Port           );
 
 		Socket &	listen   ( int connections );
 

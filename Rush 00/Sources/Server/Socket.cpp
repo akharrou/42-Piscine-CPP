@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/02 18:33:26 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/02 20:03:20 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,27 @@
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
 Socket::Socket( void ) :
-	Socket("0.0.0.0", 8080, AF_INET, SOCK_STREAM, IP) {}
+	Socket(DFLT_IPADDR, DFLT_PORT, DFLT_FAMILY, DFLT_TYPE, DFLT_PROTOCOL) {}
 
 Socket::Socket( int Port ) :
-	Socket("0.0.0.0", Port, AF_INET, SOCK_STREAM, IP) {}
+	Socket(DFLT_IPADDR, Port, DFLT_FAMILY, DFLT_TYPE, DFLT_PROTOCOL) {}
 
 Socket::Socket( std::string IP_Address, int Port,
-	int Domain = AF_INET, int Type = SOCK_STREAM, int Protocol = IP ) :
+	int Domain = DFLT_FAMILY, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) :
 
 	ip_address ( IP_Address ),
+	port       ( Port       ),
+	domain     ( Domain     ),
+	type       ( Type       ),
+	protocol   ( Protocol   )
+{
+	Socket::socket ( domain, type, protocol );
+	Socket::bind   ( ip_address, port       );
+}
+
+Socket::Socket( int IP_Address, int Port,
+	int Domain = DFLT_FAMILY, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) :
+
 	port       ( Port       ),
 	domain     ( Domain     ),
 	type       ( Type       ),
@@ -54,8 +66,8 @@ Socket &	Socket::operator = ( const Socket & rhs ) {
 		type         = rhs.type;
 		protocol     = rhs.protocol;
 		descriptor   = rhs.descriptor;
-		address_IPv4 = rhs.address_IPv4;
-		address_IPv6 = rhs.address_IPv6;
+		IPv4_Address = rhs.IPv4_Address;
+		IPv6_Address = rhs.IPv6_Address;
 		address_len  = rhs.address_len;
 	}
 	return (*this);
@@ -75,7 +87,8 @@ std::ostream &  operator << ( std::ostream& out, const Socket & in ) {
 
 /* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */
 
-Socket &	Socket::socket( int Domain = AF_INET, int Type = SOCK_STREAM, int Protocol = IP ) {
+Socket &	Socket::socket( int Domain = DFLT_FAMILY,
+				int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) {
 
 	/* Create socket (connection endpoint) - - - - - - - - - - - - - - - - - - -
 
@@ -90,9 +103,15 @@ Socket &	Socket::socket( int Domain = AF_INET, int Type = SOCK_STREAM, int Proto
 	                            reliable, two-way connection based byte
 	                            streams.
 
+	        SOCK_DGRAM          A SOCK_DGRAM socket supports datagrams
+	                            (connectionless, unreliable messages of
+	                            a fixed (typically small) maximum length;
+	                            (you would use this for UDP).
+
 	    Protocol:
-	        #define IP  (0)   // ip  ; 0 ; IP  ; # internet protocol, pseudo protocol number
-	        #define TCP (6)   // tcp ; 6 ; TCP ; # transmission control protocol
+	        #define IP  (0)   // ip  ; 0  ; IP  ; # internet protocol, pseudo protocol number
+	        #define TCP (6)   // tcp ; 6  ; TCP ; # transmission control protocol
+	        #define UDP (17)  // udp ; 17 ; UDP ; # user datagram protocol
 
 	    See : socket(2), protocols(5), /etc/protocols
 
@@ -142,84 +161,128 @@ Socket &	Socket::bind( std::string IP_Address, int Port ) {
 
 	int ret;
 
-	if ( domain == AF_INET /* IPv4 */ ) {
+	switch(domain)
+	{
 
-		bzero( & address_IPv4, sizeof( address_IPv4 ) );
+		/* IPv4 – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – */
+		case AF_INET:
 
-		ret = inet_pton ( AF_INET, IP_Address.c_str(), &(address_IPv4.sin_addr) );
+			bzero( & IPv4_Address, sizeof( IPv4_Address ) );
 
-		if ( ret == -1 ) {
+			ret = inet_pton ( AF_INET, IP_Address.c_str(), &(IPv4_Address.sin_addr) );
 
+			if ( ret == -1 ) {
+
+				(*this).close();
+				throw SocketError();
+
+			} else if ( ret == 0 ) {
+				goto IPv6_Address;
+			}
+
+			IPv4_Address.sin_family = domain;
+			IPv4_Address.sin_len    = sizeof(domain);
+			IPv4_Address.sin_port   = htons( Port );
+
+            address     = reinterpret_cast <struct sockaddr *> (&IPv4_Address);
+            address_len = sizeof ( IPv4_Address );
+
+			break;
+
+
+		/* IPv6 – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – */
+		case AF_INET6:
+
+	IPv6_Address:
+			bzero( & IPv6_Address, sizeof( IPv6_Address ) );
+
+			ret = inet_pton ( AF_INET6, IP_Address.c_str(), &(IPv6_Address.sin6_addr) );
+
+			if ( ret == -1 ) {
+
+				(*this).close();
+				throw SocketError();
+
+			} else if ( ret == 0 ) {
+				goto Invalid_IPAddress;
+			}
+
+			IPv6_Address.sin6_family = domain;
+			IPv6_Address.sin6_len    = sizeof(domain);
+			IPv6_Address.sin6_port   = htons( Port );
+			/* IPv6_Address.sin6_flowinfo = ?  // IP6 flow information */
+			/* IPv6_Address.sin6_scope_id = ?  // scope zone index     */
+
+            address     = reinterpret_cast <struct sockaddr *> (&IPv6_Address);
+            address_len = sizeof ( IPv6_Address );
+
+			break;
+
+
+		/* Invalid IP Address – – – – – – – – – – – – – – – – – – – – – – – – – */
+		default:
+
+	Invalid_IPAddress:
 			(*this).close();
-			throw SocketError();
-
-		} else if ( ret == 0 ) {
-			goto IPv6_Address;
-		}
-
-        address_IPv4.sin_family = domain;
-		address_IPv4.sin_len    = sizeof(domain);
-        address_IPv4.sin_port   = htons( Port );
-
-		address_len = sizeof ( address_IPv4 );
-
-	} else if ( domain == AF_INET6 /* IPv6 */ ) {
-
-IPv6_Address:
-		bzero( & address_IPv6, sizeof( address_IPv6 ) );
-
-		ret = inet_pton ( AF_INET6, IP_Address.c_str(), &(address_IPv6.sin6_addr) );
-
-		if ( ret == -1 ) {
-
-			(*this).close();
-			throw SocketError();
-
-		} else if ( ret == 0 ) {
-			goto Unknown_Address;
-		}
-
-        address_IPv6.sin6_family = domain;
-		address_IPv6.sin6_len    = sizeof(domain);
-        address_IPv6.sin6_port   = htons( Port );
-        /* address_IPv6.sin6_flowinfo = ?  // IP6 flow information */
-        /* address_IPv6.sin6_scope_id = ?  // scope zone index     */
-
-		address_len = sizeof ( address_IPv6 );
-
-	} else {
-
-Unknown_Address:
-		(*this).close();
-		throw SocketError("Unknown Internet Protocol");
+			throw SocketError("Invalid Internet Protocol Address");
 
 	}
 
-	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+	ret = ::bind( descriptor, address, address_len );
 
-	ret = ::bind( descriptor,
-	              reinterpret_cast <struct sockaddr *> ( &address_IPv6 ),
-	              address_len );
 	if ( ret == -1 ) {
 		(*this).close();
 		throw SocketError();
 	}
-
 	return (*this);
+}
+
+Socket &	Socket::bind( int IP_Address, int Port) {
+
+	switch( domain ) {
+
+		case AF_INET:  /* IPv4 */
+
+			char IPv4_addr[ INET_ADDRSTRLEN  ];
+			struct sockaddr_in  sa_in;
+
+			inet_ntop( AF_INET,  &(sa_in.sin_addr),   IPv4_addr, INET_ADDRSTRLEN  );
+			ip_address = IPv4_addr;
+			break;
+
+		case AF_INET6: /* IPv6 */
+
+			char IPv6_addr[ INET6_ADDRSTRLEN ];
+			struct sockaddr_in6 sa_in6;
+
+			inet_ntop( AF_INET6, &(sa_in6.sin6_addr), IPv6_addr, INET6_ADDRSTRLEN );
+			ip_address = IPv6_addr;
+			break;
+
+		default:
+			(*this).close();
+			throw SocketError("Invalid Internet Protocol Address");
+
+	}
+
+	return ( this->bind( ip_address, Port ) );
 }
 
 Socket &	Socket::listen( int connections = MAXCONN ) {
 
-	if ( ::listen( descriptor, connections ) == -1 )
+	int ret = ::listen( descriptor, connections );
+
+	if ( ret == -1 ) {
+		(*this).close();
 		throw SocketError();
+	}
 	return (*this);
 }
 
 Socket &	Socket::connect( Socket & peerSocket ) {
 
-	int ret = ::connect( this->descriptor,
-	                     reinterpret_cast <struct sockaddr *> ( &peerSocket.address ),
-			             peerSocket.address_len );
+	int ret = ::connect( descriptor, peerSocket.address, peerSocket.address_len );
+
 	if ( ret == -1 ) {
 		(*this).close();
 		throw SocketError();
@@ -231,54 +294,52 @@ Socket		Socket::accept() const {
 
 	Socket Client( *this );
 
-	Client.descriptor = ::accept( descriptor,
-	                              reinterpret_cast <struct sockaddr *> ( &Client.address ),
-	                              &Client.address_len );
+	Client.descriptor = ::accept( descriptor, Client.address, &Client.address_len );
 	if ( Client.descriptor == -1 )
 		throw SocketError();
+
 	return ( Client );
 }
 
-ssize_t		Socket::send( const void * buffer, size_t length , int flags ) const {
+// ssize_t		Socket::send( const void * buffer, size_t length , int flags ) const {
 
-	size_t bytes;
+// 	size_t bytes;
 
-	bytes = send();
+// 	bytes = send();
 
-	if ( bytes == -1 )
-		throw SocketError();
-}
+// 	if ( bytes == -1 )
+// 		throw SocketError();
+// }
 
-ssize_t		Socket::sendto( Socket & receiver, const void * buffer, size_t length , int flags ) const {
+// ssize_t		Socket::sendto( Socket & receiver, const void * buffer, size_t length , int flags ) const {
 
-	size_t bytes;
+// 	size_t bytes;
 
-	bytes = sendto();
+// 	bytes = sendto();
 
-	if ( bytes == -1 )
-		throw SocketError();
-}
+// 	if ( bytes == -1 )
+// 		throw SocketError();
+// }
 
-ssize_t		Socket::recv( const void * buffer, size_t length , int flags ) const {
+// ssize_t		Socket::recv( const void * buffer, size_t length , int flags ) const {
 
-	size_t bytes;
+// 	size_t bytes;
 
-	bytes = recv();
+// 	bytes = recv();
 
-	if ( bytes == -1 )
-		throw SocketError();
-}
+// 	if ( bytes == -1 )
+// 		throw SocketError();
+// }
 
-ssize_t		Socket::recvfrom( Socket & sender, const void * buffer, size_t length , int flags ) const {
+// ssize_t		Socket::recvfrom( Socket & sender, const void * buffer, size_t length , int flags ) const {
 
-	size_t bytes;
+// 	size_t bytes;
 
-	bytes = recvfrom();
+// 	bytes = recvfrom();
 
-	if ( bytes == -1 )
-		throw SocketError();
-}
-
+// 	if ( bytes == -1 )
+// 		throw SocketError();
+// }
 
 void	Socket::close() const {
 
@@ -324,36 +385,4 @@ const char *Socket::SocketError::what() noexcept {
 		err_msg = strerror(errno);
 
 	return (std::string("~ Socket Error : " + err_msg + " ~").c_str());
-}
-
-
-
-
-#include <mutex>
-#include <thread>
-
-
-
-int	main() {
-
-	Socket Server("0.0.0.0", 3000);
-	int Clients[10];
-
-	Server.listen();
-
-	for (int i = 0; i < 10; ++i) {
-
-		Clients[i] = Server.accept().descriptor;
-		std::thread([ &Server, &Clients, i ] (void) -> void {
-
-			char tmp[4096];
-			while (1) {
-				::recv(Server.descriptor, tmp, 4096, 0);
-			}
-			Server.broadcast(tmp, Clients);
-
-		}).detach();
-	}
-
-	return (0);
 }
