@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/03 21:51:40 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/03 22:47:40 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,14 @@
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
 Socket::Socket( void ) :
-	family     ( AF_INET     ),
-	type       ( SOCK_STREAM ),
-	protocol   ( IPPROTO_TCP ) {}
-
-Socket::Socket( int Port ) :
-	Socket(DFLT_IPADDR, Port, DFLT_FAMILY, DFLT_TYPE, DFLT_PROTOCOL) {
-}
+	family     ( DFLT_FAMILY ),
+	type       ( DFLT_TYPE   ),
+	protocol   ( DFLT_PROTOCOL ) {}
 
 Socket::Socket( int Family, int Type, int Protocol ) :
-
 	family     ( Family     ),
 	type       ( Type       ),
-	protocol   ( Protocol   )
-{
-	Socket::socket ( family, type, protocol );
-}
+	protocol   ( Protocol   ) {}
 
 Socket::Socket( std::string IP_Address, int Port,
 	int Family = DFLT_FAMILY, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) :
@@ -58,7 +50,7 @@ Socket::~Socket( void ) {
 
 Socket &	Socket::operator = ( const Socket & rhs ) {
 
-	if (this != &rhs) {
+	if ( this != &rhs ) {
 
 		ip_address   = rhs.ip_address;
 		port         = rhs.port;
@@ -121,7 +113,7 @@ Socket &	Socket::socket( int Family = DFLT_FAMILY,
 
 	descriptor = ::socket( Family, Type, Protocol );
 	if ( descriptor == -1 )
-		throw SocketError();
+		throw SocketError( __FILE__ , __LINE__ );
 
 	return ( *this );
 }
@@ -166,44 +158,52 @@ Socket &	Socket::bind( std::string IP_Address, int Port ) {
 	switch( family )
 	{
 
-		/* IPv4 – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – */
+		/* IPv4 – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – */
 		case AF_INET:
 
 			_saddr_in.v4.sin_family = family;
-			_saddr_in.v4.sin_len    = sizeof(family);
-			_saddr_in.v4.sin_port   = htons(port);
+			// _saddr_in.v4.sin_len    = sizeof(family);
+			_saddr_in.v4.sin_port   = htons(Port);
+
+			ret = inet_pton ( AF_INET  , IP_Address.c_str(), &_saddr_in.v4.sin_addr  );
+
+			address     = reinterpret_cast <struct sockaddr *> (&_saddr_in.v4);
+			address_len = sizeof(_saddr_in.v4);
 
 			break;
 
-		/* IPv6 – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – */
+		/* IPv6 – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – */
 		case AF_INET6:
 
 			_saddr_in.v6.sin6_family = family;
-			_saddr_in.v6.sin6_len    = sizeof(family);
-			_saddr_in.v6.sin6_port   = htons(port);
+			// _saddr_in.v6.sin6_len    = sizeof(family);
+			_saddr_in.v6.sin6_port   = htons(Port);
 			/* _saddr_in.v6.sin6_flowinfo = ? */
 			/* _saddr_in.v6.sin6_scope_id = ? */
 
+			ret = inet_pton ( AF_INET6 , IP_Address.c_str(), &_saddr_in.v6.sin6_addr );
+
+			address     = reinterpret_cast <struct sockaddr *> (&_saddr_in.v6);
+			address_len = sizeof(_saddr_in.v6);
+
 			break;
 
-		/* Unsupported Address Family – – – – – – – – – – – – – – – – – – – – */
+		/* Unsupported Address Family – – – – – – – – – – – – – – – – – – – – */
 		default:
 			this->close();
-			throw SocketError("Unsupported Address Family");
+			throw SocketError( __FILE__ , __LINE__, "Unsupported Address Family");
 
 	}
 
-	(family == AF_INET) ?
-		ret = inet_pton ( AF_INET  , IP_Address.c_str(), &_saddr_in.v4.sin_addr  ):
-		ret = inet_pton ( AF_INET6 , IP_Address.c_str(), &_saddr_in.v6.sin6_addr );
+	// (family == AF_INET) ?
 
-	if ( ret < 1 ) {
+	// if ( ret < 1 ) {
 
-		this->close();
-		(ret == 0) ?
-			throw SocketError("Address Not Parseable (in the specified address family)"):
-			throw SocketError();
-	}
+	// 	this->close();
+	// 	(ret == 0) ?
+	// 		throw SocketError( __FILE__ , __LINE__, "Address Not Parseable (in the specified address family)"):
+	// 		throw SocketError( __FILE__ , __LINE__ );
+	// }
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -214,7 +214,7 @@ Socket &	Socket::bind( std::string IP_Address, int Port ) {
 
 	ret = ::bind( descriptor, address, address_len );
 	if ( ret == -1 )
-		throw SocketError();
+		throw SocketError( __FILE__ , __LINE__ );
 
 	return ( *this );
 }
@@ -238,7 +238,7 @@ Socket &	Socket::bind( unsigned int IP_Address, int Port) {
 
 			if (ret == NULL) {
 				this->close();
-				throw SocketError("Address Not Parseable (in the specified address family)");
+				throw SocketError( __FILE__ , __LINE__, "Address Not Parseable (in the specified address family)");
 			}
 
 			ip_address = IPv4_addr;
@@ -254,7 +254,7 @@ Socket &	Socket::bind( unsigned int IP_Address, int Port) {
 
 			if (ret == NULL) {
 				this->close();
-				throw SocketError("Address Not Parseable (in the specified address family)");
+				throw SocketError( __FILE__ , __LINE__, "Address Not Parseable (in the specified address family)");
 			}
 
 			ip_address = IPv6_addr;
@@ -264,7 +264,7 @@ Socket &	Socket::bind( unsigned int IP_Address, int Port) {
 		/* Unsupported Address Family – – – – – – – – – – – – – – – – – – – – */
 		default:
 			this->close();
-			throw SocketError("Unsupported Address Family");
+			throw SocketError( __FILE__ , __LINE__, "Unsupported Address Family");
 
 	}
 
@@ -277,13 +277,13 @@ Socket &	Socket::listen( int connections = MAXCONN ) {
 
 	if ( ret == -1 ) {
 		this->close();
-		throw SocketError();
+		throw SocketError( __FILE__ , __LINE__ );
 	}
 	return ( *this );
 }
 
 Socket		Socket::getSocket( std::string hostname, std::string servername,
-	int Domain = AF_UNSPEC, int Family = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) {
+	int Family = AF_UNSPEC, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) {
 
 	/* addrinfo Structure:
 
@@ -300,35 +300,46 @@ Socket		Socket::getSocket( std::string hostname, std::string servername,
 
 	See : /usr/include/netdb.h @line 147 */
 
+	Socket sock;
+
 	struct addrinfo hints;
 	struct addrinfo *head;
 	struct addrinfo *cur;
+	int sockdes;
 	int ret;
 
 	memset( &hints, 0, sizeof(hints) );
-	hints.ai_family   = Domain;
-	hints.ai_socktype = Family;
+	hints.ai_family   = Family;
+	hints.ai_socktype = Type;
 	hints.ai_protocol = Protocol;
 
 	ret = getaddrinfo( hostname.c_str(), servername.c_str(), &hints, &head );
 	if ( ret != 0 )
-		throw SocketError(gai_strerror(ret));
+		throw SocketError( __FILE__ , __LINE__, gai_strerror(ret));
 
-	Socket sock(cur->ai_family, Family, Protocol);
-
+	sockdes = -1;
 	for (cur = head; cur; cur = cur->ai_next) {
 
-		ret = ::connect( sock.descriptor, cur->ai_addr, cur->ai_addrlen );
-		if ( ret == -1 )
+		sockdes = ::socket(cur->ai_family, cur->ai_socktype, cur->ai_protocol);
+		if ( sockdes < 0 )
 			continue ;
+
+		ret = ::connect( sockdes, cur->ai_addr, cur->ai_addrlen );
+		if ( ret < 0 ) {
+			::close(sockdes);
+			sockdes = -1;
+			continue ;
+		}
+
 		break ;
 	}
 
 	freeaddrinfo(head);
 
-	if (!cur)
-		throw SocketError("Failure to establish connection with specified hostname");
+	if (sockdes < 0)
+		throw SocketError( __FILE__ , __LINE__, "Failure to establish connection with specified hostname");
 
+	sock.descriptor = sockdes;
 	return ( sock );
 }
 
@@ -346,7 +357,7 @@ Socket &	Socket::connect( Socket & peer ) {
 
 	if ( ret == -1 ) {
 		this->close();
-		throw SocketError();
+		throw SocketError( __FILE__ , __LINE__ );
 	}
 	return ( *this );
 }
@@ -357,7 +368,7 @@ Socket		Socket::accept() const {
 
 	Client.descriptor = ::accept( descriptor, Client.address, &Client.address_len );
 	if ( Client.descriptor == -1 )
-		throw SocketError();
+		throw SocketError( __FILE__ , __LINE__ );
 
 	return ( Client );
 }
@@ -369,7 +380,7 @@ Socket		Socket::accept() const {
 // 	bytes = send();
 
 // 	if ( bytes == -1 )
-// 		throw SocketError();
+// 		throw SocketError( __FILE__ , __LINE__ );
 // }
 
 // ssize_t		Socket::sendto( Socket & receiver, const void * buffer, size_t length , int flags ) const {
@@ -379,7 +390,7 @@ Socket		Socket::accept() const {
 // 	bytes = sendto();
 
 // 	if ( bytes == -1 )
-// 		throw SocketError();
+// 		throw SocketError( __FILE__ , __LINE__ );
 // }
 
 // ssize_t		Socket::recv( const void * buffer, size_t length , int flags ) const {
@@ -389,7 +400,7 @@ Socket		Socket::accept() const {
 // 	bytes = recv();
 
 // 	if ( bytes == -1 )
-// 		throw SocketError();
+// 		throw SocketError( __FILE__ , __LINE__ );
 // }
 
 // ssize_t		Socket::recvfrom( Socket & sender, const void * buffer, size_t length , int flags ) const {
@@ -399,13 +410,13 @@ Socket		Socket::accept() const {
 // 	bytes = recvfrom();
 
 // 	if ( bytes == -1 )
-// 		throw SocketError();
+// 		throw SocketError( __FILE__ , __LINE__ );
 // }
 
 void	Socket::close() const {
 
 	if ( ::close( descriptor ) == -1 )
-		throw SocketError();
+		throw SocketError( __FILE__ , __LINE__ );
 }
 
 void	Socket::shutdown ( int how = SHUT_RDWR ) const {
@@ -425,7 +436,7 @@ void	Socket::shutdown ( int how = SHUT_RDWR ) const {
 	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 	if ( ::shutdown( descriptor , how ) == -1 )
-		throw SocketError();
+		throw SocketError( __FILE__ , __LINE__ );
 
 }
 
@@ -434,18 +445,25 @@ void	Socket::shutdown ( int how = SHUT_RDWR ) const {
 
 Socket::SocketError::SocketError( void ) {}
 
-Socket::SocketError::SocketError( std::string Error_Message )
-	: err_msg ( Error_Message ) {
+Socket::SocketError::SocketError( const char *File, size_t Line ) :
+	file ( File ),
+	line ( std::to_string( Line ) ) {
+}
+
+Socket::SocketError::SocketError( const char *File, size_t Line, std::string Error_Message ) :
+	file ( File ),
+	line ( std::to_string( Line ) ),
+	err_msg ( Error_Message ) {
 }
 
 Socket::SocketError::~SocketError( void ) {}
 
-const char *Socket::SocketError::what() noexcept {
+const char *Socket::SocketError::what() const throw() {
 
-	if (err_msg.empty())
-		err_msg = strerror(errno);
-
-	return (std::string("~ Socket Error : " + err_msg + " ~").c_str());
+	return (
+		std::string("~ " + file + ":" + line + " -- Socket Error : " +
+		(err_msg.empty() ? std::string(strerror(errno)) : err_msg) + " ~").c_str()
+	);
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -453,22 +471,33 @@ const char *Socket::SocketError::what() noexcept {
 #include <mutex>
 #include <thread>
 
+using namespace std;
+
 int	main() {
 
-	Socket Server("10.113.8.3", 3000);
+	try {
 
-	Server.listen();
+		Socket Server("0.0.0.0", 5401);
 
-	Socket Client[10];
+		// Server.bind;
 
-	Client[0].connect(Server);
+		// Server.listen();
 
-	Client[1].connect("10.113.8.3", "3000");
-	Client[2].connect("10.113.8.3", "3000");
-	Client[3].connect("10.113.8.3", "3000");
-	Client[4].connect("10.113.8.3", "3000");
+		// Socket Client[10];
 
-	Client[5].connect("www.google.com", "https");
+		// Client[0].connect(Server);
+
+		// Client[1].connect("10.113.8.3", "3000");
+		// Client[2].connect("10.113.8.3", "3000");
+		// Client[3].connect("10.113.8.3", "3000");
+		// Client[4].connect("10.113.8.3", "3000");
+
+		// Client[5].connect("www.google.com", "https");
+		cout << "Everything works.\n";
+
+	} catch ( std::exception & e ) {
+		cout << e.what() << endl;
+	}
 
 	return (0);
 }

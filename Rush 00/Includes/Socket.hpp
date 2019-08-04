@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/03 21:42:50 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/03 22:45:00 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,6 @@ class Socket {
 
 		Socket( void );
 		Socket( const Socket & src );
-		Socket( int Port );
 
 		Socket( int Family, int Type, int Protocol );
 
@@ -112,8 +111,8 @@ class Socket {
 
 		Socket &	socket   ( int Family, int Type, int Protocol );
 
-		Socket &	bind     ( std::string     IP_Address , int Port );
-		Socket &	bind     ( unsigned int    IP_Address , int Port );
+		Socket &	bind     ( std::string  IP_Address , int Port );
+		Socket &	bind     ( unsigned int IP_Address , int Port );
 
 		Socket &	listen   ( int connections );
 
@@ -133,17 +132,21 @@ class Socket {
 		void		close    ( void )    const;
 
 		static Socket	getSocket( std::string hostname, std::string servername,
-			int Domain, int Family, int Protocol );
+			int Family, int Type, int Protocol );
 
 		class SocketError : public std::exception {
 
 			public:
-				SocketError(void);
-				SocketError( std::string Error_Message );
+				SocketError( void );
+				SocketError( const char *File, size_t Line );
+				SocketError( const char *File, size_t Line, std::string Error_Message );
 				~SocketError(void);
 
+				std::string file;
+				std::string line;
 				std::string err_msg;
-				const char * what() noexcept;
+
+				virtual const char* what() const throw();
 		};
 };
 
