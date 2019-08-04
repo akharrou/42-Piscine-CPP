@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/03 22:47:40 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/04 15:41:29 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,27 @@
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
 Socket::Socket( void ) :
-	family     ( DFLT_FAMILY ),
-	type       ( DFLT_TYPE   ),
+	descriptor ( -1            ),
+	family     ( DFLT_FAMILY   ),
+	type       ( DFLT_TYPE     ),
 	protocol   ( DFLT_PROTOCOL ) {}
 
 Socket::Socket( int Family, int Type, int Protocol ) :
+	descriptor ( -1         ),
 	family     ( Family     ),
 	type       ( Type       ),
 	protocol   ( Protocol   ) {}
 
-Socket::Socket( std::string IP_Address, int Port,
-	int Family = DFLT_FAMILY, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) :
+Socket::Socket( const char * hostname, const char * servname,
+	int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) :
 
-	ip_address ( IP_Address ),
-	port       ( Port       ),
-	family     ( Family     ),
+	descriptor ( -1         ),
+	ip_address ( hostname   ),
+	port       ( servname   ),
 	type       ( Type       ),
 	protocol   ( Protocol   )
 {
-	Socket::socket ( family, type, protocol );
-	Socket::bind   ( ip_address, port       );
+	Socket::bind ( ip_address, port );
 }
 
 Socket::Socket( const Socket & src ) {
@@ -83,9 +84,13 @@ Socket &	Socket::socket( int Family = DFLT_FAMILY,
 
 	/* Create socket (connection endpoint) - - - - - - - - - - - - - - - - - - -
 
-	    int   socket(int family, int type, int protocol);
+	    #include <sys/types.h>
+	    #include <sys/socket.h>
 
-	    Family:
+	    int
+		socket( int domain, int type, int protocol );
+
+	    (Address) Family:
 	        AF_INET             Internet version 4 protocols,
 	        AF_INET6            Internet version 6 protocols,
 
@@ -102,7 +107,7 @@ Socket &	Socket::socket( int Family = DFLT_FAMILY,
 	        SOCK_RAW            [...] ; See socket(2)
 
 	    Protocol:
-	        IPPROTO_IP   --> ip  ; 0  ; IP  ; # internet protocol, pseudo protocol number
+	        IPPROTO_IP   --> ip  ; 0  ; IP  ; # internet protocol -- determines automatically
 	        IPPROTO_TCP  --> tcp ; 6  ; TCP ; # transmission control protocol
 	        IPPROTO_UDP  --> udp ; 17 ; UDP ; # user datagram protocol
 	        ...
@@ -118,214 +123,76 @@ Socket &	Socket::socket( int Family = DFLT_FAMILY,
 	return ( *this );
 }
 
-Socket &	Socket::bind( std::string IP_Address, int Port ) {
+Socket &	Socket::bind( const char * hostname, const char * servname ) {
 
 	/* Bind to an Address and Port - - - - - - - - - - - - - - - - - - - - - - - -
 
-	    struct sockaddr_in  :
-	    ----------------------
+	    #include <sys/types.h>
+	    #include <sys/socket.h>
 
-            struct sockaddr_in {
-                __uint8_t        sin_len;
-                sa_family_t      sin_family;
-                in_port_t        sin_port;
-                struct           in_addr sin_addr;
-                char             sin_zero[8];
-            };
-
-	    struct sockaddr_in6 :
-		----------------------
-
-            struct sockaddr_in6 {
-                __uint8_t        sin6_len;        -- length of this struct(sa_family_t)
-                sa_family_t      sin6_family;     -- AF_INET6 (sa_family_t)
-                in_port_t        sin6_port;       -- Transport layer port # (in_port_t)
-                __uint32_t       sin6_flowinfo;   -- IP6 flow information
-                struct in6_addr  sin6_addr;       -- IP6 address
-                __uint32_t       sin6_scope_id;   -- scope zone index
-            };
+	    int
+		bind( int sockfd, struct sockaddr *my_addr, int addrlen );
 
 	    See : bind(2)
-		See : /usr/include/netinet/in.h   @line 372
-		See : /usr/include/netinet6/in6.h @line 164
+		----------------------------------------------------------------
+
+	    struct sockaddr_in   -- see : /usr/include/netinet/in.h   @line 372
+	    struct sockaddr_in6  -- see : /usr/include/netinet6/in6.h @line 164
+	    struct addrinfo      -- see : /usr/include/netdb.h        @line 147
 
 	 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-	int ret;
+	if ( std::stoi(servname) <= 1024 )
+		throw SocketError( __FILE__ , __LINE__, "Port Reserved");
 
-	memset( &_saddr_in, 0, sizeof(_saddr_in) );
-
-	switch( family )
-	{
-
-		/* IPv4 – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – */
-		case AF_INET:
-
-			_saddr_in.v4.sin_family = family;
-			// _saddr_in.v4.sin_len    = sizeof(family);
-			_saddr_in.v4.sin_port   = htons(Port);
-
-			ret = inet_pton ( AF_INET  , IP_Address.c_str(), &_saddr_in.v4.sin_addr  );
-
-			address     = reinterpret_cast <struct sockaddr *> (&_saddr_in.v4);
-			address_len = sizeof(_saddr_in.v4);
-
-			break;
-
-		/* IPv6 – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – */
-		case AF_INET6:
-
-			_saddr_in.v6.sin6_family = family;
-			// _saddr_in.v6.sin6_len    = sizeof(family);
-			_saddr_in.v6.sin6_port   = htons(Port);
-			/* _saddr_in.v6.sin6_flowinfo = ? */
-			/* _saddr_in.v6.sin6_scope_id = ? */
-
-			ret = inet_pton ( AF_INET6 , IP_Address.c_str(), &_saddr_in.v6.sin6_addr );
-
-			address     = reinterpret_cast <struct sockaddr *> (&_saddr_in.v6);
-			address_len = sizeof(_saddr_in.v6);
-
-			break;
-
-		/* Unsupported Address Family – – – – – – – – – – – – – – – – – – – – */
-		default:
-			this->close();
-			throw SocketError( __FILE__ , __LINE__, "Unsupported Address Family");
-
-	}
-
-	// (family == AF_INET) ?
-
-	// if ( ret < 1 ) {
-
-	// 	this->close();
-	// 	(ret == 0) ?
-	// 		throw SocketError( __FILE__ , __LINE__, "Address Not Parseable (in the specified address family)"):
-	// 		throw SocketError( __FILE__ , __LINE__ );
-	// }
-
-	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-	address     = reinterpret_cast <struct sockaddr *> (&_saddr_in);
-	address_len = sizeof(_saddr_in);
-
-	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-	ret = ::bind( descriptor, address, address_len );
-	if ( ret == -1 )
-		throw SocketError( __FILE__ , __LINE__ );
-
-	return ( *this );
-}
-
-Socket &	Socket::bind( unsigned int IP_Address, int Port) {
-
-	struct in_addr sin_addr;
-	const char *ret;
-
-	sin_addr.s_addr = IP_Address;
-
-	switch( family )
-	{
-
-		/* IPv4 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-		case AF_INET:
-
-			char IPv4_addr[ INET_ADDRSTRLEN  ];
-
-			ret = inet_ntop( AF_INET,  &(sin_addr), IPv4_addr, INET_ADDRSTRLEN  );
-
-			if (ret == NULL) {
-				this->close();
-				throw SocketError( __FILE__ , __LINE__, "Address Not Parseable (in the specified address family)");
-			}
-
-			ip_address = IPv4_addr;
-			break;
-
-
-		/* IPv6 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-		case AF_INET6:
-
-			char IPv6_addr[ INET6_ADDRSTRLEN ];
-
-			ret = inet_ntop( AF_INET6, &(sin_addr), IPv6_addr, INET6_ADDRSTRLEN );
-
-			if (ret == NULL) {
-				this->close();
-				throw SocketError( __FILE__ , __LINE__, "Address Not Parseable (in the specified address family)");
-			}
-
-			ip_address = IPv6_addr;
-			break;
-
-
-		/* Unsupported Address Family – – – – – – – – – – – – – – – – – – – – */
-		default:
-			this->close();
-			throw SocketError( __FILE__ , __LINE__, "Unsupported Address Family");
-
-	}
-
-	return ( this->bind( ip_address, Port ) );
-}
-
-Socket &	Socket::listen( int connections = MAXCONN ) {
-
-	int ret = ::listen( descriptor, connections );
-
-	if ( ret == -1 ) {
-		this->close();
-		throw SocketError( __FILE__ , __LINE__ );
-	}
-	return ( *this );
-}
-
-Socket		Socket::getSocket( std::string hostname, std::string servername,
-	int Family = AF_UNSPEC, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) {
-
-	/* addrinfo Structure:
-
-       struct addrinfo {
-           int        ai_flags;            -- AI_PASSIVE, AI_CANONNAME, AI_NUMERICHOST
-           int        ai_family;           -- PF_xxx
-           int        ai_socktype;         -- SOCK_xxx
-           int        ai_protocol;         -- 0 or IPPROTO_xxx for IPv4 and IPv6
-           socklen_t  ai_addrlen;          -- length of ai_addr
-           char       ai_canonname;        -- canonical name for hostname
-           struct     sockaddr *ai_addr;   -- binary address
-           struct     addrinfo *ai_next;   -- next structure in linked list
-       };
-
-	See : /usr/include/netdb.h @line 147 */
-
-	Socket sock;
-
+	struct addrinfo *head, *cur;
 	struct addrinfo hints;
-	struct addrinfo *head;
-	struct addrinfo *cur;
-	int sockdes;
 	int ret;
 
-	memset( &hints, 0, sizeof(hints) );
-	hints.ai_family   = Family;
-	hints.ai_socktype = Type;
-	hints.ai_protocol = Protocol;
+	memset( &hints, 0, sizeof(addrinfo) );
 
-	ret = getaddrinfo( hostname.c_str(), servername.c_str(), &hints, &head );
-	if ( ret != 0 )
+	hints.ai_family   = AF_UNSPEC;  /* Address Family (is unspecified & )
+	                                will be determined by the machine
+	                                automagically */
+
+	hints.ai_socktype = type;
+
+	hints.ai_protocol = protocol;
+
+	hints.ai_flags    = AI_PASSIVE; /* AI_PASSIVE [...] indicates that
+	                                the returned socket address structure
+	                                is intended for use in a call to bind(2).
+
+	                                In this case, if the hostname argument
+	                                is the null pointer, then the IP address
+	                                portion of the socket address structure
+	                                will be set to INADDR_ANY for an IPv4
+	                                address or IN6ADDR_ANY_INIT for an IPv6
+	                                address. */
+
+	ret = getaddrinfo( hostname, servname, &hints, &head );
+
+	if ( ret != 0 ) {
+		this->close();
 		throw SocketError( __FILE__ , __LINE__, gai_strerror(ret));
+	}
 
-	sockdes = -1;
-	for (cur = head; cur; cur = cur->ai_next) {
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-		sockdes = ::socket(cur->ai_family, cur->ai_socktype, cur->ai_protocol);
-		if ( sockdes < 0 )
+	const char *cause = "Nothing returned from getaddrinfo()";
+	int sockdes = -1;
+
+	for ( cur = head; cur; cur = cur->ai_next ) {
+
+		sockdes = ::socket( cur->ai_family, cur->ai_socktype, cur->ai_protocol );
+		if ( sockdes < 0 ) {
+			cause = "Failed to create a hostname socket";
 			continue ;
+		}
 
-		ret = ::connect( sockdes, cur->ai_addr, cur->ai_addrlen );
+		ret = ::bind( sockdes, cur->ai_addr, cur->ai_addrlen );
 		if ( ret < 0 ) {
+			cause = "Failed to bind to specified hostname";
 			::close(sockdes);
 			sockdes = -1;
 			continue ;
@@ -334,26 +201,31 @@ Socket		Socket::getSocket( std::string hostname, std::string servername,
 		break ;
 	}
 
+	if ( sockdes < 0 ) {
+		freeaddrinfo(head);
+		throw SocketError( __FILE__ , __LINE__ , cause );
+	}
+
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+	memmove( &address, head->ai_addr, sizeof(struct sockaddr) );
+	address_len = head->ai_addrlen;
+
 	freeaddrinfo(head);
 
-	if (sockdes < 0)
-		throw SocketError( __FILE__ , __LINE__, "Failure to establish connection with specified hostname");
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-	sock.descriptor = sockdes;
-	return ( sock );
+	this->family     = cur->ai_family;
+	this->type       = cur->ai_socktype;
+	this->protocol   = cur->ai_protocol;
+	this->descriptor = sockdes;
+
+	return ( *this );
 }
 
-Socket &	Socket::connect( std::string hostname, std::string servername ) {
-	return ( connect ( Socket::getSocket ( hostname, servername ) ) );
-}
+Socket &	Socket::listen( int connections = 0 ) {
 
-Socket &	Socket::connect( Socket && peer ) {
-	return ( connect ( peer ) );
-}
-
-Socket &	Socket::connect( Socket & peer ) {
-
-	int ret = ::connect( descriptor, peer.address, peer.address_len );
+	int ret = ::listen( descriptor , connections );
 
 	if ( ret == -1 ) {
 		this->close();
@@ -362,11 +234,217 @@ Socket &	Socket::connect( Socket & peer ) {
 	return ( *this );
 }
 
+Socket		Socket::getSocket( const char * hostname, const char * servname,
+	int Family = AF_UNSPEC, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL,
+	int Flags = AI_DEFAULT ) {
+
+	/* Get information on some hostname/servname - - - - - - - - - - - - - - - - -
+
+	    #include <sys/types.h>
+	    #include <sys/socket.h>
+	    #include <netdb.h>
+
+	    int
+	    getaddrinfo(const char *hostname, const char *servname,
+	        const struct addrinfo *hints, struct addrinfo **res);
+
+	    See : getaddrinfo(2)
+        ------------------------------------------------------------------
+
+        struct addrinfo {
+            int        ai_flags;            -- AI_PASSIVE, AI_CANONNAME, AI_NUMERICHOST
+            int        ai_family;           -- PF_xxx
+            int        ai_socktype;         -- SOCK_xxx
+            int        ai_protocol;         -- 0 or IPPROTO_xxx for IPv4 and IPv6
+            socklen_t  ai_addrlen;          -- length of ai_addr
+            char       ai_canonname;        -- canonical name for hostname
+            struct     sockaddr *ai_addr;   -- binary address
+            struct     addrinfo *ai_next;   -- next structure in linked list
+        };
+
+	    See : /usr/include/netdb.h @line 147
+
+	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+	struct addrinfo hints;
+	struct addrinfo *head;
+	struct addrinfo *cur;
+	int ret;
+
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+	memset( &hints, 0, sizeof(hints) );
+
+	hints.ai_family   = Family;
+	hints.ai_socktype = Type;
+	hints.ai_protocol = Protocol;
+	hints.ai_flags    = Flags;
+
+	ret = getaddrinfo( hostname, servname, &hints, &head );
+	if ( ret != 0 )
+		throw SocketError( __FILE__ , __LINE__, gai_strerror(ret));
+
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+	const char *cause = "Nothing returned from getaddrinfo()";
+	int sockdes = -1;
+
+	for ( cur = head; cur; cur = cur->ai_next ) {
+
+		sockdes = ::socket( cur->ai_family, cur->ai_socktype, cur->ai_protocol );
+		if ( sockdes < 0 ) {
+			cause = "Failed to create a hostname socket";
+			continue ;
+		}
+
+		ret = ::connect( sockdes, cur->ai_addr, cur->ai_addrlen );
+		if ( ret < 0 ) {
+			cause = "Failed to connect to specified hostname";
+			::close(sockdes);
+			sockdes = -1;
+			continue ;
+		}
+
+		break ;
+	}
+
+	if ( sockdes < 0 ) {
+		freeaddrinfo(head);
+		throw SocketError( __FILE__ , __LINE__ , cause );
+	}
+
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+	Socket sock;
+
+	sock.ip_address  = hostname;
+	sock.port        = servname;
+	sock.family      = cur->ai_family;
+	sock.type        = cur->ai_socktype;
+	sock.protocol    = cur->ai_protocol;
+	sock.descriptor  = sockdes;
+
+	memmove( &sock.address, cur->ai_addr, sizeof(*cur->ai_addr) );
+	sock.address_len = cur->ai_addrlen;
+
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+	freeaddrinfo(head);
+
+	return ( sock );
+}
+
+Socket &	Socket::connect( const char * hostname, const char * servname ) {
+	return ( connect ( Socket::getSocket ( hostname, servname ) ) );
+}
+
+Socket &	Socket::connect( Socket && peer ) {
+	return ( connect ( peer ) );
+}
+
+Socket &	Socket::connect( Socket & peer ) {
+
+	int ret = ::connect( descriptor, &peer.address, peer.address_len );
+
+	if ( ret == -1 ) {
+		this->close();
+		throw SocketError( __FILE__ , __LINE__ );
+	}
+	return ( *this );
+}
+
+// Socket &	Socket::setsockopt( int level, int option, int value ) {
+
+// 	int ret = ::setsockopt( descriptor, level, option, &value, sizeof(value) );
+// 	if ( ret == -1 )
+// 		throw SocketError( __FILE__ , __LINE__ );
+// }
+
+// int			Socket::getsockopt( int level, int option, int value ) {
+
+// 	int ret = ::getsockopt( descriptor, level, option, &value, sizeof(value) );
+// 	if ( ret == -1 )
+// 		throw SocketError( __FILE__ , __LINE__ );
+// }
+
+Socket &	Socket::settimeout( double timeout ) {
+
+	/* Set SO_SNDTIMEO & SO_RCVTIMEO socket options : - - - - - - - - - - - -
+
+	    SO_SNDTIMEO is an option to set a timeout value for output operations.
+	    It accepts a struct timeval parameter with the number of seconds and
+	    microseconds used to limit waits for output operations to complete. If
+	    a send operation has blocked for this much time, it returns with a partial
+	    count or with the error EWOULDBLOCK if no data were sent.  In the current
+	    implementation, this timer is restarted each time additional data are
+	    delivered to the protocol, implying that the limit applies to output por-
+	    tions ranging in size from the low-water mark to the high-water mark for
+	    output.
+
+        SO_RCVTIMEO is an option to set a timeout value for input operations.
+        It accepts a struct timeval parameter with the number of seconds and
+	    microseconds used to limit waits for input operations to complete. In
+	    the current implementation, this timer is restarted each time additional
+	    data are received by the protocol, and thus the limit is in effect an
+	    inactivity timer. If a receive operation has been blocked for this much
+	    time without receiving additional data, it returns with a short count
+	    or with the error EWOULDBLOCK if no data were received. The struct
+	    timeval parameter must represent a positive time interval; otherwise,
+	    setsockopt() returns with the error EDOM.
+
+	    See : setsocketopt(2)
+        ------------------------------------------------------------------
+
+		<sys/time.h>
+
+	    struct timeval {
+	        long   tv_sec;    -- seconds
+	        int    tv_usec;   -- microseconds
+	    };
+
+	    See : /usr/include/sys/_types/_timeval.h  @line 34
+
+	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+	struct timeval time;
+	int ret;
+
+	time.tv_sec  = timeout;
+	time.tv_usec = (timeout - time.tv_sec) * 1000000;
+
+	ret = ::setsockopt( descriptor, SOL_SOCKET, SO_SNDTIMEO, &time, sizeof(time) );
+	if ( ret == -1 )
+		throw SocketError( __FILE__ , __LINE__ );
+
+	ret = ::setsockopt( descriptor, SOL_SOCKET, SO_RCVTIMEO, &time, sizeof(time) );
+	if ( ret == -1 )
+		throw SocketError( __FILE__ , __LINE__ );
+
+	return ( *this );
+}
+
+double		Socket::gettimeout( void ) const {
+
+	struct timeval time;
+	socklen_t timelen;
+	int ret;
+
+	timelen = sizeof(time);
+	ret = ::getsockopt( descriptor, SOL_SOCKET, SO_SNDTIMEO, &time, &timelen );
+	if ( ret == -1 )
+		throw SocketError( __FILE__ , __LINE__ );
+
+	return ( time.tv_sec + (time.tv_usec / 1000000) );
+}
+
 Socket		Socket::accept() const {
 
-	Socket Client( *this );
+	Socket Client( this->family, this->type, this->protocol );
 
-	Client.descriptor = ::accept( descriptor, Client.address, &Client.address_len );
+	Client.ip_address = nullptr;
+	Client.port       = nullptr;
+
+	Client.descriptor = ::accept( descriptor, &Client.address, &Client.address_len );
 	if ( Client.descriptor == -1 )
 		throw SocketError( __FILE__ , __LINE__ );
 
@@ -413,13 +491,15 @@ Socket		Socket::accept() const {
 // 		throw SocketError( __FILE__ , __LINE__ );
 // }
 
-void	Socket::close() const {
+void	Socket::close() {
 
-	if ( ::close( descriptor ) == -1 )
-		throw SocketError( __FILE__ , __LINE__ );
+	if ( descriptor != -1 )
+		if ( ::close( descriptor ) == -1 )
+			throw SocketError( __FILE__ , __LINE__ );
+	descriptor = -1;
 }
 
-void	Socket::shutdown ( int how = SHUT_RDWR ) const {
+void	Socket::shutdown ( int how = SHUT_RDWR ) {
 
 	/* Shut down part of a full-duplex connection - - - - - - - - - - - - - - -
 
@@ -434,10 +514,10 @@ void	Socket::shutdown ( int how = SHUT_RDWR ) const {
 		  ( 'SHUT_RDWR' is equivalent to a close() )
 
 	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-	if ( ::shutdown( descriptor , how ) == -1 )
-		throw SocketError( __FILE__ , __LINE__ );
-
+	if ( descriptor != -1 )
+		if ( ::shutdown( descriptor , how ) == -1 )
+			throw SocketError( __FILE__ , __LINE__ );
+	descriptor = -1;
 }
 
 
@@ -450,7 +530,9 @@ Socket::SocketError::SocketError( const char *File, size_t Line ) :
 	line ( std::to_string( Line ) ) {
 }
 
-Socket::SocketError::SocketError( const char *File, size_t Line, std::string Error_Message ) :
+Socket::SocketError::SocketError( const char *File, size_t Line,
+	std::string Error_Message ) :
+
 	file ( File ),
 	line ( std::to_string( Line ) ),
 	err_msg ( Error_Message ) {
@@ -477,11 +559,7 @@ int	main() {
 
 	try {
 
-		Socket Server("0.0.0.0", 5401);
-
-		// Server.bind;
-
-		// Server.listen();
+		Socket Server( "127.0.0.1", "1025" );
 
 		// Socket Client[10];
 
@@ -493,6 +571,7 @@ int	main() {
 		// Client[4].connect("10.113.8.3", "3000");
 
 		// Client[5].connect("www.google.com", "https");
+
 		cout << "Everything works.\n";
 
 	} catch ( std::exception & e ) {
@@ -501,3 +580,27 @@ int	main() {
 
 	return (0);
 }
+
+// int	main() {
+
+// 	Socket Server("0.0.0.0", 3000);
+// 	int Clients[10];
+
+// 	Server.listen();
+
+// 	for (int i = 0; i < 10; ++i) {
+
+// 		Clients[i] = Server.accept().descriptor;
+// 		std::thread([ &Server, &Clients, i ] (void) -> void {
+
+// 			char tmp[4096];
+// 			while (1) {
+// 				::recv(Server.descriptor, tmp, 4096, 0);
+// 			}
+// 			Server.broadcast(tmp, Clients);
+
+// 		}).detach();
+// 	}
+
+// 	return (0);
+// }

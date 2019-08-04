@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/03 22:45:00 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/04 15:16:28 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 # include <iostream>
+# include <cmath>
 # include <exception>
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -74,51 +75,44 @@ There are several special addresses:
 
 # define DFLT_FAMILY   ( AF_INET     ) /* | AF_INET     | AF_INET6    | AF_UNSPEC   | */
 # define DFLT_TYPE     ( SOCK_STREAM ) /* | SOCK_STREAM | SOCK_DGRAM  | SOCK_RAW    | */
-# define DFLT_PROTOCOL ( IPPROTO_TCP ) /* | IPPROTO_IP  | IPPROTO_TCP | IPPROTO_UDP | */
+# define DFLT_PROTOCOL ( IPPROTO_IP  ) /* | IPPROTO_IP  | IPPROTO_TCP | IPPROTO_UDP | */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 class Socket {
 
-	union {
-		struct sockaddr_in	v4;
-		struct sockaddr_in6	v6;
-	} _saddr_in;
 
 	public:
 
 		Socket( void );
 		Socket( const Socket & src );
-
-		Socket( int Family, int Type, int Protocol );
-
-		Socket( std::string IP_Address, int Port,
-			int Family, int Type, int Protocol );
-
 		~Socket( void );
+
+		explicit Socket( int Family, int Type, int Protocol );
+		Socket( const char * hostname, const char * servname,
+			int Type, int Protocol );
 
 		Socket & operator = ( const Socket & rhs );
 
-		std::string		ip_address;
-		int				port;
+		const char *	ip_address;
+		const char *	port;
 		int				family;
 		int				type;
 		int				protocol;
 		int				descriptor;
 
-		struct sockaddr *address;
+		struct sockaddr address;
 		socklen_t address_len;
 
 		Socket &	socket   ( int Family, int Type, int Protocol );
 
-		Socket &	bind     ( std::string  IP_Address , int Port );
-		Socket &	bind     ( unsigned int IP_Address , int Port );
+		Socket &	bind     ( const char * hostname, const char * servname );
 
 		Socket &	listen   ( int connections );
 
 		Socket &	connect  ( Socket &  );
 		Socket &	connect  ( Socket && );
-		Socket &	connect  ( std::string hostname , std::string servername );
+		Socket &	connect  ( const char * hostname, const char * servname );
 
 		Socket		accept   ( void ) const;
 
@@ -128,11 +122,39 @@ class Socket {
 		ssize_t		recv     ( const void * buffer, size_t length , int flags )                    const;
 		ssize_t		recvfrom ( Socket & sender, const void * buffer, size_t length , int flags )   const;
 
-		void		shutdown ( int how ) const;
-		void		close    ( void )    const;
+		void		shutdown ( int how );
+		void		close    ( void );
 
-		static Socket	getSocket( std::string hostname, std::string servername,
-			int Family, int Type, int Protocol );
+		Socket &	setsockopt( int level, int option, int value );
+		int			getsockopt( int level, int option, int value );
+
+		Socket &	settimeout( double timeout );
+		double		gettimeout( void ) const;
+
+    //  |  setblocking(...)
+    //  |      setblocking(flag)
+    //  |
+    //  |      Set the socket to blocking (flag is true) or non-blocking (false).
+    //  |      setblocking(True) is equivalent to settimeout(None);
+    //  |      setblocking(False) is equivalent to settimeout(0.0).
+    //  |
+    //  |  setsockopt(...)
+    //  |      setsockopt(level, option, value)
+    //  |
+    //  |      Set a socket option.  See the Unix manual for level and option.
+    //  |      The value argument can either be an integer or a string.
+    //  |
+    //  |  settimeout(...)
+    //  |      settimeout(timeout)
+    //  |
+    //  |      Set a timeout on socket operations.  'timeout' can be a float,
+    //  |      giving in seconds, or None.  Setting a timeout of None disables
+    //  |      the timeout feature and is equivalent to setblocking(1).
+    //  |      Setting a timeout of zero is the same as setblocking(0).
+
+
+		static Socket	getSocket( const char * hostname, const char * servname,
+			int Family, int Type, int Protocol, int Flags );
 
 		class SocketError : public std::exception {
 
