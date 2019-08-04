@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/03 19:30:23 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/03 21:42:50 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,8 @@ class Socket {
 
 		Socket &	listen   ( int connections );
 
-		Socket &	connect  ( Socket & );
+		Socket &	connect  ( Socket &  );
+		Socket &	connect  ( Socket && );
 		Socket &	connect  ( std::string hostname , std::string servername );
 
 		Socket		accept   ( void ) const;

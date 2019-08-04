@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/03 19:38:08 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/03 21:51:40 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,9 @@
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
 Socket::Socket( void ) :
-	Socket( AF_INET, SOCK_STREAM, IPPROTO_TCP ) {
-}
+	family     ( AF_INET     ),
+	type       ( SOCK_STREAM ),
+	protocol   ( IPPROTO_TCP ) {}
 
 Socket::Socket( int Port ) :
 	Socket(DFLT_IPADDR, Port, DFLT_FAMILY, DFLT_TYPE, DFLT_PROTOCOL) {
@@ -68,7 +69,7 @@ Socket &	Socket::operator = ( const Socket & rhs ) {
 		address      = rhs.address;
 		address_len  = rhs.address_len;
 	}
-	return (*this);
+	return ( *this );
 }
 
 std::ostream &  operator << ( std::ostream& out, const Socket & in ) {
@@ -122,24 +123,45 @@ Socket &	Socket::socket( int Family = DFLT_FAMILY,
 	if ( descriptor == -1 )
 		throw SocketError();
 
-	return (*this);
+	return ( *this );
 }
 
 Socket &	Socket::bind( std::string IP_Address, int Port ) {
 
-
 	/* Bind to an Address and Port - - - - - - - - - - - - - - - - - - - - - - - -
 
-	    struct sockaddr_in  : /usr/include/netinet/in.h   @line 372
-	    struct sockaddr_in6 : /usr/include/netinet6/in6.h @line 164
+	    struct sockaddr_in  :
+	    ----------------------
+
+            struct sockaddr_in {
+                __uint8_t        sin_len;
+                sa_family_t      sin_family;
+                in_port_t        sin_port;
+                struct           in_addr sin_addr;
+                char             sin_zero[8];
+            };
+
+	    struct sockaddr_in6 :
+		----------------------
+
+            struct sockaddr_in6 {
+                __uint8_t        sin6_len;        -- length of this struct(sa_family_t)
+                sa_family_t      sin6_family;     -- AF_INET6 (sa_family_t)
+                in_port_t        sin6_port;       -- Transport layer port # (in_port_t)
+                __uint32_t       sin6_flowinfo;   -- IP6 flow information
+                struct in6_addr  sin6_addr;       -- IP6 address
+                __uint32_t       sin6_scope_id;   -- scope zone index
+            };
 
 	    See : bind(2)
+		See : /usr/include/netinet/in.h   @line 372
+		See : /usr/include/netinet6/in6.h @line 164
 
 	 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 	int ret;
 
-	memset(&_saddr_in, 0, sizeof(_saddr_in));
+	memset( &_saddr_in, 0, sizeof(_saddr_in) );
 
 	switch( family )
 	{
@@ -159,8 +181,8 @@ Socket &	Socket::bind( std::string IP_Address, int Port ) {
 			_saddr_in.v6.sin6_family = family;
 			_saddr_in.v6.sin6_len    = sizeof(family);
 			_saddr_in.v6.sin6_port   = htons(port);
-			/* _saddr_in.v6.sin6_flowinfo = ?  -- IP6 flow information */
-			/* _saddr_in.v6.sin6_scope_id = ?  -- scope zone index     */
+			/* _saddr_in.v6.sin6_flowinfo = ? */
+			/* _saddr_in.v6.sin6_scope_id = ? */
 
 			break;
 
@@ -194,7 +216,7 @@ Socket &	Socket::bind( std::string IP_Address, int Port ) {
 	if ( ret == -1 )
 		throw SocketError();
 
-	return (*this);
+	return ( *this );
 }
 
 Socket &	Socket::bind( unsigned int IP_Address, int Port) {
@@ -257,7 +279,7 @@ Socket &	Socket::listen( int connections = MAXCONN ) {
 		this->close();
 		throw SocketError();
 	}
-	return (*this);
+	return ( *this );
 }
 
 Socket		Socket::getSocket( std::string hostname, std::string servername,
@@ -266,14 +288,14 @@ Socket		Socket::getSocket( std::string hostname, std::string servername,
 	/* addrinfo Structure:
 
        struct addrinfo {
-           int        ai_flags;            // -- AI_PASSIVE, AI_CANONNAME, AI_NUMERICHOST
-           int        ai_family;           // -- PF_xxx
-           int        ai_socktype;         // -- SOCK_xxx
-           int        ai_protocol;         // -- 0 or IPPROTO_xxx for IPv4 and IPv6
-           socklen_t  ai_addrlen;          // -- length of ai_addr
-           char       ai_canonname;        // -- canonical name for hostname
-           struct     sockaddr *ai_addr;   // -- binary address
-           struct     addrinfo *ai_next;   // -- next structure in linked list
+           int        ai_flags;            -- AI_PASSIVE, AI_CANONNAME, AI_NUMERICHOST
+           int        ai_family;           -- PF_xxx
+           int        ai_socktype;         -- SOCK_xxx
+           int        ai_protocol;         -- 0 or IPPROTO_xxx for IPv4 and IPv6
+           socklen_t  ai_addrlen;          -- length of ai_addr
+           char       ai_canonname;        -- canonical name for hostname
+           struct     sockaddr *ai_addr;   -- binary address
+           struct     addrinfo *ai_next;   -- next structure in linked list
        };
 
 	See : /usr/include/netdb.h @line 147 */
@@ -281,7 +303,6 @@ Socket		Socket::getSocket( std::string hostname, std::string servername,
 	struct addrinfo hints;
 	struct addrinfo *head;
 	struct addrinfo *cur;
-	int sockdes;
 	int ret;
 
 	memset( &hints, 0, sizeof(hints) );
@@ -290,31 +311,33 @@ Socket		Socket::getSocket( std::string hostname, std::string servername,
 	hints.ai_protocol = Protocol;
 
 	ret = getaddrinfo( hostname.c_str(), servername.c_str(), &hints, &head );
-
 	if ( ret != 0 )
 		throw SocketError(gai_strerror(ret));
 
+	Socket sock(cur->ai_family, Family, Protocol);
+
 	for (cur = head; cur; cur = cur->ai_next) {
 
-		sockdes = ::socket( cur->ai_family, cur->ai_socktype, cur->ai_protocol );
-		if ( sockdes == x ) {
-
+		ret = ::connect( sock.descriptor, cur->ai_addr, cur->ai_addrlen );
+		if ( ret == -1 )
 			continue ;
-		}
-
-		ret = ::connect( sockdes, cur->ai_addr, cur->ai_addrlen );
-		if ( ret == x ) {
-
-			::close(sockdes);
-			continue ;
-		}
-
 		break ;
 	}
 
 	freeaddrinfo(head);
 
-	return (Socket());
+	if (!cur)
+		throw SocketError("Failure to establish connection with specified hostname");
+
+	return ( sock );
+}
+
+Socket &	Socket::connect( std::string hostname, std::string servername ) {
+	return ( connect ( Socket::getSocket ( hostname, servername ) ) );
+}
+
+Socket &	Socket::connect( Socket && peer ) {
+	return ( connect ( peer ) );
 }
 
 Socket &	Socket::connect( Socket & peer ) {
@@ -325,16 +348,7 @@ Socket &	Socket::connect( Socket & peer ) {
 		this->close();
 		throw SocketError();
 	}
-	return (*this);
-}
-
-Socket &	Socket::connect( std::string hostname, std::string servername ) {
-
-	Socket tmp;
-
-	connect();
-
-	return (*this);
+	return ( *this );
 }
 
 Socket		Socket::accept() const {
@@ -448,34 +462,13 @@ int	main() {
 	Socket Client[10];
 
 	Client[0].connect(Server);
+
 	Client[1].connect("10.113.8.3", "3000");
 	Client[2].connect("10.113.8.3", "3000");
 	Client[3].connect("10.113.8.3", "3000");
 	Client[4].connect("10.113.8.3", "3000");
 
+	Client[5].connect("www.google.com", "https");
+
 	return (0);
 }
-
-// int	main() {
-
-// 	Socket Server("0.0.0.0", 3000);
-// 	int Clients[10];
-
-// 	Server.listen();
-
-// 	for (int i = 0; i < 10; ++i) {
-
-// 		Clients[i] = Server.accept().descriptor;
-// 		std::thread([ &Server, &Clients, i ] (void) -> void {
-
-// 			char tmp[4096];
-// 			while (1) {
-// 				::recv(Server.descriptor, tmp, 4096, 0);
-// 			}
-// 			Server.broadcast(tmp, Clients);
-
-// 		}).detach();
-// 	}
-
-// 	return (0);
-// }
