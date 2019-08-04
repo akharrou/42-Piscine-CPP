@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/02 23:34:36 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/03 19:38:08 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,33 +15,32 @@
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
 Socket::Socket( void ) :
-	Socket(DFLT_IPADDR, DFLT_PORT, DFLT_FAMILY, DFLT_TYPE, DFLT_PROTOCOL) {}
+	Socket( AF_INET, SOCK_STREAM, IPPROTO_TCP ) {
+}
 
 Socket::Socket( int Port ) :
-	Socket(DFLT_IPADDR, Port, DFLT_FAMILY, DFLT_TYPE, DFLT_PROTOCOL) {}
+	Socket(DFLT_IPADDR, Port, DFLT_FAMILY, DFLT_TYPE, DFLT_PROTOCOL) {
+}
+
+Socket::Socket( int Family, int Type, int Protocol ) :
+
+	family     ( Family     ),
+	type       ( Type       ),
+	protocol   ( Protocol   )
+{
+	Socket::socket ( family, type, protocol );
+}
 
 Socket::Socket( std::string IP_Address, int Port,
-	int Domain = DFLT_FAMILY, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) :
+	int Family = DFLT_FAMILY, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) :
 
 	ip_address ( IP_Address ),
 	port       ( Port       ),
-	domain     ( Domain     ),
+	family     ( Family     ),
 	type       ( Type       ),
 	protocol   ( Protocol   )
 {
-	Socket::socket ( domain, type, protocol );
-	Socket::bind   ( ip_address, port       );
-}
-
-Socket::Socket( int IP_Address, int Port,
-	int Domain = DFLT_FAMILY, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) :
-
-	port       ( Port       ),
-	domain     ( Domain     ),
-	type       ( Type       ),
-	protocol   ( Protocol   )
-{
-	Socket::socket ( domain, type, protocol );
+	Socket::socket ( family, type, protocol );
 	Socket::bind   ( ip_address, port       );
 }
 
@@ -62,12 +61,10 @@ Socket &	Socket::operator = ( const Socket & rhs ) {
 
 		ip_address   = rhs.ip_address;
 		port         = rhs.port;
-		domain       = rhs.domain;
+		family       = rhs.family;
 		type         = rhs.type;
 		protocol     = rhs.protocol;
 		descriptor   = rhs.descriptor;
-		IPv4_Address = rhs.IPv4_Address;
-		IPv6_Address = rhs.IPv6_Address;
 		address      = rhs.address;
 		address_len  = rhs.address_len;
 	}
@@ -77,7 +74,7 @@ Socket &	Socket::operator = ( const Socket & rhs ) {
 std::ostream &  operator << ( std::ostream& out, const Socket & in ) {
 
 	out << "<descriptor=" << in.descriptor
-	    << ", domain="    << in.domain
+	    << ", family="    << in.family
 	    << ", type="      << in.type
 	    << ", protocol="  << in.protocol
 	    << ", laddr=('"   << in.ip_address << "', " << in.port << ")>\n";
@@ -88,14 +85,14 @@ std::ostream &  operator << ( std::ostream& out, const Socket & in ) {
 
 /* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */
 
-Socket &	Socket::socket( int Domain = DFLT_FAMILY,
+Socket &	Socket::socket( int Family = DFLT_FAMILY,
 				int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) {
 
 	/* Create socket (connection endpoint) - - - - - - - - - - - - - - - - - - -
 
-	    int   socket(int domain, int type, int protocol);
+	    int   socket(int family, int type, int protocol);
 
-	    Domain:
+	    Family:
 	        AF_INET             Internet version 4 protocols,
 	        AF_INET6            Internet version 6 protocols,
 
@@ -121,7 +118,7 @@ Socket &	Socket::socket( int Domain = DFLT_FAMILY,
 
 	 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-	descriptor = ::socket( Domain, Type, Protocol );
+	descriptor = ::socket( Family, Type, Protocol );
 	if ( descriptor == -1 )
 		throw SocketError();
 
@@ -130,170 +127,129 @@ Socket &	Socket::socket( int Domain = DFLT_FAMILY,
 
 Socket &	Socket::bind( std::string IP_Address, int Port ) {
 
-	struct addrinfo hints;
-	struct addrinfo *head;
+
+	/* Bind to an Address and Port - - - - - - - - - - - - - - - - - - - - - - - -
+
+	    struct sockaddr_in  : /usr/include/netinet/in.h   @line 372
+	    struct sockaddr_in6 : /usr/include/netinet6/in6.h @line 164
+
+	    See : bind(2)
+
+	 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
 	int ret;
 
-	bzero( &hints, sizeof(hints) );
-	hints.ai_family   = domain;
-	hints.ai_socktype = type;
+	memset(&_saddr_in, 0, sizeof(_saddr_in));
 
-	ret = getaddrinfo( IP_Address.c_str(), std::to_string(port).c_str(), &hints, &head );
-
-	if ( ret != 0 ) {
-		this->close();
-		throw SocketError(gai_strerror(ret));
-	}
-
-	address     = hints.ai_addr;
-	address_len = hints.ai_addrlen;
-
-	freeaddrinfo(head);
-
-	ret = ::bind( descriptor, address, address_len );
-
-	if ( ret == -1 ) {
-		this->close();
-		throw SocketError();
-	}
-
-/*
-
-	/ Bind to an Address and Port (i.e to a highway) - - - - - - - - - - - - -
-
-	    int  bind( int socket,
-	               const struct sockaddr *address,
-	               socklen_t address_len );
-
-	    Socket Address Structure(s):
-
-            // IPv4
-            struct sockaddr_in
-            {
-                __uint8_t        sin_len;
-                sa_family_t      sin_family;
-                in_port_t        sin_port;
-                struct in_addr   sin_addr;
-                char             sin_zero[8];
-            };
-
-            // IPv6
-            struct sockaddr_in6 {
-                __uint8_t        sin6_len        // length of this struct(sa_family_t)
-                sa_family_t      sin6_family     // AF_INET6 (sa_family_t)
-                in_port_t        sin6_port       // Transport layer port # (in_port_t)
-                __uint32_t       sin6_flowinfo   // IP6 flow information
-                struct in6_addr  sin6_addr       // IP6 address
-                __uint32_t       sin6_scope_id   // scope zone index
-            };
-
-	     See : bind(2) , /usr/include/netinet/in.h  @line 372 ,
-		                 /usr/include/netinet/in6.h @line 164
-
-	 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - /
-
-	switch(domain)
+	switch( family )
 	{
 
-		/ IPv4 – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – /
+		/* IPv4 – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – */
 		case AF_INET:
 
-			bzero( & IPv4_Address, sizeof( IPv4_Address ) );
-
-			ret = inet_pton ( AF_INET, IP_Address.c_str(), &(IPv4_Address.sin_addr) );
-
-			if ( ret == -1 ) {
-
-				this->close();
-				throw SocketError();
-
-			} else if ( ret == 0 ) {
-				goto IPv6_Address;
-			}
-
-			IPv4_Address.sin_family = domain;
-			IPv4_Address.sin_len    = sizeof(domain);
-			IPv4_Address.sin_port   = htons( Port );
-
-			address     = reinterpret_cast <struct sockaddr *> (&IPv4_Address);
-			address_len = sizeof ( IPv4_Address );
+			_saddr_in.v4.sin_family = family;
+			_saddr_in.v4.sin_len    = sizeof(family);
+			_saddr_in.v4.sin_port   = htons(port);
 
 			break;
 
-		/ IPv6 – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – /
+		/* IPv6 – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – – */
 		case AF_INET6:
 
-IPv6_Address:
-			bzero( & IPv6_Address, sizeof( IPv6_Address ) );
-
-			ret = inet_pton ( AF_INET6, IP_Address.c_str(), &(IPv6_Address.sin6_addr) );
-
-			if ( ret == -1 ) {
-
-				this->close();
-				throw SocketError();
-
-			} else if ( ret == 0 ) {
-				goto Invalid_IPAddress;
-			}
-
-			IPv6_Address.sin6_family = domain;
-			IPv6_Address.sin6_len    = sizeof(domain);
-			IPv6_Address.sin6_port   = htons( Port );
-			/ IPv6_Address.sin6_flowinfo = ?  // IP6 flow information /
-			/ IPv6_Address.sin6_scope_id = ?  // scope zone index     /
-
-			address     = reinterpret_cast <struct sockaddr *> (&IPv6_Address);
-			address_len = sizeof ( IPv6_Address );
+			_saddr_in.v6.sin6_family = family;
+			_saddr_in.v6.sin6_len    = sizeof(family);
+			_saddr_in.v6.sin6_port   = htons(port);
+			/* _saddr_in.v6.sin6_flowinfo = ?  -- IP6 flow information */
+			/* _saddr_in.v6.sin6_scope_id = ?  -- scope zone index     */
 
 			break;
 
-
-		/ Invalid IP Address – – – – – – – – – – – – – – – – – – – – – – – – – /
+		/* Unsupported Address Family – – – – – – – – – – – – – – – – – – – – */
 		default:
-
-Invalid_IPAddress:
 			this->close();
-			throw SocketError("Invalid Internet Protocol Address");
+			throw SocketError("Unsupported Address Family");
 
 	}
-*/
+
+	(family == AF_INET) ?
+		ret = inet_pton ( AF_INET  , IP_Address.c_str(), &_saddr_in.v4.sin_addr  ):
+		ret = inet_pton ( AF_INET6 , IP_Address.c_str(), &_saddr_in.v6.sin6_addr );
+
+	if ( ret < 1 ) {
+
+		this->close();
+		(ret == 0) ?
+			throw SocketError("Address Not Parseable (in the specified address family)"):
+			throw SocketError();
+	}
+
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+	address     = reinterpret_cast <struct sockaddr *> (&_saddr_in);
+	address_len = sizeof(_saddr_in);
+
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+	ret = ::bind( descriptor, address, address_len );
+	if ( ret == -1 )
+		throw SocketError();
 
 	return (*this);
 }
 
 Socket &	Socket::bind( unsigned int IP_Address, int Port) {
 
-	switch( domain ) {
+	struct in_addr sin_addr;
+	const char *ret;
 
-		case AF_INET:  /* IPv4 */
+	sin_addr.s_addr = IP_Address;
+
+	switch( family )
+	{
+
+		/* IPv4 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+		case AF_INET:
 
 			char IPv4_addr[ INET_ADDRSTRLEN  ];
-			struct sockaddr_in  sa_in;
 
-			inet_ntop( AF_INET,  &(sa_in.sin_addr),   IPv4_addr, INET_ADDRSTRLEN  );
+			ret = inet_ntop( AF_INET,  &(sin_addr), IPv4_addr, INET_ADDRSTRLEN  );
+
+			if (ret == NULL) {
+				this->close();
+				throw SocketError("Address Not Parseable (in the specified address family)");
+			}
+
 			ip_address = IPv4_addr;
 			break;
 
-		case AF_INET6: /* IPv6 */
+
+		/* IPv6 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+		case AF_INET6:
 
 			char IPv6_addr[ INET6_ADDRSTRLEN ];
-			struct sockaddr_in6 sa_in6;
 
-			inet_ntop( AF_INET6, &(sa_in6.sin6_addr), IPv6_addr, INET6_ADDRSTRLEN );
+			ret = inet_ntop( AF_INET6, &(sin_addr), IPv6_addr, INET6_ADDRSTRLEN );
+
+			if (ret == NULL) {
+				this->close();
+				throw SocketError("Address Not Parseable (in the specified address family)");
+			}
+
 			ip_address = IPv6_addr;
 			break;
 
+
+		/* Unsupported Address Family – – – – – – – – – – – – – – – – – – – – */
 		default:
 			this->close();
-			throw SocketError("Invalid Internet Protocol Address");
+			throw SocketError("Unsupported Address Family");
 
 	}
 
 	return ( this->bind( ip_address, Port ) );
 }
 
-Socket &	Socket::listen( unsigned int connections = MAXCONN ) {
+Socket &	Socket::listen( int connections = MAXCONN ) {
 
 	int ret = ::listen( descriptor, connections );
 
@@ -304,14 +260,80 @@ Socket &	Socket::listen( unsigned int connections = MAXCONN ) {
 	return (*this);
 }
 
-Socket &	Socket::connect( Socket & peerSocket ) {
+Socket		Socket::getSocket( std::string hostname, std::string servername,
+	int Domain = AF_UNSPEC, int Family = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) {
 
-	int ret = ::connect( descriptor, peerSocket.address, peerSocket.address_len );
+	/* addrinfo Structure:
+
+       struct addrinfo {
+           int        ai_flags;            // -- AI_PASSIVE, AI_CANONNAME, AI_NUMERICHOST
+           int        ai_family;           // -- PF_xxx
+           int        ai_socktype;         // -- SOCK_xxx
+           int        ai_protocol;         // -- 0 or IPPROTO_xxx for IPv4 and IPv6
+           socklen_t  ai_addrlen;          // -- length of ai_addr
+           char       ai_canonname;        // -- canonical name for hostname
+           struct     sockaddr *ai_addr;   // -- binary address
+           struct     addrinfo *ai_next;   // -- next structure in linked list
+       };
+
+	See : /usr/include/netdb.h @line 147 */
+
+	struct addrinfo hints;
+	struct addrinfo *head;
+	struct addrinfo *cur;
+	int sockdes;
+	int ret;
+
+	memset( &hints, 0, sizeof(hints) );
+	hints.ai_family   = Domain;
+	hints.ai_socktype = Family;
+	hints.ai_protocol = Protocol;
+
+	ret = getaddrinfo( hostname.c_str(), servername.c_str(), &hints, &head );
+
+	if ( ret != 0 )
+		throw SocketError(gai_strerror(ret));
+
+	for (cur = head; cur; cur = cur->ai_next) {
+
+		sockdes = ::socket( cur->ai_family, cur->ai_socktype, cur->ai_protocol );
+		if ( sockdes == x ) {
+
+			continue ;
+		}
+
+		ret = ::connect( sockdes, cur->ai_addr, cur->ai_addrlen );
+		if ( ret == x ) {
+
+			::close(sockdes);
+			continue ;
+		}
+
+		break ;
+	}
+
+	freeaddrinfo(head);
+
+	return (Socket());
+}
+
+Socket &	Socket::connect( Socket & peer ) {
+
+	int ret = ::connect( descriptor, peer.address, peer.address_len );
 
 	if ( ret == -1 ) {
 		this->close();
 		throw SocketError();
 	}
+	return (*this);
+}
+
+Socket &	Socket::connect( std::string hostname, std::string servername ) {
+
+	Socket tmp;
+
+	connect();
+
 	return (*this);
 }
 
@@ -411,3 +433,49 @@ const char *Socket::SocketError::what() noexcept {
 
 	return (std::string("~ Socket Error : " + err_msg + " ~").c_str());
 }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#include <mutex>
+#include <thread>
+
+int	main() {
+
+	Socket Server("10.113.8.3", 3000);
+
+	Server.listen();
+
+	Socket Client[10];
+
+	Client[0].connect(Server);
+	Client[1].connect("10.113.8.3", "3000");
+	Client[2].connect("10.113.8.3", "3000");
+	Client[3].connect("10.113.8.3", "3000");
+	Client[4].connect("10.113.8.3", "3000");
+
+	return (0);
+}
+
+// int	main() {
+
+// 	Socket Server("0.0.0.0", 3000);
+// 	int Clients[10];
+
+// 	Server.listen();
+
+// 	for (int i = 0; i < 10; ++i) {
+
+// 		Clients[i] = Server.accept().descriptor;
+// 		std::thread([ &Server, &Clients, i ] (void) -> void {
+
+// 			char tmp[4096];
+// 			while (1) {
+// 				::recv(Server.descriptor, tmp, 4096, 0);
+// 			}
+// 			Server.broadcast(tmp, Clients);
+
+// 		}).detach();
+// 	}
+
+// 	return (0);
+// }
