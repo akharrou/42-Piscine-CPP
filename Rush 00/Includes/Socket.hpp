@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 07:21:18 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 07:22:05 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,8 +108,8 @@ class Socket {
 		Socket &	listen   ( int connections );
 
 		Socket &	connect  ( Socket &  );
-		Socket &	connect  ( const char * Host, const char * Port,
-			                   int Family, int Flags );
+		Socket &	connect  ( const char * Host, const char * Port, int Family,
+			                   int Flags );
 
 		Socket		accept   ( void ) const;
 
