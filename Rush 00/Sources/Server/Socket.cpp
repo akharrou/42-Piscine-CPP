@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/04 19:57:01 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/04 19:59:59 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ Socket &	Socket::bind( const char * hostname, const char * servname,
 	    bind( int sockfd, struct sockaddr *my_addr, int addrlen );
 
 	    See : bind(2)
-		----------------------------------------------------------------
+	    ----------------------------------------------------------------
 
 	    struct sockaddr_in   -- see : /usr/include/netinet/in.h    @line 372
 	    struct sockaddr_in6  -- see : /usr/include/netinet6/in6.h  @line 164
@@ -256,16 +256,16 @@ Socket &	Socket::connect( const char * hostname, const char * servname,
 	    See : getaddrinfo(2)
         ------------------------------------------------------------------
 
-        struct addrinfo {
-            int        ai_flags;            -- AI_PASSIVE, AI_CANONNAME, AI_NUMERICHOST
-            int        ai_family;           -- PF_xxx
-            int        ai_socktype;         -- SOCK_xxx
-            int        ai_protocol;         -- 0 or IPPROTO_xxx for IPv4 and IPv6
-            socklen_t  ai_addrlen;          -- length of ai_addr
-            char       ai_canonname;        -- canonical name for hostname
-            struct     sockaddr *ai_addr;   -- binary address
-            struct     addrinfo *ai_next;   -- next structure in linked list
-        };
+	    struct addrinfo {
+	        int        ai_flags;            -- AI_PASSIVE, AI_CANONNAME, AI_NUMERICHOST
+	        int        ai_family;           -- PF_xxx
+	        int        ai_socktype;         -- SOCK_xxx
+	        int        ai_protocol;         -- 0 or IPPROTO_xxx for IPv4 and IPv6
+	        socklen_t  ai_addrlen;          -- length of ai_addr
+	        char       ai_canonname;        -- canonical name for hostname
+	        struct     sockaddr *ai_addr;   -- binary address
+	        struct     addrinfo *ai_next;   -- next structure in linked list
+	    };
 
 	    See : /usr/include/netdb.h @line 147
 
@@ -332,7 +332,7 @@ Socket &	Socket::connect( const char * hostname, const char * servname,
 
 Socket &	Socket::connect( Socket & peer ) {
 
-	socket( peer.family, peer.type, peer.protocol );
+	Socket::socket( peer.family, peer.type, peer.protocol );
 
 	int ret = ::connect( descriptor, &peer.address, peer.address_len );
 
@@ -567,3 +567,27 @@ int	main() {
 
 	return (0);
 }
+
+// int	main() {
+
+// 	Socket Server("0.0.0.0", 3000);
+// 	int Clients[10];
+
+// 	Server.listen();
+
+// 	for (int i = 0; i < 10; ++i) {
+
+// 		Clients[i] = Server.accept().descriptor;
+// 		std::thread([ &Server, &Clients, i ] (void) -> void {
+
+// 			char tmp[4096];
+// 			while (1) {
+// 				::recv(Server.descriptor, tmp, 4096, 0);
+// 			}
+// 			Server.broadcast(tmp, Clients);
+
+// 		}).detach();
+// 	}
+
+// 	return (0);
+// }
