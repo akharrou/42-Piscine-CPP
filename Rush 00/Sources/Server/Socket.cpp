@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 07:27:49 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 07:29:49 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -553,17 +553,17 @@ void	Socket::shutdown ( int how = SHUT_RDWR ) {
 Socket::SocketError::SocketError( void ) {}
 
 Socket::SocketError::SocketError( const char *File, size_t Line ) :
-	file ( File ),
-	line ( std::to_string( Line ) ),
-	err_msg ( strerror(errno) ) {
+	_file ( File ),
+	_line ( std::to_string( Line ) ),
+	_err_msg ( strerror(errno) ) {
 }
 
 Socket::SocketError::SocketError( const char *File, size_t Line,
 	const char * Error_Message ) :
 
-	file ( File ),
-	line ( std::to_string( Line ) ),
-	err_msg ( Error_Message ) {
+	_file ( File ),
+	_line ( std::to_string( Line ) ),
+	_err_msg ( Error_Message ) {
 }
 
 Socket::SocketError::~SocketError( void ) {}
