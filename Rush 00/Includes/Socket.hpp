@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 07:19:56 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 07:20:46 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,12 +114,12 @@ class Socket {
 		Socket		accept   ( void ) const;
 
 		ssize_t		send     ( const void * buffer, size_t length , int flags ) const;
-		ssize_t		sendto   ( Socket & receiver, const void * buffer,
-			                   size_t length , int flags ) const;
+		ssize_t		sendto   ( Socket & receiver, const void * buffer, size_t length,
+			                   int flags ) const;
 
 		ssize_t		recv     ( const void * buffer, size_t length , int flags ) const;
-		ssize_t		recvfrom ( Socket & sender, const void * buffer,
-			                   size_t length , int flags ) const;
+		ssize_t		recvfrom ( Socket & sender, const void * buffer, size_t length,
+			                   int flags ) const;
 
 		void		shutdown ( int how );
 		void		close    ( void );
