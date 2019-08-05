@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/04 19:46:28 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/04 20:14:37 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ class Socket {
 		~Socket( void );
 
 		explicit Socket( int Family, int Type, int Protocol );
-		Socket( const char * hostname, const char * servname, int Type , int Protocol );
+		Socket( const char * Host, const char * Port, int Type , int Protocol );
 
 		Socket & operator = ( const Socket & rhs );
 
@@ -102,12 +102,12 @@ class Socket {
 
 		Socket &	socket   ( int Family, int Type, int Protocol );
 
-		Socket &	bind     ( const char * hostname, const char * servname, int flags );
+		Socket &	bind     ( const char * Host, const char * Port, int flags );
 
 		Socket &	listen   ( int connections );
 
 		Socket &	connect  ( Socket &  );
-		Socket &	connect  ( const char * hostname, const char * servname,
+		Socket &	connect  ( const char * Host, const char * Port,
 			int Family, int Type, int Protocol, int Flags );
 
 		Socket		accept   ( void ) const;
@@ -122,10 +122,12 @@ class Socket {
 		void		close    ( void );
 
 		Socket &	setsockopt( int level, int option, int value );
-		int			getsockopt( int level, int option, int value );
+		int			getsockopt( int option, int level );
 
 		Socket &	settimeout( double timeout );
 		double		gettimeout( void ) const;
+
+		void		setblocking( bool value );
 
     //  |  setblocking(...)
     //  |      setblocking(flag)

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/04 19:59:59 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/04 20:15:10 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,14 @@ Socket::Socket( int Family, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL )
 	protocol   ( Protocol   ),
 	descriptor ( -1         ) {}
 
-Socket::Socket( const char * hostname, const char * servname = NULL,
+Socket::Socket( const char * Host, const char * Port = NULL,
 	int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) :
 
-	ip_address ( hostname   ),
-	port       ( servname   ),
-	type       ( Type       ),
-	protocol   ( Protocol   ),
-	descriptor ( -1         )
+	ip_address ( Host     ),
+	port       ( Port     ),
+	type       ( Type     ),
+	protocol   ( Protocol ),
+	descriptor ( -1       )
 {
 	Socket::bind ( ip_address, port , AI_PASSIVE );
 }
@@ -130,7 +130,7 @@ Socket &	Socket::socket( int Family,
 	return ( *this );
 }
 
-Socket &	Socket::bind( const char * hostname, const char * servname,
+Socket &	Socket::bind( const char * Host, const char * Port,
 	int flags = AI_PASSIVE ) {
 
 	/* Bind to an Address and Port - - - - - - - - - - - - - - - - - - - - - - - -
@@ -171,7 +171,7 @@ Socket &	Socket::bind( const char * hostname, const char * servname,
 	                                address or IN6ADDR_ANY_INIT for an IPv6
 	                                address. */
 
-	ret = getaddrinfo( hostname, servname, &hints, &head );
+	ret = getaddrinfo( hostname, Port, &hints, &head );
 
 	if ( ret != 0 ) {
 		this->close();
@@ -239,11 +239,11 @@ Socket &	Socket::listen( int connections = 0 ) {
 	return ( *this );
 }
 
-Socket &	Socket::connect( const char * hostname, const char * servname,
+Socket &	Socket::connect( const char * Host, const char * Port,
 	int Family = AF_UNSPEC, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL,
 	int Flags = AI_DEFAULT ) {
 
-	/* Get information on some hostname/servname - - - - - - - - - - - - - - - - -
+	/* Get information on some hostname/Port - - - - - - - - - - - - - - - - -
 
 	    #include <sys/types.h>
 	    #include <sys/socket.h>
@@ -285,7 +285,7 @@ Socket &	Socket::connect( const char * hostname, const char * servname,
 	hints.ai_protocol = Protocol;
 	hints.ai_flags    = Flags;
 
-	ret = getaddrinfo( hostname, servname, &hints, &head );
+	ret = getaddrinfo( Host, Port, &hints, &head );
 	if ( ret != 0 )
 		throw SocketError( __FILE__ , __LINE__, gai_strerror(ret) );
 
@@ -298,13 +298,13 @@ Socket &	Socket::connect( const char * hostname, const char * servname,
 
 		sockdes = ::socket( cur->ai_family, cur->ai_socktype, cur->ai_protocol );
 		if ( sockdes < 0 ) {
-			cause = "Failed to create specified hostname socket";
+			cause = "Failed to create specified host socket";
 			continue ;
 		}
 
 		ret = ::connect( sockdes, cur->ai_addr, cur->ai_addrlen );
 		if ( ret < 0 ) {
-			cause = "Failed to bind to specified address/server/port";
+			cause = "Failed to bind to specified host/port";
 			::close(sockdes);
 			sockdes = -1;
 			continue ;
@@ -343,19 +343,25 @@ Socket &	Socket::connect( Socket & peer ) {
 	return ( *this );
 }
 
-// Socket &	Socket::setsockopt( int level, int option, int value ) {
+Socket &	Socket::setsockopt( int level, int option, int value ) {
 
-// 	int ret = ::setsockopt( descriptor, level, option, &value, sizeof(value) );
-// 	if ( ret == -1 )
-// 		throw SocketError( __FILE__ , __LINE__ );
-// }
+	int ret = ::setsockopt( descriptor, level, option, &value, sizeof(value) );
+	if ( ret == -1 )
+		throw SocketError( __FILE__ , __LINE__ );
+	return ( *this );
+}
 
-// int			Socket::getsockopt( int level, int option, int value ) {
+int			Socket::getsockopt( int option, int level = SOL_SOCKET ) {
 
-// 	int ret = ::getsockopt( descriptor, level, option, &value, sizeof(value) );
-// 	if ( ret == -1 )
-// 		throw SocketError( __FILE__ , __LINE__ );
-// }
+	socklen_t len;
+	int value;
+
+	int ret = ::getsockopt( descriptor, level, option, &value, &len );
+	if ( ret == -1 )
+		throw SocketError( __FILE__ , __LINE__ );
+
+	return ( value );
+}
 
 Socket &	Socket::settimeout( double timeout ) {
 
@@ -425,6 +431,10 @@ double		Socket::gettimeout( void ) const {
 		throw SocketError( __FILE__ , __LINE__ );
 
 	return ( time.tv_sec + (time.tv_usec / 1000000) );
+}
+
+void		Socket::setblocking( bool flag ) {
+	(flag) ? settimeout(1) : settimeout(0) ;
 }
 
 Socket		Socket::accept() const {
