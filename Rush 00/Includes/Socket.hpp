@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 07:20:46 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 07:21:18 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ class Socket {
 		void		close    ( void );
 
 		Socket &	setsockopt( int level, int option, int value );
-		int		    getsockopt( int option, int level );
+		int	        getsockopt( int option, int level );
 
 		Socket &	settimeout( double timeout );
 		double		gettimeout( void ) const;
