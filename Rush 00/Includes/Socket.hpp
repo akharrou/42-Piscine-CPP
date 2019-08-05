@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 07:27:53 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 07:28:31 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,10 +140,10 @@ class Socket {
 				std::string _err_msg;
 
 			public:
-				SocketError( void );
-				SocketError( const char * File, size_t Line );
-				SocketError( const char * File, size_t Line, const char * Error_Message );
-				~SocketError(void);
+				SocketError  ( void );
+				SocketError  ( const char * File, size_t Line );
+				SocketError  ( const char * File, size_t Line, const char * Error_Message );
+				~SocketError ( void );
 
 				virtual const char* what() const throw();
 		};
