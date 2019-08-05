@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 07:29:49 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 08:12:28 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,116 @@ std::ostream &  operator << ( std::ostream& out, const Socket & in ) {
 }
 
 
-/* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/*                         PUBLIC MEMBER FUNCTION(S)                         */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
+/* OPTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+Socket &	Socket::setsockopt( int level, int option, int value ) {
+
+	int ret = ::setsockopt( descriptor, level, option, &value, sizeof(value) );
+	if ( ret == -1 )
+		throw SocketError( __FILE__ , __LINE__ );
+	return ( *this );
+}
+
+int			Socket::getsockopt( int option, int level = SOL_SOCKET ) const {
+
+	socklen_t len;
+	int value;
+
+	int ret = ::getsockopt( descriptor, level, option, &value, &len );
+	if ( ret == -1 )
+		throw SocketError( __FILE__ , __LINE__ );
+
+	return ( value );
+}
+
+Socket &	Socket::settimeout( double timeout ) {
+
+	/* Set SO_SNDTIMEO & SO_RCVTIMEO socket options : - - - - - - - - - - - -
+
+	    SO_SNDTIMEO is an option to set a timeout value for output operations.
+	    It accepts a struct timeval parameter with the number of seconds and
+	    microseconds used to limit waits for output operations to complete. If
+	    a send operation has blocked for this much time, it returns with a partial
+	    count or with the error EWOULDBLOCK if no data were sent.  In the current
+	    implementation, this timer is restarted each time additional data are
+	    delivered to the protocol, implying that the limit applies to output por-
+	    tions ranging in size from the low-water mark to the high-water mark for
+	    output.
+
+	    SO_RCVTIMEO is an option to set a timeout value for input operations.
+	    It accepts a struct timeval parameter with the number of seconds and
+	    microseconds used to limit waits for input operations to complete. In
+	    the current implementation, this timer is restarted each time additional
+	    data are received by the protocol, and thus the limit is in effect an
+	    inactivity timer. If a receive operation has been blocked for this much
+	    time without receiving additional data, it returns with a short count
+	    or with the error EWOULDBLOCK if no data were received. The struct
+	    timeval parameter must represent a positive time interval; otherwise,
+	    setsockopt() returns with the error EDOM.
+
+	    See : setsocketopt(2)
+        ------------------------------------------------------------------
+
+	    <sys/time.h>
+
+	    struct timeval {
+	        long   tv_sec;    -- seconds
+	        int    tv_usec;   -- microseconds
+	    };
+
+	    See : /usr/include/sys/_types/_timeval.h  @line 34
+
+	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+	struct timeval time;
+	int ret;
+
+	time.tv_sec  = timeout;
+	time.tv_usec = ((timeout - time.tv_sec) * 1000000);
+
+	ret = ::setsockopt( descriptor, SOL_SOCKET, SO_SNDTIMEO, &time, sizeof(time) );
+	if ( ret == -1 )
+		throw SocketError( __FILE__ , __LINE__ );
+
+	ret = ::setsockopt( descriptor, SOL_SOCKET, SO_RCVTIMEO, &time, sizeof(time) );
+	if ( ret == -1 )
+		throw SocketError( __FILE__ , __LINE__ );
+
+	return ( *this );
+}
+
+double		Socket::gettimeout( void ) const {
+
+	struct timeval time;
+	socklen_t timelen;
+	int ret;
+
+	timelen = sizeof(time);
+	ret = ::getsockopt( descriptor, SOL_SOCKET, SO_SNDTIMEO, &time, &timelen );
+	if ( ret == -1 )
+		throw SocketError( __FILE__ , __LINE__ );
+
+	return ( (time.tv_sec + (time.tv_usec / 1000000)) );
+}
+
+Socket &	Socket::setblocking( bool flag ) {
+
+	if ( flag ) {
+		if ( gettimeout() < 1 )
+			settimeout(1);
+	} else
+		settimeout(0);
+
+	return ( *this );
+}
+
+
+/* OPERATIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 Socket &	Socket::socket( int Family ) {
 
@@ -347,123 +456,14 @@ Socket &	Socket::connect( Socket & peer ) {
 	return ( *this );
 }
 
-Socket &	Socket::setsockopt( int level, int option, int value ) {
-
-	int ret = ::setsockopt( descriptor, level, option, &value, sizeof(value) );
-	if ( ret == -1 )
-		throw SocketError( __FILE__ , __LINE__ );
-	return ( *this );
-}
-
-int			Socket::getsockopt( int option, int level = SOL_SOCKET ) {
-
-	socklen_t len;
-	int value;
-
-	int ret = ::getsockopt( descriptor, level, option, &value, &len );
-	if ( ret == -1 )
-		throw SocketError( __FILE__ , __LINE__ );
-
-	return ( value );
-}
-
-Socket &	Socket::settimeout( double timeout ) {
-
-	/* Set SO_SNDTIMEO & SO_RCVTIMEO socket options : - - - - - - - - - - - -
-
-	    SO_SNDTIMEO is an option to set a timeout value for output operations.
-	    It accepts a struct timeval parameter with the number of seconds and
-	    microseconds used to limit waits for output operations to complete. If
-	    a send operation has blocked for this much time, it returns with a partial
-	    count or with the error EWOULDBLOCK if no data were sent.  In the current
-	    implementation, this timer is restarted each time additional data are
-	    delivered to the protocol, implying that the limit applies to output por-
-	    tions ranging in size from the low-water mark to the high-water mark for
-	    output.
-
-	    SO_RCVTIMEO is an option to set a timeout value for input operations.
-	    It accepts a struct timeval parameter with the number of seconds and
-	    microseconds used to limit waits for input operations to complete. In
-	    the current implementation, this timer is restarted each time additional
-	    data are received by the protocol, and thus the limit is in effect an
-	    inactivity timer. If a receive operation has been blocked for this much
-	    time without receiving additional data, it returns with a short count
-	    or with the error EWOULDBLOCK if no data were received. The struct
-	    timeval parameter must represent a positive time interval; otherwise,
-	    setsockopt() returns with the error EDOM.
-
-	    See : setsocketopt(2)
-        ------------------------------------------------------------------
-
-	    <sys/time.h>
-
-	    struct timeval {
-	        long   tv_sec;    -- seconds
-	        int    tv_usec;   -- microseconds
-	    };
-
-	    See : /usr/include/sys/_types/_timeval.h  @line 34
-
-	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-	struct timeval time;
-	int ret;
-
-	time.tv_sec  = timeout;
-	time.tv_usec = ((timeout - time.tv_sec) * 1000000);
-
-	ret = ::setsockopt( descriptor, SOL_SOCKET, SO_SNDTIMEO, &time, sizeof(time) );
-	if ( ret == -1 )
-		throw SocketError( __FILE__ , __LINE__ );
-
-	ret = ::setsockopt( descriptor, SOL_SOCKET, SO_RCVTIMEO, &time, sizeof(time) );
-	if ( ret == -1 )
-		throw SocketError( __FILE__ , __LINE__ );
-
-	return ( *this );
-}
-
-double		Socket::gettimeout( void ) const {
-
-	struct timeval time;
-	socklen_t timelen;
-	int ret;
-
-	timelen = sizeof(time);
-	ret = ::getsockopt( descriptor, SOL_SOCKET, SO_SNDTIMEO, &time, &timelen );
-	if ( ret == -1 )
-		throw SocketError( __FILE__ , __LINE__ );
-
-	return ( (time.tv_sec + (time.tv_usec / 1000000)) );
-}
-
-void		Socket::setblocking( bool flag ) {
-
-	if ( flag && gettimeout() < 1 )
-		settimeout(1);
-	settimeout(0);
-}
-
-Socket		Socket::accept() const {
-
-	// struct sockaddr_storage {
-	// 	__uint8_t	ss_len;		/* address length */
-	// 	sa_family_t	ss_family;	/* [XSI] address family */
-	// 	char			__ss_pad1[_SS_PAD1SIZE];
-	// 	__int64_t	__ss_align;	/* force structure storage alignment */
-	// 	char			__ss_pad2[_SS_PAD2SIZE];
-	// };
+Socket		Socket::accept( void ) const {
 
 	Socket Client( this->family, this->type, this->protocol );
 
 	Client.ip_address  = nullptr;
 	Client.port        = nullptr;
 
-	Client.family      = family;
-	Client.type        = type;
-	Client.protocol    = protocol;
-
-	Client.address_len = sizeof(Client.address);
+	Client.address_len = sizeof( Client.address );
 
 	Client.descriptor = ::accept( descriptor, &Client.address, &Client.address_len );
 	if ( Client.descriptor == -1 )
@@ -472,53 +472,7 @@ Socket		Socket::accept() const {
 	return ( Client );
 }
 
-// ssize_t		Socket::send( const void * buffer, size_t length , int flags ) const {
-
-// template <typename T>
-// ssize_t		Socket::send( T data , int flags ) const {
-
-// 	size_t len;
-
-// 	bytes = send();
-
-// 	if ( bytes == -1 )
-// 		throw SocketError( __FILE__ , __LINE__ );
-// }
-
-// ssize_t		Socket::sendto( Socket & receiver, const void * buffer, size_t length , int flags ) const {
-
-// 	size_t bytes;
-
-// 	bytes = sendto();
-
-// 	if ( bytes == -1 )
-// 		throw SocketError( __FILE__ , __LINE__ );
-// }
-
-// ssize_t		Socket::recv( const void * buffer, size_t length , int flags ) const {
-
-// template <typename T>
-// ssize_t		Socket::recv( T data , int flags ) const {
-
-// 	size_t len;
-
-// 	bytes = recv();
-
-// 	if ( bytes == -1 )
-// 		throw SocketError( __FILE__ , __LINE__ );
-// }
-
-// ssize_t		Socket::recvfrom( Socket & sender, const void * buffer, size_t length , int flags ) const {
-
-// 	size_t bytes;
-
-// 	bytes = recvfrom();
-
-// 	if ( bytes == -1 )
-// 		throw SocketError( __FILE__ , __LINE__ );
-// }
-
-void	Socket::close() {
+void	Socket::close( void ) {
 
 	if ( descriptor != -1 )
 		if ( ::close( descriptor ) == -1 )
@@ -545,6 +499,79 @@ void	Socket::shutdown ( int how = SHUT_RDWR ) {
 		if ( ::shutdown( descriptor , how ) == -1 )
 			throw SocketError( __FILE__ , __LINE__ );
 	descriptor = -1;
+}
+
+
+/* I/O OPERATONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+ssize_t		Socket::send( std::string msg, int flags = 0 ) const {
+
+	size_t bytes;
+
+
+
+	return (0);
+}
+
+ssize_t		Socket::send( const void * buffer, size_t length , int flags = 0 ) const {
+
+	size_t bytes;
+
+
+
+	return (0);
+}
+
+ssize_t		Socket::recv( std::string msg, int flags = 0 ) const {
+
+	size_t bytes;
+
+
+
+	return (0);
+}
+
+ssize_t		Socket::recv( const void * buffer, size_t length , int flags = 0 ) const {
+
+	size_t bytes;
+
+
+
+	return (0);
+}
+
+ssize_t		Socket::sendto( Socket & receiver, std::string msg, int flags = 0 ) const {
+
+	size_t bytes;
+
+
+
+	return (0);
+}
+
+ssize_t		Socket::sendto( Socket & receiver, const void * buffer,
+	size_t length, int flags = 0 ) const {
+
+	size_t bytes;
+
+	return (0);
+}
+
+ssize_t		Socket::recvfrom( Socket & sender, std::string msg, int flags = 0 ) const {
+
+	size_t bytes;
+
+
+
+	return (0);
+}
+
+ssize_t		Socket::recvfrom( Socket & sender, const void * buffer,
+	size_t length, int flags = 0 ) const {
+
+	size_t bytes;
+
+	return (0);
 }
 
 

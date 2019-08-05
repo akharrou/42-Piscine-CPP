@@ -6,9 +6,12 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 07:28:51 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 08:21:20 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#ifndef SOCKET_HPP
+# define SOCKET_HPP
 
 # include <arpa/inet.h>
 # include <netdb.h>
@@ -89,15 +92,29 @@ class Socket {
 
 		Socket & operator = ( const Socket & rhs );
 
+		/* MEMBERS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
 		const char * ip_address;
 		const char * port;
-		int          family;
-		int          type;
-		int          protocol;
-		int          descriptor;
+
+		int family;
+		int type;
+		int protocol;
+		int descriptor;
 
 		struct sockaddr address;
 		socklen_t address_len;
+
+		/* OPTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+		int	        getsockopt( int option, int level ) const;
+		double		gettimeout( void ) const;
+
+		Socket &	setsockopt  ( int level, int option, int value );
+		Socket &	settimeout  ( double timeout );
+		Socket &	setblocking ( bool value );
+
+		/* OPERATIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		Socket &	socket   ( int Family );
 		Socket &	socket   ( int Family, int Type, int Protocol );
@@ -112,24 +129,34 @@ class Socket {
 
 		Socket		accept   ( void ) const;
 
-		ssize_t		send     ( const void * buffer, size_t length , int flags ) const;
-		ssize_t		sendto   ( Socket & receiver, const void * buffer, size_t length,
-			                   int flags ) const;
-
-		ssize_t		recv     ( const void * buffer, size_t length , int flags ) const;
-		ssize_t		recvfrom ( Socket & sender, const void * buffer, size_t length,
-			                   int flags ) const;
-
 		void		shutdown ( int how );
 		void		close    ( void );
 
-		Socket &	setsockopt( int level, int option, int value );
-		int	        getsockopt( int option, int level );
+		/* I/O OPERATONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-		Socket &	settimeout( double timeout );
-		double		gettimeout( void ) const;
+		template <typename T>
+		ssize_t		send     ( T data, int flags = 0 );
+		ssize_t		send     ( std::string msg, int flags );
+		ssize_t		send     ( const void * buffer, size_t length , int flags );
 
-		void		setblocking( bool value );
+		template <typename T>
+		ssize_t		recv     ( T data, int flags = 0 );
+		ssize_t		recv     ( std::string msg, int flags );
+		ssize_t		recv     ( const void * buffer, size_t length , int flags );
+
+		template <typename T>
+		ssize_t		sendto   ( Socket & receiver, T data, int flags = 0 );
+		ssize_t		sendto   ( Socket & receiver, std::string msg, int flags );
+		ssize_t		sendto   ( Socket & receiver, const void * buffer,
+			                   size_t length, int flags );
+
+		template <typename T>
+		ssize_t		recvfrom  ( Socket & sender, T data, int flags = 0 );
+		ssize_t		recvfrom  ( Socket & sender, std::string msg, int flags );
+		ssize_t		recvfrom  ( Socket & sender, const void * buffer,
+			                    size_t length, int flags );
+
+		/* EXCEPTION  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		class SocketError :
 			public std::exception {
@@ -150,3 +177,65 @@ class Socket {
 };
 
 std::ostream & operator << ( std::ostream & out, const Socket & in );
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/*                            TEMPLATE DEFINITIONS                           */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+template <typename T>
+ssize_t		Socket::send( T data, int flags ) {
+
+	size_t bytes;
+
+	bytes = ::send();
+	if ( bytes == -1 ) {
+		this->close();
+		throw SocketError( __FILE__ , __LINE__ );
+	}
+
+	return (bytes);
+};
+
+template <typename T>
+ssize_t		Socket::recv( T data, int flags ) {
+
+	size_t bytes;
+
+	bytes = ::recv();
+	if ( bytes == -1 ) {
+		this->close();
+		throw SocketError( __FILE__ , __LINE__ );
+	}
+
+	return (bytes);
+};
+
+template <typename T>
+ssize_t		Socket::sendto( Socket & receiver, T data, int flags ) {
+
+	size_t bytes;
+
+	bytes = ::sendto();
+	if ( bytes == -1 ) {
+		this->close();
+		throw SocketError( __FILE__ , __LINE__ );
+	}
+
+	return (bytes);
+};
+
+template <typename T>
+ssize_t		Socket::recvfrom( Socket & sender, T data, int flags ) {
+
+	size_t bytes;
+
+	bytes = ::recvfrom();
+	if ( bytes == -1 ) {
+		this->close();
+		throw SocketError( __FILE__ , __LINE__ );
+	}
+
+	return (bytes);
+};
+
+#endif /* SOCKET_HPP */
