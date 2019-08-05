@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/04 21:50:36 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 07:10:17 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,7 @@ std::ostream &  operator << ( std::ostream& out, const Socket & in ) {
 
 /* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */
 
-Socket &	Socket::socket( int Family,
-                            int Type     = DFLT_TYPE,
-                            int Protocol = DFLT_PROTOCOL ) {
+Socket &	Socket::socket( int Family ) {
 
 	/* Create socket (connection endpoint) - - - - - - - - - - - - - - - - - - -
 
@@ -119,15 +117,21 @@ Socket &	Socket::socket( int Family,
 	if ( descriptor != -1 )
 		this->close();
 
-	descriptor = ::socket( Family, Type, Protocol );
+	descriptor = ::socket( Family, type, protocol );
 	if ( descriptor == -1 )
 		throw SocketError( __FILE__ , __LINE__ );
 
-	this->family   = Family;
+	this->family = Family;
+
+	return ( *this );
+}
+
+Socket &	Socket::socket( int Family, int Type, int Protocol ) {
+
 	this->type     = Type;
 	this->protocol = Protocol;
 
-	return ( *this );
+	return ( Socket::socket( Family ) );
 }
 
 Socket &	Socket::bind( const char * Host, const char * Port,
@@ -240,8 +244,7 @@ Socket &	Socket::listen( int connections = 0 ) {
 }
 
 Socket &	Socket::connect( const char * Host, const char * Port,
-	int Family = AF_UNSPEC, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL,
-	int Flags = AI_DEFAULT ) {
+	int Family = AF_UNSPEC, int Flags = AI_DEFAULT ) {
 
 	/* Get information on some hostname/Port - - - - - - - - - - - - - - - - -
 
@@ -281,8 +284,8 @@ Socket &	Socket::connect( const char * Host, const char * Port,
 	memset( &hints, 0, sizeof(hints) );
 
 	hints.ai_family   = Family;
-	hints.ai_socktype = Type;
-	hints.ai_protocol = Protocol;
+	hints.ai_socktype = type;
+	hints.ai_protocol = protocol;
 	hints.ai_flags    = Flags;
 
 	ret = getaddrinfo( Host, Port, &hints, &head );
@@ -332,9 +335,10 @@ Socket &	Socket::connect( const char * Host, const char * Port,
 
 Socket &	Socket::connect( Socket & peer ) {
 
-	Socket::socket( peer.family, peer.type, peer.protocol );
+	int ret;
 
-	int ret = ::connect( descriptor, &peer.address, peer.address_len );
+	Socket::socket  ( peer.family, peer.type, peer.protocol       );
+	ret = ::connect ( descriptor, &peer.address, peer.address_len );
 
 	if ( ret == -1 ) {
 		this->close();
@@ -406,7 +410,7 @@ Socket &	Socket::settimeout( double timeout ) {
 	int ret;
 
 	time.tv_sec  = timeout;
-	time.tv_usec = (timeout - time.tv_sec) * 1000000;
+	time.tv_usec = ((timeout - time.tv_sec) * 1000000);
 
 	ret = ::setsockopt( descriptor, SOL_SOCKET, SO_SNDTIMEO, &time, sizeof(time) );
 	if ( ret == -1 )
@@ -430,7 +434,7 @@ double		Socket::gettimeout( void ) const {
 	if ( ret == -1 )
 		throw SocketError( __FILE__ , __LINE__ );
 
-	return ( time.tv_sec + (time.tv_usec / 1000000) );
+	return ( (time.tv_sec + (time.tv_usec / 1000000)) );
 }
 
 void		Socket::setblocking( bool flag ) {

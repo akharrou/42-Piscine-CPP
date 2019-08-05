@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/04 21:24:53 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 07:02:06 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ class Socket {
 		struct sockaddr address;
 		socklen_t address_len;
 
+		Socket &	socket   ( int Family );
 		Socket &	socket   ( int Family, int Type, int Protocol );
 
 		Socket &	bind     ( const char * Host, const char * Port, int flags );
@@ -108,7 +109,7 @@ class Socket {
 
 		Socket &	connect  ( Socket &  );
 		Socket &	connect  ( const char * Host, const char * Port,
-			int Family, int Type, int Protocol, int Flags );
+			int Family, int Flags );
 
 		Socket		accept   ( void ) const;
 
