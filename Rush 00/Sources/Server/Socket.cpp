@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 08:12:28 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 12:00:09 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,13 @@ Socket::Socket( const char * Host, const char * Port = NULL,
 	Socket::bind ( ip_address, port , AI_PASSIVE );
 }
 
-Socket::Socket( const Socket & src ) {
+Socket::Socket( const Socket & src )
+{
 	*this = src;
 }
 
-Socket::~Socket( void ) {
+Socket::~Socket( void )
+{
 	Socket::close();
 }
 
@@ -472,15 +474,7 @@ Socket		Socket::accept( void ) const {
 	return ( Client );
 }
 
-void	Socket::close( void ) {
-
-	if ( descriptor != -1 )
-		if ( ::close( descriptor ) == -1 )
-			throw SocketError( __FILE__ , __LINE__ );
-	descriptor = -1;
-}
-
-void	Socket::shutdown ( int how = SHUT_RDWR ) {
+void		Socket::shutdown ( int sockfd, int how = SHUT_RDWR ) {
 
 	/* Shut down part of a full-duplex connection - - - - - - - - - - - - - - -
 
@@ -495,83 +489,98 @@ void	Socket::shutdown ( int how = SHUT_RDWR ) {
 		  ( 'SHUT_RDWR' is equivalent to a close() )
 
 	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
 	if ( descriptor != -1 )
 		if ( ::shutdown( descriptor , how ) == -1 )
 			throw SocketError( __FILE__ , __LINE__ );
 	descriptor = -1;
 }
 
+void		Socket::close( int sockfd )
+{
+	Socket::shutdown( sockfd );
+}
+
+void		Socket::close( void )
+{
+	Socket::close( descriptor );
+}
+
 
 /* I/O OPERATONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-ssize_t		Socket::send( std::string msg, int flags = 0 ) const {
+ssize_t			Socket::send( int sockfd, const void * data, size_t length, int flags = 0 )
+{
+	ssize_t bytes_sent;
 
-	size_t bytes;
+	bytes_sent = ::send( sockfd , data , length , flags );
+	if ( bytes_sent < 0 ) {
 
+		/* 'sockfd' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
 
+		throw SocketError( __FILE__ , __LINE__ );
 
-	return (0);
+	} else if ( static_cast <size_t> (bytes_sent) < length ) {
+
+		data = reinterpret_cast <const char *> (data) + bytes_sent;
+		bytes_sent += Socket::send( sockfd, data, ( length - static_cast <size_t> (bytes_sent) ), flags );
+
+	}
+
+	return ( bytes_sent );
 }
 
-ssize_t		Socket::send( const void * buffer, size_t length , int flags = 0 ) const {
-
-	size_t bytes;
-
-
-
-	return (0);
+inline ssize_t	Socket::send( const void * data, size_t length, int flags = 0 )
+{
+	return ( Socket::send( descriptor, data, length, flags ) );
 }
 
-ssize_t		Socket::recv( std::string msg, int flags = 0 ) const {
-
-	size_t bytes;
-
-
-
-	return (0);
+inline ssize_t	Socket::send( Socket reciever, const void * data, size_t length, int flags = 0 )
+{
+	return ( Socket::send( reciever.descriptor, data, length, flags ) );
 }
 
-ssize_t		Socket::recv( const void * buffer, size_t length , int flags = 0 ) const {
+inline ssize_t	Socket::send( std::string msg, size_t length, int flags = 0 ) {
 
-	size_t bytes;
+	const char * data = msg.c_str();
 
-
-
-	return (0);
+	return ( Socket::send( descriptor, data, length, flags ) );
 }
 
-ssize_t		Socket::sendto( Socket & receiver, std::string msg, int flags = 0 ) const {
+inline ssize_t	Socket::send( std::string msg, int flags = 0 ) {
 
-	size_t bytes;
+	const char * data = msg.c_str();
 
-
-
-	return (0);
+	return ( Socket::send( descriptor, data, msg.size(), flags ) );
 }
 
-ssize_t		Socket::sendto( Socket & receiver, const void * buffer,
-	size_t length, int flags = 0 ) const {
+inline ssize_t	Socket::send( int sockfd, std::string msg, size_t length, int flags = 0 ) {
 
-	size_t bytes;
+	const char * data = msg.c_str();
 
-	return (0);
+	return ( Socket::send( sockfd, data, length, flags ) );
 }
 
-ssize_t		Socket::recvfrom( Socket & sender, std::string msg, int flags = 0 ) const {
+inline ssize_t	Socket::send( int sockfd, std::string msg, int flags = 0 ) {
 
-	size_t bytes;
+	const char * data = msg.c_str();
 
-
-
-	return (0);
+	return ( Socket::send( sockfd, data, msg.size(), flags ) );
 }
 
-ssize_t		Socket::recvfrom( Socket & sender, const void * buffer,
-	size_t length, int flags = 0 ) const {
+inline ssize_t	Socket::send( Socket reciever, std::string msg, size_t length, int flags = 0 ) {
 
-	size_t bytes;
+	const char * data = msg.c_str();
 
-	return (0);
+	return ( Socket::send( reciever.descriptor, data, length, flags ) );
+}
+
+inline ssize_t	Socket::send( Socket reciever, std::string msg, int flags = 0 ) {
+
+	const char * data = msg.c_str();
+
+	return ( Socket::send( reciever.descriptor, data, msg.size(), flags ) );
 }
 
 
@@ -595,7 +604,11 @@ Socket::SocketError::SocketError( const char *File, size_t Line,
 
 Socket::SocketError::~SocketError( void ) {}
 
-const char *Socket::SocketError::what() const throw() {
+std::string	Socket::SocketError::getError( void ) const {
+	return ( _err_msg );
+}
+
+const char *Socket::SocketError::what( void ) const throw() {
 
 	return (
 		std::string("~ " + _file + ":" + _line + " -- Socket Error : "
