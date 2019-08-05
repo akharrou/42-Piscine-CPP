@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 12:57:49 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 16:17:44 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,7 +187,7 @@ Socket &	Socket::setblocking( bool flag ) {
 }
 
 
-/* OPERATIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* OPERATIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 Socket &	Socket::socket( int Family ) {
 
@@ -216,9 +216,9 @@ Socket &	Socket::socket( int Family ) {
 	        SOCK_RAW            [...] ; See socket(2)
 
 	    Protocol:
-	        IPPROTO_IP   --> ip  ; 0  ; IP  ; # internet protocol -- determines automatically
-	        IPPROTO_TCP  --> tcp ; 6  ; TCP ; # transmission control protocol
-	        IPPROTO_UDP  --> udp ; 17 ; UDP ; # user datagram protocol
+	        IPPROTO_IP  -> ip  ; 0  ; IP  ; # internet protocol (auto-determined)
+	        IPPROTO_TCP -> tcp ; 6  ; TCP ; # transmission control protocol
+	        IPPROTO_UDP -> udp ; 17 ; UDP ; # user datagram protocol
 	        ...
 
 	    See : socket(2), protocols(5), /etc/protocols
@@ -250,20 +250,64 @@ Socket &	Socket::bind( const char * Host, const char * Port,
 
 	/* Bind to an Address and Port - - - - - - - - - - - - - - - - - - - - - - - -
 
-	    #include <sys/types.h>
-	    #include <sys/socket.h>
+	#include <sys/types.h>
+	#include <sys/socket.h>
 
-	    int
-	    bind( int sockfd, struct sockaddr *my_addr, int addrlen );
+	int
+	bind( int sockfd, struct sockaddr *my_addr, int addrlen );
 
-	    See : bind(2)
-	    ----------------------------------------------------------------
+	See : bind(2)
+	------------------------------------------------------------------------------
 
-	    struct sockaddr_in   -- see : /usr/include/netinet/in.h    @line 372
-	    struct sockaddr_in6  -- see : /usr/include/netinet6/in6.h  @line 164
-	    struct addrinfo      -- see : /usr/include/netdb.h         @line 147
+	struct addrinfo          -- see : /usr/include/netdb.h         @line 147
+	struct sockaddr          -- see : /usr/include/sys/socket.h    @line 401
+	struct sockaddr_in       -- see : /usr/include/netinet/in.h    @line 372
+	struct sockaddr_in6      -- see : /usr/include/netinet6/in6.h  @line 164
+	struct sockaddr_storage  -- see : /usr/include/sys/socket.h    @line 434
 
-	 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+	------------------------------------------------------------------------------
+
+	struct addrinfo {
+	    int        ai_flags;           // AI_PASSIVE, AI_CANONNAME, AI_NUMERICHOST
+	    int        ai_family;          // PF_xxx
+	    int        ai_socktype;        // SOCK_xxx
+	    int        ai_protocol;        // 0 or IPPROTO_xxx for IPv4 and IPv6
+	    socklen_t  ai_addrlen;         // length of ai_addr
+	    char       ai_canonname;       // canonical name for hostname
+	    struct     sockaddr *ai_addr;  // binary address
+	    struct     addrinfo *ai_next;  // next structure in linked list
+	};
+
+	struct sockaddr {
+	   unsigned short    sa_family;    // address family, AF_xxx
+	   char              sa_data[14];  // 14 bytes of protocol address
+	};
+
+	struct sockaddr_in {
+	    short            sin_family;   // e.g. AF_INET, AF_INET6
+	    unsigned short   sin_port;     // e.g. htons(3490)
+	    struct in_addr   sin_addr;     // see struct in_addr, below
+	    char             sin_zero[8];  // zero this if you want to
+	};
+
+	struct sockaddr_in6 {
+	    u_int16_t       sin6_family;   // address family, AF_INET6
+	    u_int16_t       sin6_port;     // port number, Network Byte Order
+	    u_int32_t       sin6_flowinfo; // IPv6 flow information
+	    struct in6_addr sin6_addr;     // IPv6 address
+	    u_int32_t       sin6_scope_id; // Scope ID
+	};
+
+	struct sockaddr_storage {
+	    sa_family_t  ss_family;        // address family
+
+	    // all this is padding, implementation specific, ignore it:
+	    char      __ss_pad1[_SS_PAD1SIZE];
+	    int64_t   __ss_align;
+	    char      __ss_pad2[_SS_PAD2SIZE];
+	};
+
+	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 	struct addrinfo *head, *cur;
 	struct addrinfo hints;
@@ -286,7 +330,7 @@ Socket &	Socket::bind( const char * Host, const char * Port,
 	                                address or IN6ADDR_ANY_INIT for an IPv6
 	                                address. */
 
-	ret = getaddrinfo( Host, Port, &hints, &head );
+	ret = getaddrinfo( Host , Port , &hints , &head );
 
 	if ( ret != 0 ) {
 		this->close();
@@ -333,8 +377,10 @@ Socket &	Socket::bind( const char * Host, const char * Port,
 
 	this->descriptor = sockdes;
 
-	memmove( &address, head->ai_addr, sizeof(struct sockaddr) );
 	address_len = head->ai_addrlen;
+	memmove( reinterpret_cast <struct sockaddr *> (&address),
+	         head->ai_addr,
+			 sizeof(address) );
 
 	freeaddrinfo(head);
 
@@ -368,20 +414,6 @@ Socket &	Socket::connect( const char * Host, const char * Port,
 	        const struct addrinfo *hints, struct addrinfo **res);
 
 	    See : getaddrinfo(2)
-        ------------------------------------------------------------------
-
-	    struct addrinfo {
-	        int        ai_flags;            -- AI_PASSIVE, AI_CANONNAME, AI_NUMERICHOST
-	        int        ai_family;           -- PF_xxx
-	        int        ai_socktype;         -- SOCK_xxx
-	        int        ai_protocol;         -- 0 or IPPROTO_xxx for IPv4 and IPv6
-	        socklen_t  ai_addrlen;          -- length of ai_addr
-	        char       ai_canonname;        -- canonical name for hostname
-	        struct     sockaddr *ai_addr;   -- binary address
-	        struct     addrinfo *ai_next;   -- next structure in linked list
-	    };
-
-	    See : /usr/include/netdb.h @line 147
 
 	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -449,7 +481,9 @@ Socket &	Socket::connect( Socket & peer ) {
 	int ret;
 
 	Socket::socket  ( peer.family, peer.type, peer.protocol       );
-	ret = ::connect ( descriptor, &peer.address, peer.address_len );
+	ret = ::connect ( descriptor,
+	                  reinterpret_cast <struct sockaddr *> (&peer.address),
+	                  peer.address_len );
 
 	if ( ret == -1 ) {
 		this->close();
@@ -467,7 +501,11 @@ Socket		Socket::accept( void ) const {
 
 	Client.address_len = sizeof( Client.address );
 
-	Client.descriptor = ::accept( descriptor, &Client.address, &Client.address_len );
+	Client.descriptor =
+		::accept( descriptor,
+		          reinterpret_cast <struct sockaddr *> (&Client.address),
+		          &Client.address_len );
+
 	if ( Client.descriptor == -1 )
 		throw SocketError( __FILE__ , __LINE__ );
 
@@ -525,7 +563,10 @@ ssize_t		Socket::send( int sockfd, const void * data, size_t length,
 	} else if ( static_cast <size_t> (bytes_sent) < length ) {
 
 		data = reinterpret_cast <const char *> (data) + bytes_sent;
-		bytes_sent += Socket::send( sockfd, data, ( length - static_cast <size_t> (bytes_sent) ), flags );
+		bytes_sent +=
+			Socket::send( sockfd, data,
+			              length - static_cast <size_t> (bytes_sent),
+			              flags );
 
 	}
 
@@ -537,7 +578,8 @@ inline ssize_t	Socket::send( const void * data, size_t length, int flags = 0 )
 	return ( Socket::send( descriptor, data, length, flags ) );
 }
 
-inline ssize_t	Socket::send( Socket receiver, const void * data, size_t length, int flags = 0 )
+inline ssize_t	Socket::send( Socket receiver, const void * data, size_t length,
+	int flags = 0 )
 {
 	return ( Socket::send( receiver.descriptor, data, length, flags ) );
 }
@@ -556,7 +598,8 @@ inline ssize_t	Socket::send( std::string msg, int flags = 0 ) {
 	return ( Socket::send( descriptor, data, msg.size(), flags ) );
 }
 
-inline ssize_t	Socket::send( int sockfd, std::string msg, size_t length, int flags = 0 ) {
+inline ssize_t	Socket::send( int sockfd, std::string msg, size_t length,
+	int flags = 0 ) {
 
 	const char * data = msg.c_str();
 
@@ -570,7 +613,8 @@ inline ssize_t	Socket::send( int sockfd, std::string msg, int flags = 0 ) {
 	return ( Socket::send( sockfd, data, msg.size(), flags ) );
 }
 
-inline ssize_t	Socket::send( Socket receiver, std::string msg, size_t length, int flags = 0 ) {
+inline ssize_t	Socket::send( Socket receiver, std::string msg, size_t length,
+	int flags = 0 ) {
 
 	const char * data = msg.c_str();
 
@@ -587,11 +631,14 @@ inline ssize_t	Socket::send( Socket receiver, std::string msg, int flags = 0 ) {
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 ssize_t		Socket::sendto( const void * data, size_t length,
-	struct sockaddr *dest_addr, socklen_t dest_len, int flags )
+	struct sockaddr_storage *dest_addr, int flags )
 {
 	ssize_t bytes_sent;
 
-	bytes_sent = ::sendto( descriptor, data , length , flags, dest_addr, dest_len );
+	bytes_sent = ::sendto( descriptor, data , length , flags,
+	                       reinterpret_cast <struct sockaddr *> (dest_addr),
+	                       sizeof( dest_addr ) );
+
 	if ( bytes_sent < 0 ) {
 
 		/* 'sockfd' won't be closed; it will be up to the caller to check
@@ -602,8 +649,10 @@ ssize_t		Socket::sendto( const void * data, size_t length,
 	} else if ( static_cast <size_t> (bytes_sent) < length ) {
 
 		data = reinterpret_cast <const char *> (data) + bytes_sent;
-		bytes_sent += Socket::sendto( data, ( length - static_cast <size_t> (bytes_sent) ),
-			dest_addr, dest_len, flags );
+		bytes_sent +=
+			Socket::sendto( data ,
+			                length - static_cast <size_t> (bytes_sent),
+			                dest_addr, flags );
 
 	}
 
@@ -613,32 +662,23 @@ ssize_t		Socket::sendto( const void * data, size_t length,
 inline ssize_t	Socket::sendto( Socket receiver, const void * data,
 	size_t length, int flags )
 {
-	return (
-		Socket::sendto( data, length,
-			&receiver.address, receiver.address_len, flags )
-	);
+	return ( Socket::sendto( data, length, &receiver.address, flags ) );
 }
 
 inline ssize_t	Socket::sendto( std::string msg, size_t length,
-	struct sockaddr *dest_addr, socklen_t dest_len, int flags ) {
+	struct sockaddr_storage *dest_addr, int flags ) {
 
 	const char * data = msg.c_str();
 
-	return (
-		Socket::sendto( data, length,
-			dest_addr, dest_len, flags )
-	);
+	return ( Socket::sendto( data, length, dest_addr, flags ) );
 }
 
-inline ssize_t	Socket::sendto( std::string msg, struct sockaddr *dest_addr,
-	socklen_t dest_len, int flags ) {
+inline ssize_t	Socket::sendto( std::string msg,
+	struct sockaddr_storage *dest_addr, int flags ) {
 
 	const char * data = msg.c_str();
 
-	return (
-		Socket::sendto( data, msg.size(),
-			dest_addr, dest_len, flags )
-	);
+	return ( Socket::sendto( data, msg.size(), dest_addr, flags ) );
 }
 
 inline ssize_t	Socket::sendto( Socket receiver, std::string msg, size_t length,
@@ -646,20 +686,14 @@ inline ssize_t	Socket::sendto( Socket receiver, std::string msg, size_t length,
 
 	const char * data = msg.c_str();
 
-	return (
-		Socket::sendto( data, length,
-			&receiver.address, receiver.address_len, flags )
-	);
+	return ( Socket::sendto( data, length, &receiver.address, flags ) );
 }
 
 inline ssize_t	Socket::sendto( Socket receiver, std::string msg, int flags ) {
 
 	const char * data = msg.c_str();
 
-	return (
-		Socket::sendto( data, msg.size(),
-			&receiver.address, receiver.address_len, flags )
-	);
+	return ( Socket::sendto( data, msg.size(), &receiver.address, flags ) );
 }
 
 
