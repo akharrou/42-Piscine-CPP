@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/04 20:14:37 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/04 21:24:53 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-# include <iostream>
 # include <cmath>
+# include <iostream>
 # include <exception>
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -86,7 +86,7 @@ class Socket {
 		~Socket( void );
 
 		explicit Socket( int Family, int Type, int Protocol );
-		Socket( const char * Host, const char * Port, int Type , int Protocol );
+		Socket( const char * Host, const char * Port, int Type, int Protocol );
 
 		Socket & operator = ( const Socket & rhs );
 
@@ -112,11 +112,13 @@ class Socket {
 
 		Socket		accept   ( void ) const;
 
-		ssize_t		send     ( const void * buffer, size_t length , int flags )                    const;
-		ssize_t		sendto   ( Socket & receiver, const void * buffer, size_t length , int flags ) const;
+		ssize_t		send     ( const void * buffer, size_t length , int flags ) const;
+		ssize_t		sendto   ( Socket & receiver, const void * buffer,
+		                       size_t length , int flags ) const;
 
-		ssize_t		recv     ( const void * buffer, size_t length , int flags )                    const;
-		ssize_t		recvfrom ( Socket & sender, const void * buffer, size_t length , int flags )   const;
+		ssize_t		recv     ( const void * buffer, size_t length , int flags ) const;
+		ssize_t		recvfrom ( Socket & sender, const void * buffer,
+		                       size_t length , int flags ) const;
 
 		void		shutdown ( int how );
 		void		close    ( void );
@@ -128,19 +130,6 @@ class Socket {
 		double		gettimeout( void ) const;
 
 		void		setblocking( bool value );
-
-    //  |  setblocking(...)
-    //  |      setblocking(flag)
-    //  |
-    //  |      Set the socket to blocking (flag is true) or non-blocking (false).
-    //  |      setblocking(True) is equivalent to settimeout(None);
-    //  |      setblocking(False) is equivalent to settimeout(0.0).
-    //  |
-    //  |  setsockopt(...)
-    //  |      setsockopt(level, option, value)
-    //  |
-    //  |      Set a socket option.  See the Unix manual for level and option.
-    //  |      The value argument can either be an integer or a string.
 
 		class SocketError : public std::exception {
 

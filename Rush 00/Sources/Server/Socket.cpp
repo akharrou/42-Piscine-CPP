@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/04 20:15:10 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/04 21:50:36 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,15 @@
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
 Socket::Socket( void ) :
-	type       ( DFLT_TYPE       ),
-	protocol   ( DFLT_PROTOCOL   ),
-	descriptor ( -1              ) {}
+	type       ( DFLT_TYPE     ),
+	protocol   ( DFLT_PROTOCOL ),
+	descriptor ( -1            ) {}
 
 Socket::Socket( int Family, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) :
-	family     ( Family     ),
-	type       ( Type       ),
-	protocol   ( Protocol   ),
-	descriptor ( -1         ) {}
+	family     ( Family   ),
+	type       ( Type     ),
+	protocol   ( Protocol ),
+	descriptor ( -1       ) {}
 
 Socket::Socket( const char * Host, const char * Port = NULL,
 	int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) :
@@ -171,7 +171,7 @@ Socket &	Socket::bind( const char * Host, const char * Port,
 	                                address or IN6ADDR_ANY_INIT for an IPv6
 	                                address. */
 
-	ret = getaddrinfo( hostname, Port, &hints, &head );
+	ret = getaddrinfo( Host, Port, &hints, &head );
 
 	if ( ret != 0 ) {
 		this->close();
@@ -434,15 +434,32 @@ double		Socket::gettimeout( void ) const {
 }
 
 void		Socket::setblocking( bool flag ) {
-	(flag) ? settimeout(1) : settimeout(0) ;
+
+	if ( flag && gettimeout() < 1 )
+		settimeout(1);
+	settimeout(0);
 }
 
 Socket		Socket::accept() const {
 
+	// struct sockaddr_storage {
+	// 	__uint8_t	ss_len;		/* address length */
+	// 	sa_family_t	ss_family;	/* [XSI] address family */
+	// 	char			__ss_pad1[_SS_PAD1SIZE];
+	// 	__int64_t	__ss_align;	/* force structure storage alignment */
+	// 	char			__ss_pad2[_SS_PAD2SIZE];
+	// };
+
 	Socket Client( this->family, this->type, this->protocol );
 
-	Client.ip_address = nullptr;
-	Client.port       = nullptr;
+	Client.ip_address  = nullptr;
+	Client.port        = nullptr;
+
+	Client.family      = family;
+	Client.type        = type;
+	Client.protocol    = protocol;
+
+	Client.address_len = sizeof(Client.address);
 
 	Client.descriptor = ::accept( descriptor, &Client.address, &Client.address_len );
 	if ( Client.descriptor == -1 )
@@ -453,7 +470,10 @@ Socket		Socket::accept() const {
 
 // ssize_t		Socket::send( const void * buffer, size_t length , int flags ) const {
 
-// 	size_t bytes;
+// template <typename T>
+// ssize_t		Socket::send( T data , int flags ) const {
+
+// 	size_t len;
 
 // 	bytes = send();
 
@@ -473,7 +493,10 @@ Socket		Socket::accept() const {
 
 // ssize_t		Socket::recv( const void * buffer, size_t length , int flags ) const {
 
-// 	size_t bytes;
+// template <typename T>
+// ssize_t		Socket::recv( T data , int flags ) const {
+
+// 	size_t len;
 
 // 	bytes = recv();
 
@@ -548,56 +571,3 @@ const char *Socket::SocketError::what() const throw() {
 		+ err_msg + " ~").c_str()
 	);
 }
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-#include <mutex>
-#include <thread>
-
-using namespace std;
-
-int	main() {
-
-	try {
-
-		Socket Server( "0.0.0.0", "7523" );
-		Socket Client;
-		Socket Client2;
-
-		Server.listen(2);
-
-		Client.connect(Server);
-		Client2.connect("0.0.0.0", "7523");
-
-		cout << "Everything works.\n";
-
-	} catch ( std::exception & e ) {
-		cout << e.what() << endl;
-	}
-
-	return (0);
-}
-
-// int	main() {
-
-// 	Socket Server("0.0.0.0", 3000);
-// 	int Clients[10];
-
-// 	Server.listen();
-
-// 	for (int i = 0; i < 10; ++i) {
-
-// 		Clients[i] = Server.accept().descriptor;
-// 		std::thread([ &Server, &Clients, i ] (void) -> void {
-
-// 			char tmp[4096];
-// 			while (1) {
-// 				::recv(Server.descriptor, tmp, 4096, 0);
-// 			}
-// 			Server.broadcast(tmp, Clients);
-
-// 		}).detach();
-// 	}
-
-// 	return (0);
-// }
