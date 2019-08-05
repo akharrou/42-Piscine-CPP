@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 07:26:57 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 07:27:53 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,15 +134,16 @@ class Socket {
 		class SocketError :
 			public std::exception {
 
+			private:
+				std::string _file;
+				std::string _line;
+				std::string _err_msg;
+
 			public:
 				SocketError( void );
 				SocketError( const char * File, size_t Line );
 				SocketError( const char * File, size_t Line, const char * Error_Message );
 				~SocketError(void);
-
-				std::string file;
-				std::string line;
-				std::string err_msg;
 
 				virtual const char* what() const throw();
 		};

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 07:26:58 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 07:27:49 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -571,7 +571,7 @@ Socket::SocketError::~SocketError( void ) {}
 const char *Socket::SocketError::what() const throw() {
 
 	return (
-		std::string("~ " + file + ":" + line + " -- Socket Error : "
-		+ err_msg + " ~").c_str()
+		std::string("~ " + _file + ":" + _line + " -- Socket Error : "
+		+ _err_msg + " ~").c_str()
 	);
 }
