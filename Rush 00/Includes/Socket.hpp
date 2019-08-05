@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/04 17:04:13 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/04 19:46:28 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,15 @@
 # include <cmath>
 # include <exception>
 
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-    IPPROTO_IP   -->  ip  ; 0  ; IP  ; # internet protocol
-    IPPROTO_TCP  -->  tcp ; 6  ; TCP ; # transmission control protocol
-    IPPROTO_UDP  -->  udp ; 17 ; UDP ; # user datagram protocol
-    ...
+# define IP  ( IPPROTO_IP  ) /* ip  ; 0  ; IP  ; # internet protocol             */
+# define TCP ( IPPROTO_TCP ) /* tcp ; 6  ; TCP ; # transmission control protocol */
+# define UDP ( IPPROTO_UDP ) /* udp ; 17 ; UDP ; # user datagram protocol
 
 See : /etc/protocols
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	Ports:
 
@@ -50,13 +49,11 @@ See : /etc/services
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-# define MAXCONN (65535)   /* "For most socket interfaces, the maximum
-                           number of sockets allowed per each connection
-                           between an application and the TCP/IP sockets
-                           interface is 65535."
+# define MAX_BACKLOG (20)  /* "Most systems silently limit this number
+                           to about 20; you can probably get away with
+                           setting it to 5 or 10."
 
-See : https://www.ibm.com/support/knowledgecenter/en/
-SSLTBW_2.1.0/com.ibm.zos.v2r1.hala001/maxsoc.htm
+See : http://beej.us/guide/bgnet/pdf/bgnet_A4.pdf  @page 21, line 5
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -73,7 +70,7 @@ There are several special addresses:
 # define DFLT_IPADDR   ( "0.0.0.0"   )
 # define DFLT_PORT     ( 8080        )
 
-# define DFLT_FAMILY   ( AF_INET     ) /* | AF_INET     | AF_INET6    | AF_UNSPEC   | */
+# define DFLT_FAMILY   ( AF_INET6    ) /* | AF_INET     | AF_INET6    | AF_UNSPEC   | */
 # define DFLT_TYPE     ( SOCK_STREAM ) /* | SOCK_STREAM | SOCK_DGRAM  | SOCK_RAW    | */
 # define DFLT_PROTOCOL ( IPPROTO_IP  ) /* | IPPROTO_IP  | IPPROTO_TCP | IPPROTO_UDP | */
 
@@ -89,11 +86,7 @@ class Socket {
 		~Socket( void );
 
 		explicit Socket( int Family, int Type, int Protocol );
-		Socket( const char * hostname,
-		        const char * servname = NULL,
-		        int Type              = DFLT_TYPE,
-		        int Protocol          = DFLT_PROTOCOL
-		);
+		Socket( const char * hostname, const char * servname, int Type , int Protocol );
 
 		Socket & operator = ( const Socket & rhs );
 
@@ -107,17 +100,15 @@ class Socket {
 		struct sockaddr address;
 		socklen_t address_len;
 
-		Socket &	socket   ( int Family   = DFLT_FAMILY,
-		                       int Type     = DFLT_TYPE,
-		                       int Protocol = DFLT_PROTOCOL );
+		Socket &	socket   ( int Family, int Type, int Protocol );
 
-		Socket &	bind     ( const char * hostname, const char * servname );
+		Socket &	bind     ( const char * hostname, const char * servname, int flags );
 
 		Socket &	listen   ( int connections );
 
 		Socket &	connect  ( Socket &  );
-		Socket &	connect  ( Socket && );
-		Socket &	connect  ( const char * hostname, const char * servname );
+		Socket &	connect  ( const char * hostname, const char * servname,
+			int Family, int Type, int Protocol, int Flags );
 
 		Socket		accept   ( void ) const;
 
@@ -148,12 +139,6 @@ class Socket {
     //  |
     //  |      Set a socket option.  See the Unix manual for level and option.
     //  |      The value argument can either be an integer or a string.
-
-		static Socket	getSocket( const char * hostname, const char * servname,
-		    int Family   = AF_UNSPEC     ,
-		    int Type     = DFLT_TYPE     ,
-		    int Protocol = DFLT_PROTOCOL ,
-		    int Flags    = AI_DEFAULT    );
 
 		class SocketError : public std::exception {
 

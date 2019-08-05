@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/04 17:10:53 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/04 19:47:56 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,18 @@
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
 Socket::Socket( void ) :
+	type       ( DFLT_TYPE       ),
+	protocol   ( DFLT_PROTOCOL   ),
+	descriptor ( -1              ) {}
 
-	family     ( DFLT_FAMILY   ),
-	type       ( DFLT_TYPE     ),
-	protocol   ( DFLT_PROTOCOL ),
-	descriptor ( -1            )
-{
-	Socket::socket();
-}
-
-Socket::Socket( int Family, int Type, int Protocol ) :
-
+Socket::Socket( int Family, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) :
 	family     ( Family     ),
 	type       ( Type       ),
 	protocol   ( Protocol   ),
-	descriptor ( -1         )
-{
-	Socket::socket( family, type, protocol );
-}
+	descriptor ( -1         ) {}
 
-Socket::Socket( const char * hostname, const char * servname, int Type, int Protocol ) :
+Socket::Socket( const char * hostname, const char * servname = NULL,
+	int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) :
 
 	ip_address ( hostname   ),
 	port       ( servname   ),
@@ -42,7 +34,7 @@ Socket::Socket( const char * hostname, const char * servname, int Type, int Prot
 	protocol   ( Protocol   ),
 	descriptor ( -1         )
 {
-	Socket::bind ( ip_address, port );
+	Socket::bind ( ip_address, port , AI_PASSIVE );
 }
 
 Socket::Socket( const Socket & src ) {
@@ -86,7 +78,9 @@ std::ostream &  operator << ( std::ostream& out, const Socket & in ) {
 
 /* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */
 
-Socket &	Socket::socket( int Family, int Type, int Protocol ) {
+Socket &	Socket::socket( int Family,
+                            int Type     = DFLT_TYPE,
+							int Protocol = DFLT_PROTOCOL ) {
 
 	/* Create socket (connection endpoint) - - - - - - - - - - - - - - - - - - -
 
@@ -129,10 +123,15 @@ Socket &	Socket::socket( int Family, int Type, int Protocol ) {
 	if ( descriptor == -1 )
 		throw SocketError( __FILE__ , __LINE__ );
 
+	this->family   = Family;
+	this->type     = Type;
+	this->protocol = Protocol;
+
 	return ( *this );
 }
 
-Socket &	Socket::bind( const char * hostname, const char * servname ) {
+Socket &	Socket::bind( const char * hostname, const char * servname,
+	int flags = AI_PASSIVE ) {
 
 	/* Bind to an Address and Port - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -160,15 +159,11 @@ Socket &	Socket::bind( const char * hostname, const char * servname ) {
 	hints.ai_family   = AF_UNSPEC;  /* Address Family (is unspecified & )
 	                                will be determined by the machine
 	                                automagically */
-
 	hints.ai_socktype = type;
-
 	hints.ai_protocol = protocol;
-
-	hints.ai_flags    = AI_PASSIVE; /* AI_PASSIVE [...] indicates that
+	hints.ai_flags    = flags;      /* AI_PASSIVE [...] indicates that
 	                                the returned socket address structure
 	                                is intended for use in a call to bind(2).
-
 	                                In this case, if the hostname argument
 	                                is the null pointer, then the IP address
 	                                portion of the socket address structure
@@ -198,7 +193,7 @@ Socket &	Socket::bind( const char * hostname, const char * servname ) {
 
 		ret = ::bind( sockdes, cur->ai_addr, cur->ai_addrlen );
 		if ( ret < 0 ) {
-			cause = "Failed to bind to specified host/server/port";
+			cause = "Failed to bind to specified address/server/port";
 			::close(sockdes);
 			sockdes = -1;
 			continue ;
@@ -235,6 +230,9 @@ Socket &	Socket::bind( const char * hostname, const char * servname ) {
 
 Socket &	Socket::listen( int connections = 0 ) {
 
+	if ( descriptor == -1 )
+		throw SocketError( __FILE__ , __LINE__ , "Trying to listen() on an Unbound Socket");
+
 	int ret = ::listen( descriptor , connections );
 
 	if ( ret == -1 ) {
@@ -244,8 +242,9 @@ Socket &	Socket::listen( int connections = 0 ) {
 	return ( *this );
 }
 
-Socket		Socket::getSocket( const char * hostname, const char * servname,
-	int Family, int Type, int Protocol, int Flags ) {
+Socket &	Socket::connect( const char * hostname, const char * servname,
+	int Family = AF_UNSPEC, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL,
+	int Flags = AI_DEFAULT ) {
 
 	/* Get information on some hostname/servname - - - - - - - - - - - - - - - - -
 
@@ -291,7 +290,7 @@ Socket		Socket::getSocket( const char * hostname, const char * servname,
 
 	ret = getaddrinfo( hostname, servname, &hints, &head );
 	if ( ret != 0 )
-		throw SocketError( __FILE__ , __LINE__, gai_strerror(ret));
+		throw SocketError( __FILE__ , __LINE__, gai_strerror(ret) );
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -308,7 +307,7 @@ Socket		Socket::getSocket( const char * hostname, const char * servname,
 
 		ret = ::connect( sockdes, cur->ai_addr, cur->ai_addrlen );
 		if ( ret < 0 ) {
-			cause = "Failed to bind to specified host/server/port";
+			cause = "Failed to bind to specified address/server/port";
 			::close(sockdes);
 			sockdes = -1;
 			continue ;
@@ -324,34 +323,19 @@ Socket		Socket::getSocket( const char * hostname, const char * servname,
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-	Socket sock;
-
-	sock.ip_address  = hostname;
-	sock.port        = servname;
-	sock.family      = cur->ai_family;
-	sock.type        = cur->ai_socktype;
-	sock.protocol    = cur->ai_protocol;
-	sock.descriptor  = sockdes;
-
-	memmove( &sock.address, cur->ai_addr, sizeof(*cur->ai_addr) );
-	sock.address_len = cur->ai_addrlen;
-
-	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+	family     = cur->ai_family;
+	type       = cur->ai_socktype;
+	protocol   = cur->ai_protocol;
+	descriptor = sockdes;
 
 	freeaddrinfo(head);
 
-	return ( sock );
-}
-
-Socket &	Socket::connect( const char * hostname, const char * servname ) {
-	return ( connect ( Socket::getSocket ( hostname, servname ) ) );
-}
-
-Socket &	Socket::connect( Socket && peer ) {
-	return ( connect ( peer ) );
+	return ( *this );
 }
 
 Socket &	Socket::connect( Socket & peer ) {
+
+	socket( peer.family, peer.type, peer.protocol );
 
 	int ret = ::connect( descriptor, &peer.address, peer.address_len );
 
@@ -569,17 +553,14 @@ int	main() {
 
 	try {
 
-		Socket Server( "0.0.0.0", "2234" );
+		Socket Server( "0.0.0.0", "7523" );
+		Socket Client( SOCK_DGRAM, UDP );
+		Socket Client2( SOCK_DGRAM, UDP );
 
-		Socket Client;
-		Socket Client2;
+		Server.listen(2);
 
-		// Client[0].connect(Server);
-		// Client[1].connect("10.113.8.3", "3000");
-		// Client[2].connect("10.113.8.3", "3000");
-		// Client[3].connect("10.113.8.3", "3000");
-		// Client[4].connect("10.113.8.3", "3000");
-		// Client[5].connect("www.google.com", "https");
+		Client.connect(Server);
+		Client2.connect("0.0.0.0", "7523");
 
 		cout << "Everything works.\n";
 
@@ -589,27 +570,3 @@ int	main() {
 
 	return (0);
 }
-
-// int	main() {
-
-// 	Socket Server("0.0.0.0", 3000);
-// 	int Clients[10];
-
-// 	Server.listen();
-
-// 	for (int i = 0; i < 10; ++i) {
-
-// 		Clients[i] = Server.accept().descriptor;
-// 		std::thread([ &Server, &Clients, i ] (void) -> void {
-
-// 			char tmp[4096];
-// 			while (1) {
-// 				::recv(Server.descriptor, tmp, 4096, 0);
-// 			}
-// 			Server.broadcast(tmp, Clients);
-
-// 		}).detach();
-// 	}
-
-// 	return (0);
-// }
