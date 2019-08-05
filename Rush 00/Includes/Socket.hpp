@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 08:23:53 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 08:25:42 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,14 +151,14 @@ class Socket {
 		template <typename T>
 		ssize_t		sendto   ( Socket & receiver, T data, int flags = 0 );
 		ssize_t		sendto   ( Socket & receiver, std::string msg, int flags );
-		ssize_t		sendto   ( Socket & receiver, const void * buffer,
-			                   size_t length, int flags );
+		ssize_t		sendto   ( Socket & receiver, const void * buffer, size_t length,
+			                   int flags );
 
 		template <typename T>
 		ssize_t		recvfrom  ( Socket & sender, T data, int flags = 0 );
 		ssize_t		recvfrom  ( Socket & sender, std::string msg, int flags );
-		ssize_t		recvfrom  ( Socket & sender, const void * buffer,
-			                    size_t length, int flags );
+		ssize_t		recvfrom  ( Socket & sender, const void * buffer, size_t length,
+			                    int flags );
 
 		/* EXCEPTION  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
