@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 07:22:05 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 07:23:42 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,12 +90,12 @@ class Socket {
 
 		Socket & operator = ( const Socket & rhs );
 
-		const char	*	ip_address;
-		const char	*	port;
-		int				family;
-		int				type;
-		int				protocol;
-		int				descriptor;
+		const char *	ip_address;
+		const char *	port;
+		int	            family;
+		int	            type;
+		int	            protocol;
+		int	            descriptor;
 
 		struct sockaddr address;
 		socklen_t address_len;
