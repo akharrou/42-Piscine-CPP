@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/04 19:47:56 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/04 19:57:01 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ std::ostream &  operator << ( std::ostream& out, const Socket & in ) {
 
 Socket &	Socket::socket( int Family,
                             int Type     = DFLT_TYPE,
-							int Protocol = DFLT_PROTOCOL ) {
+                            int Protocol = DFLT_PROTOCOL ) {
 
 	/* Create socket (connection endpoint) - - - - - - - - - - - - - - - - - - -
 
@@ -139,14 +139,14 @@ Socket &	Socket::bind( const char * hostname, const char * servname,
 	    #include <sys/socket.h>
 
 	    int
-		bind( int sockfd, struct sockaddr *my_addr, int addrlen );
+	    bind( int sockfd, struct sockaddr *my_addr, int addrlen );
 
 	    See : bind(2)
 		----------------------------------------------------------------
 
-	    struct sockaddr_in   -- see : /usr/include/netinet/in.h   @line 372
-	    struct sockaddr_in6  -- see : /usr/include/netinet6/in6.h @line 164
-	    struct addrinfo      -- see : /usr/include/netdb.h        @line 147
+	    struct sockaddr_in   -- see : /usr/include/netinet/in.h    @line 372
+	    struct sockaddr_in6  -- see : /usr/include/netinet6/in6.h  @line 164
+	    struct addrinfo      -- see : /usr/include/netdb.h         @line 147
 
 	 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -209,13 +209,6 @@ Socket &	Socket::bind( const char * hostname, const char * servname,
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-	memmove( &address, head->ai_addr, sizeof(struct sockaddr) );
-	address_len = head->ai_addrlen;
-
-	freeaddrinfo(head);
-
-	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
 	this->family     = cur->ai_family;
 	this->type       = cur->ai_socktype;
 	this->protocol   = cur->ai_protocol;
@@ -225,13 +218,17 @@ Socket &	Socket::bind( const char * hostname, const char * servname,
 
 	this->descriptor = sockdes;
 
+	memmove( &address, head->ai_addr, sizeof(struct sockaddr) );
+	address_len = head->ai_addrlen;
+
+	freeaddrinfo(head);
+
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
 	return ( *this );
 }
 
 Socket &	Socket::listen( int connections = 0 ) {
-
-	if ( descriptor == -1 )
-		throw SocketError( __FILE__ , __LINE__ , "Trying to listen() on an Unbound Socket");
 
 	int ret = ::listen( descriptor , connections );
 
@@ -374,8 +371,8 @@ Socket &	Socket::settimeout( double timeout ) {
 	    tions ranging in size from the low-water mark to the high-water mark for
 	    output.
 
-        SO_RCVTIMEO is an option to set a timeout value for input operations.
-        It accepts a struct timeval parameter with the number of seconds and
+	    SO_RCVTIMEO is an option to set a timeout value for input operations.
+	    It accepts a struct timeval parameter with the number of seconds and
 	    microseconds used to limit waits for input operations to complete. In
 	    the current implementation, this timer is restarted each time additional
 	    data are received by the protocol, and thus the limit is in effect an
@@ -388,7 +385,7 @@ Socket &	Socket::settimeout( double timeout ) {
 	    See : setsocketopt(2)
         ------------------------------------------------------------------
 
-		<sys/time.h>
+	    <sys/time.h>
 
 	    struct timeval {
 	        long   tv_sec;    -- seconds
@@ -554,8 +551,8 @@ int	main() {
 	try {
 
 		Socket Server( "0.0.0.0", "7523" );
-		Socket Client( SOCK_DGRAM, UDP );
-		Socket Client2( SOCK_DGRAM, UDP );
+		Socket Client;
+		Socket Client2;
 
 		Server.listen(2);
 
