@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 07:28:31 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 07:28:51 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,9 @@ class Socket {
 
 	public:
 
-		Socket( void );
-		Socket( const Socket & src );
-		~Socket( void );
+		Socket  ( void );
+		Socket  ( const Socket & src );
+		~Socket ( void );
 
 		explicit Socket( int Family, int Type, int Protocol );
 		Socket( const char * Host, const char * Port, int Type, int Protocol );
