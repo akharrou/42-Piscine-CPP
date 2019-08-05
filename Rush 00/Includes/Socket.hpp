@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/04 15:16:28 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/04 17:04:13 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,11 @@ class Socket {
 		~Socket( void );
 
 		explicit Socket( int Family, int Type, int Protocol );
-		Socket( const char * hostname, const char * servname,
-			int Type, int Protocol );
+		Socket( const char * hostname,
+		        const char * servname = NULL,
+		        int Type              = DFLT_TYPE,
+		        int Protocol          = DFLT_PROTOCOL
+		);
 
 		Socket & operator = ( const Socket & rhs );
 
@@ -104,7 +107,9 @@ class Socket {
 		struct sockaddr address;
 		socklen_t address_len;
 
-		Socket &	socket   ( int Family, int Type, int Protocol );
+		Socket &	socket   ( int Family   = DFLT_FAMILY,
+		                       int Type     = DFLT_TYPE,
+		                       int Protocol = DFLT_PROTOCOL );
 
 		Socket &	bind     ( const char * hostname, const char * servname );
 
@@ -143,30 +148,24 @@ class Socket {
     //  |
     //  |      Set a socket option.  See the Unix manual for level and option.
     //  |      The value argument can either be an integer or a string.
-    //  |
-    //  |  settimeout(...)
-    //  |      settimeout(timeout)
-    //  |
-    //  |      Set a timeout on socket operations.  'timeout' can be a float,
-    //  |      giving in seconds, or None.  Setting a timeout of None disables
-    //  |      the timeout feature and is equivalent to setblocking(1).
-    //  |      Setting a timeout of zero is the same as setblocking(0).
-
 
 		static Socket	getSocket( const char * hostname, const char * servname,
-			int Family, int Type, int Protocol, int Flags );
+		    int Family   = AF_UNSPEC     ,
+		    int Type     = DFLT_TYPE     ,
+		    int Protocol = DFLT_PROTOCOL ,
+		    int Flags    = AI_DEFAULT    );
 
 		class SocketError : public std::exception {
 
 			public:
 				SocketError( void );
-				SocketError( const char *File, size_t Line );
-				SocketError( const char *File, size_t Line, std::string Error_Message );
+				SocketError( const char * File, size_t Line );
+				SocketError( const char * File, size_t Line, const char * Error_Message );
 				~SocketError(void);
 
 				std::string file;
 				std::string line;
-				std::string err_msg;
+				const char * err_msg;
 
 				virtual const char* what() const throw();
 		};

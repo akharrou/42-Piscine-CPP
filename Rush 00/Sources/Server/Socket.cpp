@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/04 15:41:29 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/04 17:10:53 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,25 +15,32 @@
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
 Socket::Socket( void ) :
-	descriptor ( -1            ),
+
 	family     ( DFLT_FAMILY   ),
 	type       ( DFLT_TYPE     ),
-	protocol   ( DFLT_PROTOCOL ) {}
+	protocol   ( DFLT_PROTOCOL ),
+	descriptor ( -1            )
+{
+	Socket::socket();
+}
 
 Socket::Socket( int Family, int Type, int Protocol ) :
-	descriptor ( -1         ),
+
 	family     ( Family     ),
 	type       ( Type       ),
-	protocol   ( Protocol   ) {}
+	protocol   ( Protocol   ),
+	descriptor ( -1         )
+{
+	Socket::socket( family, type, protocol );
+}
 
-Socket::Socket( const char * hostname, const char * servname,
-	int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) :
+Socket::Socket( const char * hostname, const char * servname, int Type, int Protocol ) :
 
-	descriptor ( -1         ),
 	ip_address ( hostname   ),
 	port       ( servname   ),
 	type       ( Type       ),
-	protocol   ( Protocol   )
+	protocol   ( Protocol   ),
+	descriptor ( -1         )
 {
 	Socket::bind ( ip_address, port );
 }
@@ -79,8 +86,7 @@ std::ostream &  operator << ( std::ostream& out, const Socket & in ) {
 
 /* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */
 
-Socket &	Socket::socket( int Family = DFLT_FAMILY,
-				int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) {
+Socket &	Socket::socket( int Family, int Type, int Protocol ) {
 
 	/* Create socket (connection endpoint) - - - - - - - - - - - - - - - - - - -
 
@@ -116,6 +122,9 @@ Socket &	Socket::socket( int Family = DFLT_FAMILY,
 
 	 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+	if ( descriptor != -1 )
+		this->close();
+
 	descriptor = ::socket( Family, Type, Protocol );
 	if ( descriptor == -1 )
 		throw SocketError( __FILE__ , __LINE__ );
@@ -141,9 +150,6 @@ Socket &	Socket::bind( const char * hostname, const char * servname ) {
 	    struct addrinfo      -- see : /usr/include/netdb.h        @line 147
 
 	 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-	if ( std::stoi(servname) <= 1024 )
-		throw SocketError( __FILE__ , __LINE__, "Port Reserved");
 
 	struct addrinfo *head, *cur;
 	struct addrinfo hints;
@@ -174,7 +180,7 @@ Socket &	Socket::bind( const char * hostname, const char * servname ) {
 
 	if ( ret != 0 ) {
 		this->close();
-		throw SocketError( __FILE__ , __LINE__, gai_strerror(ret));
+		throw SocketError( __FILE__ , __LINE__ , gai_strerror(ret) );
 	}
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -186,13 +192,13 @@ Socket &	Socket::bind( const char * hostname, const char * servname ) {
 
 		sockdes = ::socket( cur->ai_family, cur->ai_socktype, cur->ai_protocol );
 		if ( sockdes < 0 ) {
-			cause = "Failed to create a hostname socket";
+			cause = "Failed to create specified hostname socket";
 			continue ;
 		}
 
 		ret = ::bind( sockdes, cur->ai_addr, cur->ai_addrlen );
 		if ( ret < 0 ) {
-			cause = "Failed to bind to specified hostname";
+			cause = "Failed to bind to specified host/server/port";
 			::close(sockdes);
 			sockdes = -1;
 			continue ;
@@ -218,6 +224,10 @@ Socket &	Socket::bind( const char * hostname, const char * servname ) {
 	this->family     = cur->ai_family;
 	this->type       = cur->ai_socktype;
 	this->protocol   = cur->ai_protocol;
+
+	if ( descriptor != -1 )
+		this->close();
+
 	this->descriptor = sockdes;
 
 	return ( *this );
@@ -235,8 +245,7 @@ Socket &	Socket::listen( int connections = 0 ) {
 }
 
 Socket		Socket::getSocket( const char * hostname, const char * servname,
-	int Family = AF_UNSPEC, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL,
-	int Flags = AI_DEFAULT ) {
+	int Family, int Type, int Protocol, int Flags ) {
 
 	/* Get information on some hostname/servname - - - - - - - - - - - - - - - - -
 
@@ -293,13 +302,13 @@ Socket		Socket::getSocket( const char * hostname, const char * servname,
 
 		sockdes = ::socket( cur->ai_family, cur->ai_socktype, cur->ai_protocol );
 		if ( sockdes < 0 ) {
-			cause = "Failed to create a hostname socket";
+			cause = "Failed to create specified hostname socket";
 			continue ;
 		}
 
 		ret = ::connect( sockdes, cur->ai_addr, cur->ai_addrlen );
 		if ( ret < 0 ) {
-			cause = "Failed to connect to specified hostname";
+			cause = "Failed to bind to specified host/server/port";
 			::close(sockdes);
 			sockdes = -1;
 			continue ;
@@ -527,11 +536,12 @@ Socket::SocketError::SocketError( void ) {}
 
 Socket::SocketError::SocketError( const char *File, size_t Line ) :
 	file ( File ),
-	line ( std::to_string( Line ) ) {
+	line ( std::to_string( Line ) ),
+	err_msg ( strerror(errno) ) {
 }
 
 Socket::SocketError::SocketError( const char *File, size_t Line,
-	std::string Error_Message ) :
+	const char * Error_Message ) :
 
 	file ( File ),
 	line ( std::to_string( Line ) ),
@@ -543,8 +553,8 @@ Socket::SocketError::~SocketError( void ) {}
 const char *Socket::SocketError::what() const throw() {
 
 	return (
-		std::string("~ " + file + ":" + line + " -- Socket Error : " +
-		(err_msg.empty() ? std::string(strerror(errno)) : err_msg) + " ~").c_str()
+		std::string("~ " + file + ":" + line + " -- Socket Error : "
+		+ err_msg + " ~").c_str()
 	);
 }
 
@@ -559,17 +569,16 @@ int	main() {
 
 	try {
 
-		Socket Server( "127.0.0.1", "1025" );
+		Socket Server( "0.0.0.0", "2234" );
 
-		// Socket Client[10];
+		Socket Client;
+		Socket Client2;
 
 		// Client[0].connect(Server);
-
 		// Client[1].connect("10.113.8.3", "3000");
 		// Client[2].connect("10.113.8.3", "3000");
 		// Client[3].connect("10.113.8.3", "3000");
 		// Client[4].connect("10.113.8.3", "3000");
-
 		// Client[5].connect("www.google.com", "https");
 
 		cout << "Everything works.\n";
