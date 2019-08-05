@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 07:02:06 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 07:19:11 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,20 +59,20 @@ See : http://beej.us/guide/bgnet/pdf/bgnet_A4.pdf  @page 21, line 5
 
 There are several special addresses:
 
-	- IPv4 : INADDR_LOOPBACK : (127.0.0.1) or ("localhost")
-	- IPv4 : INADDR_ANY      : (0.0.0.0)
+	- IPv4 : INADDR_LOOPBACK <==> (127.0.0.1) or ("localhost")
+	- IPv4 : INADDR_ANY      <==> (0.0.0.0)
 
-    - IPv6 : IN6ADDR_LOOPBACK_INIT : (0000:0000:0000:0000:0000:0000:0000:0001) or (::1)
-	- IPv6 : IN6ADDR_ANY_INIT      : (0000:0000:0000:0000:0000:0000:0000:0000) or (::0)
+	- IPv6 : IN6ADDR_LOOPBACK_INIT <==> (0000:0000:0000:0000:0000:0000:0000:0001) or (::1)
+	- IPv6 : IN6ADDR_ANY_INIT      <==> (0000:0000:0000:0000:0000:0000:0000:0000) or (::0)
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 # define DFLT_IPADDR   ( "0.0.0.0"   )
 # define DFLT_PORT     ( 8080        )
 
-# define DFLT_FAMILY   ( AF_INET6    ) /* | AF_INET     | AF_INET6    | AF_UNSPEC   | */
+# define DFLT_FAMILY   ( AF_INET     ) /* | AF_INET     | AF_INET6    | AF_UNSPEC   | */
 # define DFLT_TYPE     ( SOCK_STREAM ) /* | SOCK_STREAM | SOCK_DGRAM  | SOCK_RAW    | */
-# define DFLT_PROTOCOL ( IPPROTO_IP  ) /* | IPPROTO_IP  | IPPROTO_TCP | IPPROTO_UDP | */
+# define DFLT_PROTOCOL ( IPPROTO_TCP ) /* | IPPROTO_IP  | IPPROTO_TCP | IPPROTO_UDP | */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -90,8 +90,8 @@ class Socket {
 
 		Socket & operator = ( const Socket & rhs );
 
-		const char *	ip_address;
-		const char *	port;
+		const char	*	ip_address;
+		const char	*	port;
 		int				family;
 		int				type;
 		int				protocol;
@@ -109,7 +109,7 @@ class Socket {
 
 		Socket &	connect  ( Socket &  );
 		Socket &	connect  ( const char * Host, const char * Port,
-			int Family, int Flags );
+		                       int Family, int Flags );
 
 		Socket		accept   ( void ) const;
 
@@ -125,7 +125,7 @@ class Socket {
 		void		close    ( void );
 
 		Socket &	setsockopt( int level, int option, int value );
-		int			getsockopt( int option, int level );
+		int		    getsockopt( int option, int level );
 
 		Socket &	settimeout( double timeout );
 		double		gettimeout( void ) const;
