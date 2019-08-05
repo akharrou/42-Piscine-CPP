@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 12:00:09 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 12:57:49 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -509,7 +509,8 @@ void		Socket::close( void )
 
 /* I/O OPERATONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-ssize_t			Socket::send( int sockfd, const void * data, size_t length, int flags = 0 )
+ssize_t		Socket::send( int sockfd, const void * data, size_t length,
+	int flags = 0 )
 {
 	ssize_t bytes_sent;
 
@@ -536,9 +537,9 @@ inline ssize_t	Socket::send( const void * data, size_t length, int flags = 0 )
 	return ( Socket::send( descriptor, data, length, flags ) );
 }
 
-inline ssize_t	Socket::send( Socket reciever, const void * data, size_t length, int flags = 0 )
+inline ssize_t	Socket::send( Socket receiver, const void * data, size_t length, int flags = 0 )
 {
-	return ( Socket::send( reciever.descriptor, data, length, flags ) );
+	return ( Socket::send( receiver.descriptor, data, length, flags ) );
 }
 
 inline ssize_t	Socket::send( std::string msg, size_t length, int flags = 0 ) {
@@ -569,18 +570,96 @@ inline ssize_t	Socket::send( int sockfd, std::string msg, int flags = 0 ) {
 	return ( Socket::send( sockfd, data, msg.size(), flags ) );
 }
 
-inline ssize_t	Socket::send( Socket reciever, std::string msg, size_t length, int flags = 0 ) {
+inline ssize_t	Socket::send( Socket receiver, std::string msg, size_t length, int flags = 0 ) {
 
 	const char * data = msg.c_str();
 
-	return ( Socket::send( reciever.descriptor, data, length, flags ) );
+	return ( Socket::send( receiver.descriptor, data, length, flags ) );
 }
 
-inline ssize_t	Socket::send( Socket reciever, std::string msg, int flags = 0 ) {
+inline ssize_t	Socket::send( Socket receiver, std::string msg, int flags = 0 ) {
 
 	const char * data = msg.c_str();
 
-	return ( Socket::send( reciever.descriptor, data, msg.size(), flags ) );
+	return ( Socket::send( receiver.descriptor, data, msg.size(), flags ) );
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+ssize_t		Socket::sendto( const void * data, size_t length,
+	struct sockaddr *dest_addr, socklen_t dest_len, int flags )
+{
+	ssize_t bytes_sent;
+
+	bytes_sent = ::sendto( descriptor, data , length , flags, dest_addr, dest_len );
+	if ( bytes_sent < 0 ) {
+
+		/* 'sockfd' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		throw SocketError( __FILE__ , __LINE__ );
+
+	} else if ( static_cast <size_t> (bytes_sent) < length ) {
+
+		data = reinterpret_cast <const char *> (data) + bytes_sent;
+		bytes_sent += Socket::sendto( data, ( length - static_cast <size_t> (bytes_sent) ),
+			dest_addr, dest_len, flags );
+
+	}
+
+	return ( bytes_sent );
+}
+
+inline ssize_t	Socket::sendto( Socket receiver, const void * data,
+	size_t length, int flags )
+{
+	return (
+		Socket::sendto( data, length,
+			&receiver.address, receiver.address_len, flags )
+	);
+}
+
+inline ssize_t	Socket::sendto( std::string msg, size_t length,
+	struct sockaddr *dest_addr, socklen_t dest_len, int flags ) {
+
+	const char * data = msg.c_str();
+
+	return (
+		Socket::sendto( data, length,
+			dest_addr, dest_len, flags )
+	);
+}
+
+inline ssize_t	Socket::sendto( std::string msg, struct sockaddr *dest_addr,
+	socklen_t dest_len, int flags ) {
+
+	const char * data = msg.c_str();
+
+	return (
+		Socket::sendto( data, msg.size(),
+			dest_addr, dest_len, flags )
+	);
+}
+
+inline ssize_t	Socket::sendto( Socket receiver, std::string msg, size_t length,
+	int flags ) {
+
+	const char * data = msg.c_str();
+
+	return (
+		Socket::sendto( data, length,
+			&receiver.address, receiver.address_len, flags )
+	);
+}
+
+inline ssize_t	Socket::sendto( Socket receiver, std::string msg, int flags ) {
+
+	const char * data = msg.c_str();
+
+	return (
+		Socket::sendto( data, msg.size(),
+			&receiver.address, receiver.address_len, flags )
+	);
 }
 
 
