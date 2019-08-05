@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 07:24:44 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 07:25:58 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ There are several special addresses:
 
 class Socket {
 
-
 	public:
 
 		Socket( void );
@@ -132,7 +131,8 @@ class Socket {
 
 		void		setblocking( bool value );
 
-		class SocketError : public std::exception {
+		class SocketError :
+			public std::exception {
 
 			public:
 				SocketError( void );
