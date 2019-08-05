@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 07:24:02 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 07:24:24 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,10 +92,10 @@ class Socket {
 
 		const char *	ip_address;
 		const char *	port;
-		int	            family;
-		int	            type;
-		int	            protocol;
-		int	            descriptor;
+		int             family;
+		int             type;
+		int             protocol;
+		int             descriptor;
 
 		struct sockaddr address;
 		socklen_t address_len;
