@@ -6,22 +6,24 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 08:21:20 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 08:23:35 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SOCKET_HPP
 # define SOCKET_HPP
 
+# include <stdlib.h>
+# include <unistd.h>
+
 # include <arpa/inet.h>
 # include <netdb.h>
 # include <netinet/in.h>
+
 # include <sys/socket.h>
-# include <stdlib.h>
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/uio.h>
-# include <unistd.h>
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
