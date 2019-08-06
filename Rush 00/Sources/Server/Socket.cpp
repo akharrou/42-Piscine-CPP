@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 16:17:44 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/05 19:58:42 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -503,7 +503,7 @@ Socket		Socket::accept( void ) const {
 
 	Client.descriptor =
 		::accept( descriptor,
-		          reinterpret_cast <struct sockaddr *> (&Client.address),
+		          reinterpret_cast <struct sockaddr *> ( &Client.address ),
 		          &Client.address_len );
 
 	if ( Client.descriptor == -1 )
@@ -528,10 +528,10 @@ void		Socket::shutdown ( int sockfd, int how = SHUT_RDWR ) {
 
 	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-	if ( descriptor != -1 )
-		if ( ::shutdown( descriptor , how ) == -1 )
+	if ( sockfd != -1 )
+		if ( ::shutdown( sockfd , how ) == -1 )
 			throw SocketError( __FILE__ , __LINE__ );
-	descriptor = -1;
+	sockfd = -1;
 }
 
 void		Socket::close( int sockfd )
@@ -726,5 +726,29 @@ const char *Socket::SocketError::what( void ) const throw() {
 	return (
 		std::string("~ " + _file + ":" + _line + " -- Socket Error : "
 		+ _err_msg + " ~").c_str()
+	);
+}
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+Socket::SocketDisconnect::SocketDisconnect() :
+	_sockfd ( -1 ) {}
+
+Socket::SocketDisconnect::SocketDisconnect( int fd ) :
+	_sockfd ( fd ) {}
+
+Socket::SocketDisconnect::~SocketDisconnect ( void ) {}
+
+int Socket::SocketDisconnect::getSockfd(void) const {
+	return ( _sockfd );
+}
+
+const char * Socket::SocketDisconnect::what(void) const throw() {
+
+	return (
+		std::string(
+			"~ Socket # " + std::to_string(_sockfd) + "Disconnected ~"
+		).c_str()
 	);
 }
