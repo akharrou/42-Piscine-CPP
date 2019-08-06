@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 20:15:33 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/06 16:49:16 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,12 @@ class Socket {
 		struct sockaddr_storage address;
 		socklen_t address_len;
 
+	/* STATICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+		static struct addrinfo * getaddrinfo( const char * Host, const char * Port,
+		                                      int Family, int Type, int Protocol,
+		                                      int Flags );
+
 	/* OPTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		int	        getsockopt  ( int option, int level ) const;
@@ -140,33 +146,8 @@ class Socket {
 
 	/* I/O OPERATONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-		/* SEND BYTES   */
-		ssize_t		send     ( const void * data, size_t length, int flags );
-		ssize_t		send     ( int sockfd, const void * data, size_t length, int flags );
-		ssize_t		send     ( Socket receiver, const void * data, size_t length, int flags );
-
-		ssize_t		sendto   ( const void * data, size_t length,
-				               struct sockaddr_storage *dest_addr, int flags );
-		ssize_t		sendto   ( Socket receiver, const void * data, size_t length, int flags );
-
-		/* SEND STRINGS */
-		ssize_t		send     ( std::string msg, size_t length, int flags );
-		ssize_t		send     ( std::string msg, int flags );
-		ssize_t		send     ( int sockfd, std::string msg, size_t length, int flags );
-		ssize_t		send     ( int sockfd, std::string msg, int flags );
-		ssize_t		send     ( Socket receiver, std::string msg, size_t length, int flags );
-		ssize_t		send     ( Socket receiver, std::string msg, int flags );
-
-		ssize_t		sendto   ( std::string msg, size_t length, struct sockaddr_storage *dest_addr,
-				               int flags );
-		ssize_t		sendto   ( std::string msg, struct sockaddr_storage *dest_addr,
-				               int flags );
-		ssize_t		sendto   ( Socket receiver, std::string msg, size_t length, int flags );
-		ssize_t		sendto   ( Socket receiver, std::string msg, int flags );
-
-		/* SEND <TYPE> */
 		template <typename T>
-		ssize_t		send     ( T data, size_t length = sizeof( T ),
+		ssize_t		send     ( int sockfd, T * data, size_t length = sizeof( T * ),
 				               int flags = 0 );
 
 		template <typename T>
@@ -174,121 +155,50 @@ class Socket {
 				               int flags = 0 );
 
 		template <typename T>
-		ssize_t		send     ( Socket receiver, T data,
-		                       size_t length = sizeof( T ), int flags = 0 );
+		ssize_t		send     ( T * data, size_t length = sizeof( T * ),
+				               int flags = 0 );
+
+		template <typename T>
+		ssize_t		send     ( T data, size_t length = sizeof( T ),
+				               int flags = 0 );
+
+		template <typename T>
+		ssize_t		send     ( Socket receiver, T * data, size_t length = sizeof( T * ),
+		                       int flags = 0 );
+
+		template <typename T>
+		ssize_t		send     ( Socket receiver, T data, size_t length = sizeof( T ),
+		                       int flags = 0 );
+
+		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+		template <typename T>
+		ssize_t		sendto   ( T * data, struct sockaddr_storage *dest_addr,
+		                       socklen_t dest_len, size_t length = sizeof( T * ),
+				               int flags = 0 );
 
 		template <typename T>
 		ssize_t		sendto   ( T data, struct sockaddr_storage *dest_addr,
 		                       socklen_t dest_len, size_t length = sizeof( T ),
+				               int flags = 0 );
+
+		template <typename T>
+		ssize_t		sendto   ( const char * Host, const char * Port,
+		                       T * data, size_t length = sizeof( T * ),
+				               int flags = 0 );
+
+		template <typename T>
+		ssize_t		sendto   ( const char * Host, const char * Port,
+		                       T data, size_t length = sizeof( T ),
+				               int flags = 0 );
+
+		template <typename T>
+		ssize_t		sendto   ( Socket receiver, T * data, size_t length = sizeof( T * ),
 		                       int flags = 0 );
 
 		template <typename T>
-		ssize_t		sendto   ( Socket receiver, T data,
-		                       size_t length = sizeof( T ), int flags = 0 );
-
-
-	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-		// /* RECEIVE BYTES   */
-		char * recv ( size_t length, int flags );
-		char * recv ( int sockfd, size_t length, int flags );
-		char * recv ( Socket sender, size_t length, int flags );
-
-		template <typename T>
-		T recv ( size_t length = sizeof( T ), int flags = 0 );
-
-		template <typename T>
-		T recv ( int sockfd, size_t length = sizeof( T ), int flags = 0 );
-
-		template <typename T>
-		T recv ( Socket sender, size_t length = sizeof( T ), int flags = 0 );
-
-
-		ssize_t		recv_into     ( void * buffer, size_t length, int flags );
-
-		ssize_t		recv_into     ( int sockfd, void * buffer, size_t length,
-		                            int flags );
-
-		ssize_t		recv_into     ( Socket receiver, void * buffer, size_t length,
-		                            int flags );
-
-		template <typename T>
-		ssize_t		recv_into     ( T buffer, size_t length = sizeof ( T ),
-		                            int flags = 0 );
-		template <typename T>
-		ssize_t		recv_into     ( int sockfd, T buffer,
-		                            size_t length = sizeof ( T ),
-		                            int flags = 0 );
-		template <typename T>
-		ssize_t		recv_into     ( Socket receiver, T buffer,
-		                            size_t length = sizeof ( T ),
-		                            int flags = 0 );
-
-
-
-
-
-
-		char		* recvfrom    ( int sockfd, size_t length,
-		                            struct sockaddr_storage *dest_addr,
-		                            socklen_t dest_len, int flags );
-
-		char		* recvfrom    ( size_t length,
-		                            struct sockaddr_storage *dest_addr,
-		                            socklen_t dest_len, int flags );
-
-		char		* recvfrom    ( Socket receiver, size_t length,
-		                            struct sockaddr_storage *dest_addr,
-		                            socklen_t dest_len, int flags );
-
-		ssize_t		recvfrom_into ( int sockfd, void * data, size_t length,
-		                            struct sockaddr_storage *dest_addr,
-		                            socklen_t dest_len, int flags );
-
-		ssize_t		recvfrom_into ( void * data, size_t length,
-		                            struct sockaddr_storage *dest_addr,
-		                            socklen_t dest_len, int flags );
-
-		ssize_t		recvfrom_into ( Socket receiver, void * data, size_t length,
-		                            struct sockaddr_storage *dest_addr,
-		                            socklen_t dest_len, int flags );
-
-		// /* RECEIVE STRINGS */
-		// ssize_t		recv     ( std::string msg, size_t length, int flags );
-		// ssize_t		recv     ( std::string msg, int flags );
-		// ssize_t		recv     ( int sockfd, std::string msg, size_t length, int flags );
-		// ssize_t		recv     ( int sockfd, std::string msg, int flags );
-		// ssize_t		recv     ( Socket receiver, std::string msg, size_t length, int flags );
-		// ssize_t		recv     ( Socket receiver, std::string msg, int flags );
-
-		// ssize_t		recvfrom ( std::string msg, size_t length, struct sockaddr_storage *dest_addr,
-		// 		               socklen_t dest_len, int flags );
-		// ssize_t		recvfrom ( std::string msg, struct sockaddr_storage *dest_addr,
-		// 		               socklen_t dest_len, int flags );
-		// ssize_t		recvfrom ( Socket receiver, std::string msg, size_t length, int flags );
-		// ssize_t		recvfrom ( Socket receiver, std::string msg, int flags );
-
-		// /* RECEIVE <TYPE> */
-		// template <typename T>
-		// ssize_t		recv     ( T data, size_t length = sizeof( T ),
-		// 		               int flags = 0 );
-
-		// template <typename T>
-		// ssize_t		recv     ( int sockfd, T data, size_t length = sizeof( T ),
-		// 		               int flags = 0 );
-
-		// template <typename T>
-		// ssize_t		recv     ( Socket receiver, T data, size_t length = sizeof( T ),
-		// 		               int flags = 0 );
-
-		// template <typename T>
-		// ssize_t		recvfrom ( T data, struct sockaddr_storage *dest_addr, socklen_t dest_len,
-		// 		               size_t length = sizeof( T ), int flags = 0 );
-
-		// template <typename T>
-		// ssize_t		recvfrom ( Socket receiver, T data, size_t length = sizeof( T ),
-		// 		               int flags = 0 );
-
+		ssize_t		sendto   ( Socket receiver, T data, size_t length = sizeof( T ),
+		                       int flags = 0 );
 
 	/* EXCEPTION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -334,9 +244,48 @@ std::ostream & operator << ( std::ostream & out, const Socket & in );
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 template <typename T>
+ssize_t			Socket::send( int sockfd, T * data, size_t length, int flags )
+{
+	ssize_t bytes_sent;
+
+	bytes_sent = ::send( sockfd , reinterpret_cast <void *> ( data ) ,
+	                     length , flags );
+
+	if ( bytes_sent < 0 ) {
+
+		/* 'sockfd' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		throw SocketError( __FILE__ , __LINE__ );
+
+	} else if ( static_cast <size_t> (bytes_sent) < length ) {
+
+		data = reinterpret_cast <const char *> (data) + bytes_sent;
+		bytes_sent +=
+			Socket::send( sockfd , reinterpret_cast <void *> ( data ),
+			              length - static_cast <size_t> (bytes_sent),
+			              flags );
+	}
+
+	return ( bytes_sent );
+}
+
+template <typename T>
+inline ssize_t	Socket::send( T * data, size_t length, int flags )
+{
+	return ( Socket::send( descriptor, data, length, flags ) );
+}
+
+template <typename T>
+inline ssize_t	Socket::send( Socket receiver, T * data, size_t length, int flags )
+{
+	return ( Socket::send( receiver.descriptor, data, length, flags ) );
+}
+
+template <typename T>
 inline ssize_t	Socket::send( int sockfd, T data, size_t length, int flags )
 {
-	return ( Socket::send( sockfd, &data, length, flags ) );
+	return ( Socket::send ( sockfd, &data, length, flags ) );
 }
 
 template <typename T>
@@ -349,117 +298,6 @@ template <typename T>
 inline ssize_t	Socket::send( Socket receiver, T data, size_t length, int flags )
 {
 	return ( Socket::send( receiver.descriptor, &data, length, flags ) );
-}
-
-template <typename T>
-inline ssize_t	Socket::sendto( T data, struct sockaddr_storage *dest_addr, socklen_t dest_len,
-	size_t length, int flags )
-{
-	return ( Socket::sendto( &data, length, dest_addr, dest_len, flags ) );
-}
-
-template <typename T>
-inline ssize_t	Socket::sendto( Socket receiver, T data, size_t length, int flags )
-{
-	return ( Socket::sendto( &data, length, &receiver.address, receiver.address_len, flags ) );
-}
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-template <typename T>
-T	Socket::recv ( int sockfd, size_t length, int flags ) {
-
-	ssize_t bytes_received;
-	T data;
-
-	bytes_received = ::recv( sockfd , &data , length , flags );
-
-	if ( bytes_received < 0 )
-		throw SocketError( __FILE__ , __LINE__ );
-
-	if ( bytes_received == 0 )
-		throw SocketDisconnect( sockfd );
-
-	return ( data );
-}
-
-template <typename T>
-inline T		Socket::recv ( size_t length, int flags ) {
-	return ( Socket::recv( descriptor, length, flags ) );
-}
-
-template <typename T>
-inline T		Socket::recv ( Socket receiver, size_t length, int flags ) {
-	return ( Socket::recv( receiver.descriptor, length, flags ) );
-}
-
-char *		Socket::recv( int sockfd, size_t length, int flags = 0 ) {
-
-	ssize_t bytes_received;
-	char * data;
-
-	data = new char [length];
-	bytes_received = ::recv( sockfd , data , length , flags );
-
-	if ( bytes_received == -1 ) {
-
-		throw SocketError( __FILE__ , __LINE__ );
-
-	} else if ( bytes_received == 0 )
-		data = NULL;
-
-	return ( data );
-}
-
-char *		Socket::recv( size_t length, int flags = 0 ) {
-	return ( Socket::recv( descriptor, length, flags ) );
-}
-
-char *		Socket::recv( Socket receiver, size_t length, int flags = 0 ) {
-	return ( Socket::recv( receiver.descriptor, length, flags ) );
-}
-
-ssize_t		Socket::recv_into( int sockfd, void * buffer, size_t length, int flags = 0 ) {
-
-	ssize_t bytes_received;
-
-	bytes_received = ::recv( sockfd , buffer , length , flags );
-	if ( bytes_received == -1 )
-		throw SocketError( __FILE__ , __LINE__ );
-
-	return ( bytes_received );
-}
-
-inline ssize_t	Socket::recv_into( void * buffer, size_t length,
-	int flags = 0 )
-{
-	return ( Socket::recv_into( descriptor, buffer, length, flags ) );
-}
-
-inline ssize_t	Socket::recv_into( Socket receiver, void * buffer,
-	size_t length, int flags = 0 )
-{
-	return ( Socket::recv_into( receiver.descriptor, buffer, length, flags ) );
-}
-
-template <typename T>
-inline ssize_t	Socket::recv_into( T buffer, size_t length, int flags )
-{
-	return ( Socket::recv_into( descriptor, &buffer, length, flags ) );
-}
-
-template <typename T>
-inline ssize_t	Socket::recv_into( int sockfd, T buffer, size_t length,
-	int flags )
-{
-	return ( Socket::recv_into( sockfd, &buffer, length, flags ) );
-}
-
-template <typename T>
-inline ssize_t	Socket::recv_into( Socket receiver, T buffer, size_t length,
-	int flags )
-{
-	return ( Socket::recv_into( receiver.descriptor, &buffer, length, flags ) );
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

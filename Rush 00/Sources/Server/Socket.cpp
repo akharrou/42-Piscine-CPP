@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/05 19:58:42 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/06 16:40:44 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,86 @@ std::ostream &  operator << ( std::ostream& out, const Socket & in ) {
 /*                         PUBLIC MEMBER FUNCTION(S)                         */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+
+/* STATICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+struct addrinfo * Socket::getaddrinfo( const char * Host, const char * Port ,
+	int Family = AF_UNSPEC, int Type = DFLT_FAMILY, int Protocol = DFLT_TYPE,
+	int Flags = AI_DEFAULT )
+{
+
+	/* Address Information Structures - - - - - - - - - - - - - - - - - - - - - -
+
+	struct addrinfo          -- see : /usr/include/netdb.h         @line 147
+	struct sockaddr          -- see : /usr/include/sys/socket.h    @line 401
+	struct sockaddr_in       -- see : /usr/include/netinet/in.h    @line 372
+	struct sockaddr_in6      -- see : /usr/include/netinet6/in6.h  @line 164
+	struct sockaddr_storage  -- see : /usr/include/sys/socket.h    @line 434
+
+	------------------------------------------------------------------------------
+
+	struct addrinfo {
+	    int        ai_flags;           // AI_PASSIVE, AI_CANONNAME, AI_NUMERICHOST
+	    int        ai_family;          // PF_xxx
+	    int        ai_socktype;        // SOCK_xxx
+	    int        ai_protocol;        // 0 or IPPROTO_xxx for IPv4 and IPv6
+	    socklen_t  ai_addrlen;         // length of ai_addr
+	    char       ai_canonname;       // canonical name for hostname
+	    struct     sockaddr *ai_addr;  // binary address
+	    struct     addrinfo *ai_next;  // next structure in linked list
+	};
+
+	struct sockaddr {
+	   unsigned short    sa_family;    // address family, AF_xxx
+	   char              sa_data[14];  // 14 bytes of protocol address
+	};
+
+	struct sockaddr_in {
+	    short            sin_family;   // e.g. AF_INET, AF_INET6
+	    unsigned short   sin_port;     // e.g. htons(3490)
+	    struct in_addr   sin_addr;     // see struct in_addr, below
+	    char             sin_zero[8];  // zero this if you want to
+	};
+
+	struct sockaddr_in6 {
+	    u_int16_t       sin6_family;   // address family, AF_INET6
+	    u_int16_t       sin6_port;     // port number, Network Byte Order
+	    u_int32_t       sin6_flowinfo; // IPv6 flow information
+	    struct in6_addr sin6_addr;     // IPv6 address
+	    u_int32_t       sin6_scope_id; // Scope ID
+	};
+
+	struct sockaddr_storage {
+	    sa_family_t  ss_family;        // address family
+
+	    // all this is padding, implementation specific, ignore it:
+	    char      __ss_pad1[_SS_PAD1SIZE];
+	    int64_t   __ss_align;
+	    char      __ss_pad2[_SS_PAD2SIZE];
+	};
+
+	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+	struct addrinfo * head;
+	struct addrinfo hints;
+	int ret;
+
+	memset( &hints, 0, sizeof(addrinfo) );
+
+	hints.ai_family   = Family;     /* AF_UNSPEC indicates that the address
+	                                family (is unspecified & ) will be
+	                                determined by the machine automagically */
+	hints.ai_socktype = Type;
+	hints.ai_protocol = Protocol;
+	hints.ai_flags    = Flags;
+
+	ret = ::getaddrinfo( Host , Port , &hints , &head );
+
+	if ( ret != 0 )
+		throw Socket::SocketError( __FILE__ , __LINE__ , gai_strerror(ret) );
+
+	return ( head );
+}
 
 /* OPTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -186,7 +266,6 @@ Socket &	Socket::setblocking( bool flag ) {
 	return ( *this );
 }
 
-
 /* OPERATIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 Socket &	Socket::socket( int Family ) {
@@ -257,84 +336,28 @@ Socket &	Socket::bind( const char * Host, const char * Port,
 	bind( int sockfd, struct sockaddr *my_addr, int addrlen );
 
 	See : bind(2)
-	------------------------------------------------------------------------------
+	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-	struct addrinfo          -- see : /usr/include/netdb.h         @line 147
-	struct sockaddr          -- see : /usr/include/sys/socket.h    @line 401
-	struct sockaddr_in       -- see : /usr/include/netinet/in.h    @line 372
-	struct sockaddr_in6      -- see : /usr/include/netinet6/in6.h  @line 164
-	struct sockaddr_storage  -- see : /usr/include/sys/socket.h    @line 434
-
-	------------------------------------------------------------------------------
-
-	struct addrinfo {
-	    int        ai_flags;           // AI_PASSIVE, AI_CANONNAME, AI_NUMERICHOST
-	    int        ai_family;          // PF_xxx
-	    int        ai_socktype;        // SOCK_xxx
-	    int        ai_protocol;        // 0 or IPPROTO_xxx for IPv4 and IPv6
-	    socklen_t  ai_addrlen;         // length of ai_addr
-	    char       ai_canonname;       // canonical name for hostname
-	    struct     sockaddr *ai_addr;  // binary address
-	    struct     addrinfo *ai_next;  // next structure in linked list
-	};
-
-	struct sockaddr {
-	   unsigned short    sa_family;    // address family, AF_xxx
-	   char              sa_data[14];  // 14 bytes of protocol address
-	};
-
-	struct sockaddr_in {
-	    short            sin_family;   // e.g. AF_INET, AF_INET6
-	    unsigned short   sin_port;     // e.g. htons(3490)
-	    struct in_addr   sin_addr;     // see struct in_addr, below
-	    char             sin_zero[8];  // zero this if you want to
-	};
-
-	struct sockaddr_in6 {
-	    u_int16_t       sin6_family;   // address family, AF_INET6
-	    u_int16_t       sin6_port;     // port number, Network Byte Order
-	    u_int32_t       sin6_flowinfo; // IPv6 flow information
-	    struct in6_addr sin6_addr;     // IPv6 address
-	    u_int32_t       sin6_scope_id; // Scope ID
-	};
-
-	struct sockaddr_storage {
-	    sa_family_t  ss_family;        // address family
-
-	    // all this is padding, implementation specific, ignore it:
-	    char      __ss_pad1[_SS_PAD1SIZE];
-	    int64_t   __ss_align;
-	    char      __ss_pad2[_SS_PAD2SIZE];
-	};
+	AI_PASSIVE [...] indicates that the returned socket address structure
+	is intended for use in a call to bind(2). In this case, if the hostname argument
+	is the null pointer, then the IP address portion of the socket address structure
+	will be set to INADDR_ANY for an IPv4 address or IN6ADDR_ANY_INIT for an IPv6
+	address.
 
 	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-	struct addrinfo *head, *cur;
-	struct addrinfo hints;
+	struct addrinfo * head;
+	struct addrinfo * cur;
 	int ret;
 
-	memset( &hints, 0, sizeof(addrinfo) );
+	try {
 
-	hints.ai_family   = AF_UNSPEC;  /* Address Family (is unspecified & )
-	                                will be determined by the machine
-	                                automagically */
-	hints.ai_socktype = type;
-	hints.ai_protocol = protocol;
-	hints.ai_flags    = flags;      /* AI_PASSIVE [...] indicates that
-	                                the returned socket address structure
-	                                is intended for use in a call to bind(2).
-	                                In this case, if the hostname argument
-	                                is the null pointer, then the IP address
-	                                portion of the socket address structure
-	                                will be set to INADDR_ANY for an IPv4
-	                                address or IN6ADDR_ANY_INIT for an IPv6
-	                                address. */
+		head = Socket::getaddrinfo( Host , Port , AF_UNSPEC , type , protocol ,
+		                            flags );
 
-	ret = getaddrinfo( Host , Port , &hints , &head );
-
-	if ( ret != 0 ) {
-		this->close();
-		throw SocketError( __FILE__ , __LINE__ , gai_strerror(ret) );
+	} catch ( std::exception & e ) {
+		freeaddrinfo(head);
+		throw e;
 	}
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -417,23 +440,19 @@ Socket &	Socket::connect( const char * Host, const char * Port,
 
 	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-	struct addrinfo hints;
-	struct addrinfo *head;
-	struct addrinfo *cur;
+	struct addrinfo * head;
+	struct addrinfo * cur;
 	int ret;
 
-	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+	try {
 
-	memset( &hints, 0, sizeof(hints) );
+		head = Socket::getaddrinfo( Host , Port , Family , type , protocol ,
+		                            Flags );
 
-	hints.ai_family   = Family;
-	hints.ai_socktype = type;
-	hints.ai_protocol = protocol;
-	hints.ai_flags    = Flags;
-
-	ret = getaddrinfo( Host, Port, &hints, &head );
-	if ( ret != 0 )
-		throw SocketError( __FILE__ , __LINE__, gai_strerror(ret) );
+	} catch ( std::exception & e ) {
+		freeaddrinfo(head);
+		throw e;
+	}
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -542,158 +561,6 @@ void		Socket::close( int sockfd )
 void		Socket::close( void )
 {
 	Socket::close( descriptor );
-}
-
-
-/* I/O OPERATONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-ssize_t		Socket::send( int sockfd, const void * data, size_t length,
-	int flags = 0 )
-{
-	ssize_t bytes_sent;
-
-	bytes_sent = ::send( sockfd , data , length , flags );
-	if ( bytes_sent < 0 ) {
-
-		/* 'sockfd' won't be closed; it will be up to the caller to check
-		the error corresponding to 'errno' and take action(s) accordingly. */
-
-		throw SocketError( __FILE__ , __LINE__ );
-
-	} else if ( static_cast <size_t> (bytes_sent) < length ) {
-
-		data = reinterpret_cast <const char *> (data) + bytes_sent;
-		bytes_sent +=
-			Socket::send( sockfd, data,
-			              length - static_cast <size_t> (bytes_sent),
-			              flags );
-
-	}
-
-	return ( bytes_sent );
-}
-
-inline ssize_t	Socket::send( const void * data, size_t length, int flags = 0 )
-{
-	return ( Socket::send( descriptor, data, length, flags ) );
-}
-
-inline ssize_t	Socket::send( Socket receiver, const void * data, size_t length,
-	int flags = 0 )
-{
-	return ( Socket::send( receiver.descriptor, data, length, flags ) );
-}
-
-inline ssize_t	Socket::send( std::string msg, size_t length, int flags = 0 ) {
-
-	const char * data = msg.c_str();
-
-	return ( Socket::send( descriptor, data, length, flags ) );
-}
-
-inline ssize_t	Socket::send( std::string msg, int flags = 0 ) {
-
-	const char * data = msg.c_str();
-
-	return ( Socket::send( descriptor, data, msg.size(), flags ) );
-}
-
-inline ssize_t	Socket::send( int sockfd, std::string msg, size_t length,
-	int flags = 0 ) {
-
-	const char * data = msg.c_str();
-
-	return ( Socket::send( sockfd, data, length, flags ) );
-}
-
-inline ssize_t	Socket::send( int sockfd, std::string msg, int flags = 0 ) {
-
-	const char * data = msg.c_str();
-
-	return ( Socket::send( sockfd, data, msg.size(), flags ) );
-}
-
-inline ssize_t	Socket::send( Socket receiver, std::string msg, size_t length,
-	int flags = 0 ) {
-
-	const char * data = msg.c_str();
-
-	return ( Socket::send( receiver.descriptor, data, length, flags ) );
-}
-
-inline ssize_t	Socket::send( Socket receiver, std::string msg, int flags = 0 ) {
-
-	const char * data = msg.c_str();
-
-	return ( Socket::send( receiver.descriptor, data, msg.size(), flags ) );
-}
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-ssize_t		Socket::sendto( const void * data, size_t length,
-	struct sockaddr_storage *dest_addr, int flags )
-{
-	ssize_t bytes_sent;
-
-	bytes_sent = ::sendto( descriptor, data , length , flags,
-	                       reinterpret_cast <struct sockaddr *> (dest_addr),
-	                       sizeof( dest_addr ) );
-
-	if ( bytes_sent < 0 ) {
-
-		/* 'sockfd' won't be closed; it will be up to the caller to check
-		the error corresponding to 'errno' and take action(s) accordingly. */
-
-		throw SocketError( __FILE__ , __LINE__ );
-
-	} else if ( static_cast <size_t> (bytes_sent) < length ) {
-
-		data = reinterpret_cast <const char *> (data) + bytes_sent;
-		bytes_sent +=
-			Socket::sendto( data ,
-			                length - static_cast <size_t> (bytes_sent),
-			                dest_addr, flags );
-
-	}
-
-	return ( bytes_sent );
-}
-
-inline ssize_t	Socket::sendto( Socket receiver, const void * data,
-	size_t length, int flags )
-{
-	return ( Socket::sendto( data, length, &receiver.address, flags ) );
-}
-
-inline ssize_t	Socket::sendto( std::string msg, size_t length,
-	struct sockaddr_storage *dest_addr, int flags ) {
-
-	const char * data = msg.c_str();
-
-	return ( Socket::sendto( data, length, dest_addr, flags ) );
-}
-
-inline ssize_t	Socket::sendto( std::string msg,
-	struct sockaddr_storage *dest_addr, int flags ) {
-
-	const char * data = msg.c_str();
-
-	return ( Socket::sendto( data, msg.size(), dest_addr, flags ) );
-}
-
-inline ssize_t	Socket::sendto( Socket receiver, std::string msg, size_t length,
-	int flags ) {
-
-	const char * data = msg.c_str();
-
-	return ( Socket::sendto( data, length, &receiver.address, flags ) );
-}
-
-inline ssize_t	Socket::sendto( Socket receiver, std::string msg, int flags ) {
-
-	const char * data = msg.c_str();
-
-	return ( Socket::sendto( data, msg.size(), &receiver.address, flags ) );
 }
 
 
