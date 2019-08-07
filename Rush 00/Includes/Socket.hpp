@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/06 19:59:08 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/07 09:27:25 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,25 +191,25 @@ class Socket {
 		                       int flags = 0 );
 
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-``¡
+
 		template <typename T>
 		T *			recv     ( int sockfd, size_t length = sizeof( T * ),
-		                       int flags = 0 );
+		                       bool * senderDisconnected = nullptr, int flags = 0 );
 		template <typename T>
 		T			recv     ( int sockfd, size_t length = sizeof( T * ),
-		                       int flags = 0 );
+		                       bool * senderDisconnected = nullptr, int flags = 0 );
 		template <typename T>
 		T *			recv     ( size_t length = sizeof( T * ),
-		                       int flags = 0 );
+		                       bool * senderDisconnected = nullptr, int flags = 0 );
 		template <typename T>
 		T			recv     ( size_t length = sizeof( T * ),
-		                       int flags = 0 );
+		                       bool * senderDisconnected = nullptr, int flags = 0 );
 		template <typename T>
 		T *			recv     ( Socket sender, size_t length = sizeof( T * ),
-		                       int flags = 0 );
+		                       bool * senderDisconnected = nullptr, int flags = 0 );
 		template <typename T>
 		T			recv     ( Socket sender, size_t length = sizeof( T * ),
-		                       int flags = 0 );
+		                       bool * senderDisconnected = nullptr, int flags = 0 );
 
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -241,39 +241,44 @@ class Socket {
 		// ssize_t		recvfrom ( Socket receiver, T data, size_t length = sizeof( T ),
 		//                        int flags = 0 );
 
-	/* EXCEPTION - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+	/* EXCEPTION(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-		class SocketError :
+		class SocketError final :
 			public std::exception {
 
-			private:
-				std::string _file;
-				std::string _line;
-				std::string _err_msg;
+			std::string _file;
+			std::string _line;
+			std::string _err_msg;
 
 			public:
-				SocketError  ( void );
+				SocketError  ( void ) noexcept;
+				SocketError  ( const SocketError & );
 				SocketError  ( const char * File, size_t Line );
 				SocketError  ( const char * File, size_t Line,
 				               const char * Error_Message );
-				~SocketError ( void );
+				~SocketError ( void ) noexcept override;
 
-				std::string getError( void ) const;
-				virtual const char* what( void ) const throw();
+				SocketError &	operator = ( const SocketError & );
+
+				std::string getError ( void ) const;
+				const char * what () const noexcept override final;
 		};
 
-		class SocketDisconnect :
+		class SocketDisconnect final :
 			public std::exception {
 
-				int _sockfd;
+			int _sockfd;
 
 			public:
-				SocketDisconnect  ( void );
+				SocketDisconnect  ( void ) noexcept;
 				SocketDisconnect  ( int sockfd );
-				~SocketDisconnect ( void );
+				SocketDisconnect  ( const SocketDisconnect & );
+				~SocketDisconnect ( void ) noexcept;
 
-				int getSockfd(void) const;
-				virtual const char *what(void) const throw();
+				SocketDisconnect &	operator = ( const SocketDisconnect & );
+
+				int getSockfd ( void ) const;
+				const char * what () const noexcept;
 		};
 };
 
@@ -456,69 +461,111 @@ inline ssize_t	Socket::sendto( Socket receiver, T data, size_t length,
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 template <typename T>
-T *	Socket::recv( int sockfd, size_t length, int flags )
+T *	Socket::recv( int sockfd, size_t length, bool * senderDisconnected,
+	int flags )
 {
 	T * data;
 	int ret;
 
 	data = new T [ length ];
 
-	ret = ::recv ( sockfd , data , length , flags );
-	if ( ret < 0 ) {
+	ret = ::recv ( sockfd , reinterpret_cast <void *> ( data ) , length , flags );
+
+	if ( ret == 0            /* for TCP sockets */ ||
+	     errno == ECONNRESET /* for UDP sockets */ ) {
+
+		if ( senderDisconnected != nullptr )
+			( * senderDisconnected ) = true;
+		else
+			throw SocketDisconnect(
+				/* the socket on the other end of this */ sockfd /* has disconnected */
+			);
+
+	} else if ( ret < 0 ) {
 
 		/* 'sockfd' won't be closed; it will be up to the caller to check
 		the error corresponding to 'errno' and take action(s) accordingly. */
 
 		throw SocketError( __FILE__ , __LINE__ );
+	}
 
-	} else if ( ret == 0 )
-		throw SocketDisconnect( sockfd );
+	if ( senderDisconnected != nullptr )
+		( * senderDisconnected ) = false;
 
 	return ( data );
 }
 
 template <typename T>
-T	Socket::recv( int sockfd, size_t length, int flags )
+T	Socket::recv( int sockfd, size_t length, bool * senderDisconnected,
+	int flags )
 {
 	T data;
 	int ret;
 
-	ret = ::recv ( sockfd , data , length , flags );
-	if ( ret < 0 ) {
+	ret = ::recv ( sockfd , reinterpret_cast <void *> ( &data ) , length , flags );
+
+	if ( ret == 0            /* for TCP sockets */ ||
+	     errno == ECONNRESET /* for UDP sockets */ ) {
+
+		if ( senderDisconnected != nullptr )
+			( * senderDisconnected ) = true;
+		else
+			throw SocketDisconnect(
+				/* the socket on the other end of this */ sockfd /* has disconnected */
+			);
+
+	} else if ( ret < 0 ) {
 
 		/* 'sockfd' won't be closed; it will be up to the caller to check
 		the error corresponding to 'errno' and take action(s) accordingly. */
 
 		throw SocketError( __FILE__ , __LINE__ );
+	}
 
-	} else if ( ret == 0 )
-		throw SocketDisconnect( sockfd );
+	if ( senderDisconnected != nullptr )
+		( * senderDisconnected ) = false;
 
 	return ( data );
 }
 
 template <typename T>
-T *	Socket::recv( size_t length, int flags )
+T *	Socket::recv( size_t length, bool * senderDisconnected,
+	int flags )
 {
-	return ( Socket::recv ( descriptor , length , flags ) );
+	return (
+		Socket::recv <T *> ( descriptor , length ,
+			flags , senderDisconnected )
+	);
 }
 
 template <typename T>
-T	Socket::recv( size_t length, int flags )
+T	Socket::recv( size_t length, bool * senderDisconnected,
+	int flags )
 {
-	return ( Socket::recv ( descriptor , length , flags ) );
+	return (
+		Socket::recv <T> ( descriptor , length ,
+			flags , senderDisconnected )
+	);
 }
 
 template <typename T>
-T *	Socket::recv( Socket sender, size_t length, int flags )
+T *	Socket::recv( Socket sender, size_t length, bool * senderDisconnected,
+	int flags )
 {
-	return ( Socket::recv ( sender.descriptor , length , flags ) );
+	return (
+		Socket::recv <T *> ( sender.descriptor , length ,
+			flags , senderDisconnected )
+	);
 }
 
 template <typename T>
-T	Socket::recv( Socket sender, size_t length, int flags )
+T	Socket::recv( Socket sender, size_t length, bool * senderDisconnected,
+	int flags )
 {
-	return ( Socket::recv ( sender.descriptor , length , flags ) );
+	return (
+		Socket::recv <T> ( sender.descriptor , length ,
+			flags , senderDisconnected )
+	);
 }
 
 

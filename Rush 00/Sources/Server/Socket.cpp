@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/06 19:37:02 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/07 08:38:22 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -565,7 +565,7 @@ void		Socket::close( void )
 
 /* EXCEPTION(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-Socket::SocketError::SocketError( void ) {}
+Socket::SocketError::SocketError( void ) noexcept {}
 
 Socket::SocketError::SocketError( const char *File, size_t Line ) :
 	_file ( File ),
@@ -581,13 +581,28 @@ Socket::SocketError::SocketError( const char *File, size_t Line,
 	_err_msg ( Error_Message ) {
 }
 
-Socket::SocketError::~SocketError( void ) {}
+Socket::SocketError::SocketError( const SocketError & src ) {
+	*this = src;
+}
+
+Socket::SocketError::~SocketError( void ) noexcept {}
+
+Socket::SocketError &	Socket::SocketError::operator = ( const SocketError & rhs ) {
+
+	if ( this != &rhs ) {
+
+		_file    = rhs._file;
+		_line    = rhs._line;
+		_err_msg = rhs._err_msg;
+	}
+	return ( *this );
+}
 
 std::string	Socket::SocketError::getError( void ) const {
 	return ( _err_msg );
 }
 
-const char *Socket::SocketError::what( void ) const throw() {
+const char * Socket::SocketError::what( void ) const noexcept {
 
 	return (
 		std::string("~ " + _file + ":" + _line + " -- Socket Error : "
@@ -598,19 +613,31 @@ const char *Socket::SocketError::what( void ) const throw() {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-Socket::SocketDisconnect::SocketDisconnect() :
+Socket::SocketDisconnect::SocketDisconnect() noexcept :
 	_sockfd ( -1 ) {}
 
 Socket::SocketDisconnect::SocketDisconnect( int fd ) :
 	_sockfd ( fd ) {}
 
-Socket::SocketDisconnect::~SocketDisconnect ( void ) {}
+Socket::SocketDisconnect::SocketDisconnect( const SocketDisconnect & src ) {
+	*this = src;
+}
 
-int Socket::SocketDisconnect::getSockfd(void) const {
+Socket::SocketDisconnect::~SocketDisconnect( void ) noexcept {}
+
+Socket::SocketDisconnect &
+	Socket::SocketDisconnect::operator = ( const SocketDisconnect & rhs ) {
+
+	if ( this != &rhs )
+		_sockfd = rhs._sockfd;
+	return ( *this );
+}
+
+int Socket::SocketDisconnect::getSockfd( void ) const {
 	return ( _sockfd );
 }
 
-const char * Socket::SocketDisconnect::what(void) const throw() {
+const char * Socket::SocketDisconnect::what( void ) const noexcept {
 
 	return (
 		std::string(
