@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/06 16:50:31 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/06 19:37:02 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,7 @@ std::ostream &  operator << ( std::ostream& out, const Socket & in ) {
 /* STATICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 struct addrinfo * Socket::getaddrinfo( const char * Host, const char * Port ,
-	int Family = AF_UNSPEC, int Type = DFLT_FAMILY, int Protocol = DFLT_TYPE,
-	int Flags = AI_DEFAULT )
+	int Family, int Type, int Protocol, int Flags )
 {
 
 	/* Address Information Structures - - - - - - - - - - - - - - - - - - - - - -
@@ -615,7 +614,9 @@ const char * Socket::SocketDisconnect::what(void) const throw() {
 
 	return (
 		std::string(
-			"~ Socket # " + std::to_string(_sockfd) + "Disconnected ~"
+			"~ Sender on the other end of Socket # " +
+			std::to_string(_sockfd) +
+			"Disconnected ~"
 		).c_str()
 	);
 }

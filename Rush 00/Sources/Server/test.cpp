@@ -6,21 +6,61 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+// template <typename T>
+// T	returnDataObject ( T data, size_t length ) {
+
+// 	const char * dataConvert = reinterpret_cast <const char *> (&data);
+// 	char * dataObject = new char [ length ];
+
+// 	for ( size_t i = 0 ; i < length ; ++i )
+// 		dataObject[i] = dataConvert[i];
+
+// 	return (
+// 		* ( reinterpret_cast < T * > (dataObject) )
+// 	);
+// }
+
 template <typename T>
-T	returnDataObject ( T data, size_t length ) {
-
-	const char * dataConvert = reinterpret_cast <const char *> (&data);
-	char * dataObject = new char [ length ];
-
-	for ( size_t i = 0 ; i < length ; ++i )
-		dataObject[i] = dataConvert[i];
-
-	return (
-		* ( reinterpret_cast < T * > (dataObject) )
-	);
+T foo()
+{
+	T data;
+	return ( data );
 }
 
-int	main() {
+// template <typename T>
+// T baz( size_t length = 0, const char * name = nullptr )
+// {
+// 	(void) name;
+// 	(void) length;
+// 	T data = foo();
+// 	return ( data );
+// }
+
+// template <typename T>
+// T bar( size_t length = 0 )
+// {
+// 	(void) length;
+// 	return ( baz( length ) );
+// }
+
+int	main()
+{
+
+	int a = foo(); /* no matching function for call to 'foo' */
+	// int b = bar(); /* no matching function for call to 'bar' */
+	// int c = baz(); /* no matching function for call to 'baz' */
+
+	return (0);
+}
+
+
+
+
+
+
+
+
+
 
 	// std::string name = "Johnny Bruno Inc. and his friends at the market place and school";
 
@@ -37,12 +77,7 @@ int	main() {
 	// for ( size_t i = 0; agesCopy[i]; ++i )
 	// 	std::cout << agesCopy[i] << "\n";
 
-	const char * personName = "Jackson Bernard $! Hello guys this is a string no way it works";
-	const char * personNameCopy = returnDataObject( personName , sizeof personName );
+	// const char * personName = "Jackson Bernard $! Hello guys this is a string no way it works";
+	// const char * personNameCopy = returnDataObject( personName , sizeof personName );
 
-	std::cout << personNameCopy << "\n";
-
-
-
-	return (0);
-}
+	// std::cout << personNameCopy << "\n";

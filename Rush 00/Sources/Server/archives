@@ -650,3 +650,160 @@ inline ssize_t	Socket::recv_into( Socket receiver, T buffer, size_t length,
 {
 	return ( Socket::recv_into( receiver.descriptor, &buffer, length, flags ) );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////
+
+
+template <typename T>
+T *			Socket::recv( int sockfd, size_t length, int flags )
+{
+	T * data;
+	int ret;
+
+	data = new T [ length ];
+
+	ret = ::recv ( sockfd , data , length , flags );
+	if ( ret < 0 ) {
+
+		/* 'sockfd' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		throw SocketError( __FILE__ , __LINE__ );
+
+	} else if ( ret == 0 )
+		throw SocketDisconnect( sockfd );
+
+	return ( data );
+}
+
+template <typename T>
+T			Socket::recv( int sockfd, size_t length, int flags )
+{
+	T data;
+	int ret;
+
+	ret = ::recv ( sockfd , data , length , flags );
+	if ( ret < 0 ) {
+
+		/* 'sockfd' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		throw SocketError( __FILE__ , __LINE__ );
+
+	} else if ( ret == 0 )
+		throw SocketDisconnect( sockfd );
+
+	return ( data );
+}
+
+template <typename T>
+inline T *	Socket::recv( size_t length, int flags )
+{
+	T * data;
+	int ret;
+
+	data = new T [ length ];
+
+	ret = ::recv ( descriptor , data , length , flags );
+	if ( ret < 0 ) {
+
+		/* 'descriptor' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		throw SocketError( __FILE__ , __LINE__ );
+
+	} else if ( ret == 0 )
+		throw SocketDisconnect( descriptor );
+
+	return ( data );
+}
+
+template <typename T>
+inline T	Socket::recv( size_t length, int flags )
+{
+	T data;
+	int ret;
+
+	ret = ::recv ( descriptor , data , length , flags );
+	if ( ret < 0 ) {
+
+		/* 'descriptor' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		throw SocketError( __FILE__ , __LINE__ );
+
+	} else if ( ret == 0 )
+		throw SocketDisconnect( descriptor );
+
+	return ( data );
+}
+
+template <typename T>
+inline T *	Socket::recv( Socket sender, size_t length, int flags )
+{
+	T * data;
+	int ret;
+
+	data = new T [ length ];
+
+	ret = ::recv ( sender.descriptor , data , length , flags );
+	if ( ret < 0 ) {
+
+		/* 'sender.descriptor' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		throw SocketError( __FILE__ , __LINE__ );
+
+	} else if ( ret == 0 )
+		throw SocketDisconnect( sender.descriptor );
+
+	return ( data );
+}
+
+template <typename T>
+inline T	Socket::recv( Socket sender, size_t length, int flags )
+{
+	T data;
+	int ret;
+
+	ret = ::recv ( sender.descriptor , data , length , flags );
+	if ( ret < 0 ) {
+
+		/* 'sender.descriptor' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		throw SocketError( __FILE__ , __LINE__ );
+
+	} else if ( ret == 0 )
+		throw SocketDisconnect( sender.descriptor );
+
+	return ( data );
+}
