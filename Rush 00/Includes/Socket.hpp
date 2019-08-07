@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/07 09:27:25 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/07 13:43:54 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,10 @@ class Socket {
 
 	/* STATICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+		static std::string getip   ( struct sockaddr_storage address );
+
+		static std::string getport ( struct sockaddr_storage address );
+
 		static struct addrinfo * getaddrinfo ( const char * Host, const char * Port,
 		    int Family = AF_UNSPEC, int Type = DFLT_FAMILY, int Protocol = DFLT_TYPE,
 		    int Flags = AI_DEFAULT );
@@ -126,120 +130,142 @@ class Socket {
 
 	/* OPERATIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-		Socket &	socket   ( int Family, int Type, int Protocol );
-		Socket &	socket   ( int Family );
+		Socket &	socket    ( int Family, int Type, int Protocol );
+		Socket &	socket    ( int Family );
 
-		Socket &	bind     ( const char * Host, const char * Port, int flags );
+		Socket &	bind      ( const char * Host, const char * Port, int flags );
 
-		Socket &	listen   ( int connections );
+		Socket &	listen    ( int connections );
 
-		Socket &	connect  ( Socket & );
-		Socket &	connect  ( const char * Host, const char * Port, int Family,
+		Socket &	connect   ( Socket & );
+		Socket &	connect   ( const char * Host, const char * Port, int Family,
 			                   int Flags );
 
-		Socket		accept   ( void ) const;
+		Socket		accept    ( void ) const;
 
-		void		shutdown ( int sockfd, int how );
+		void		shutdown  ( int sockfd, int how );
 
-		void		close    ( int sockfd );
-		void		close    ( void );
+		void		close     ( int sockfd );
+		void		close     ( void );
 
 	/* I/O OPERATONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		template <typename T>
-		ssize_t		send     ( int sockfd, T * data, size_t length = sizeof( T * ),
-				               int flags = 0 );
+		ssize_t		send      ( int sockfd, T * data, size_t length = sizeof( T * ),
+				                int flags = 0 );
 		template <typename T>
-		ssize_t		send     ( int sockfd, T data, size_t length = sizeof( T ),
-				               int flags = 0 );
+		ssize_t		send      ( int sockfd, T data, size_t length = sizeof( T ),
+				                int flags = 0 );
 		template <typename T>
-		ssize_t		send     ( T * data, size_t length = sizeof( T * ),
-				               int flags = 0 );
+		ssize_t		send      ( T * data, size_t length = sizeof( T * ),
+				                int flags = 0 );
 		template <typename T>
-		ssize_t		send     ( T data, size_t length = sizeof( T ),
-				               int flags = 0 );
+		ssize_t		send      ( T data, size_t length = sizeof( T ),
+				                int flags = 0 );
 		template <typename T>
-		ssize_t		send     ( Socket receiver, T * data, size_t length = sizeof( T * ),
-		                       int flags = 0 );
+		ssize_t		send      ( Socket receiver, T * data, size_t length = sizeof( T * ),
+		                        int flags = 0 );
 		template <typename T>
-		ssize_t		send     ( Socket receiver, T data, size_t length = sizeof( T ),
-		                       int flags = 0 );
+		ssize_t		send      ( Socket receiver, T data, size_t length = sizeof( T ),
+		                        int flags = 0 );
 
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		template <typename T>
-		ssize_t		sendto   ( T * data, struct sockaddr_storage *dest_addr,
-		                       socklen_t dest_len = sizeof ( sockaddr_storage ),
-		                       size_t length = sizeof( T * ), int flags = 0 );
+		ssize_t		sendto    ( T * data, struct sockaddr_storage *dest_addr,
+		                        socklen_t dest_len = sizeof ( sockaddr_storage ),
+		                        size_t length = sizeof( T * ), int flags = 0 );
 		template <typename T>
-		ssize_t		sendto   ( T data, struct sockaddr_storage *dest_addr,
-		                       socklen_t dest_len = sizeof ( sockaddr_storage ),
-		                       size_t length = sizeof( T ), int flags = 0 );
+		ssize_t		sendto    ( T data, struct sockaddr_storage *dest_addr,
+		                        socklen_t dest_len = sizeof ( sockaddr_storage ),
+		                        size_t length = sizeof( T ), int flags = 0 );
 		template <typename T>
-		ssize_t		sendto   ( const char * Host, const char * Port,
-		                       T * data, size_t length = sizeof( T * ),
-				               int flags = 0 );
+		ssize_t		sendto    ( const char * Host, const char * Port,
+		                        T * data, size_t length = sizeof( T * ),
+				                int flags = 0 );
 		template <typename T>
-		ssize_t		sendto   ( const char * Host, const char * Port,
-		                       T data, size_t length = sizeof( T ),
-				               int flags = 0 );
+		ssize_t		sendto    ( const char * Host, const char * Port,
+		                        T data, size_t length = sizeof( T ),
+				                int flags = 0 );
 		template <typename T>
-		ssize_t		sendto   ( Socket receiver, T * data, size_t length = sizeof( T * ),
-		                       int flags = 0 );
+		ssize_t		sendto    ( Socket receiver, T * data, size_t length = sizeof( T * ),
+		                        int flags = 0 );
 		template <typename T>
-		ssize_t		sendto   ( Socket receiver, T data, size_t length = sizeof( T ),
-		                       int flags = 0 );
+		ssize_t		sendto    ( Socket receiver, T data, size_t length = sizeof( T ),
+		                        int flags = 0 );
 
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		template <typename T>
-		T *			recv     ( int sockfd, size_t length = sizeof( T * ),
-		                       bool * senderDisconnected = nullptr, int flags = 0 );
+		T *		      recv    ( int sockfd, size_t length = sizeof( T * ),
+		                        bool * peerDisconnected = nullptr, int flags = 0 );
 		template <typename T>
-		T			recv     ( int sockfd, size_t length = sizeof( T * ),
-		                       bool * senderDisconnected = nullptr, int flags = 0 );
+		T		      recv    ( int sockfd, size_t length = sizeof( T ),
+		                        bool * peerDisconnected = nullptr, int flags = 0 );
 		template <typename T>
-		T *			recv     ( size_t length = sizeof( T * ),
-		                       bool * senderDisconnected = nullptr, int flags = 0 );
+		T *		      recv    ( size_t length = sizeof( T * ),
+		                        bool * peerDisconnected = nullptr, int flags = 0 );
 		template <typename T>
-		T			recv     ( size_t length = sizeof( T * ),
-		                       bool * senderDisconnected = nullptr, int flags = 0 );
+		T		      recv    ( size_t length = sizeof( T ),
+		                        bool * peerDisconnected = nullptr, int flags = 0 );
 		template <typename T>
-		T *			recv     ( Socket sender, size_t length = sizeof( T * ),
-		                       bool * senderDisconnected = nullptr, int flags = 0 );
+		T *		      recv    ( Socket sender, size_t length = sizeof( T * ),
+		                        bool * peerDisconnected = nullptr, int flags = 0 );
 		template <typename T>
-		T			recv     ( Socket sender, size_t length = sizeof( T * ),
-		                       bool * senderDisconnected = nullptr, int flags = 0 );
+		T		      recv    ( Socket sender, size_t length = sizeof( T ),
+		                        bool * peerDisconnected = nullptr, int flags = 0 );
 
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-		// template <typename T>
-		// ssize_t		recvfrom ( T * data, struct sockaddr_storage *dest_addr,
-		//                        socklen_t dest_len = sizeof ( sockaddr_storage ),
-		//                        size_t length = sizeof( T * ), int flags = 0 );
+		template <typename T>
+		T *		    recvfrom  ( struct sockaddr_storage *dest_addr = nullptr,
+					            socklen_t dest_len = sizeof ( sockaddr_storage ),
+					            size_t length = sizeof( T * ),
+					            bool * peerDisconnected = nullptr,
+					            int flags = 0 );
+		template <typename T>
+		T		    recvfrom  ( struct sockaddr_storage *dest_addr = nullptr,
+					            socklen_t dest_len = sizeof ( sockaddr_storage ),
+					            size_t length = sizeof( T ),
+					            bool * peerDisconnected = nullptr,
+					            int flags = 0 );
+		template <typename T>
+		T *		    recvfrom  ( Socket sender,
+					            size_t length = sizeof( T * ),
+		                        bool * peerDisconnected = nullptr,
+					            int flags = 0 );
+		template <typename T>
+		T		    recvfrom  ( Socket sender,
+					            size_t length = sizeof( T ),
+		                        bool * peerDisconnected = nullptr,
+					            int flags = 0 );
 
-		// template <typename T>
-		// ssize_t		recvfrom ( T data, struct sockaddr_storage *dest_addr,
-		//                        socklen_t dest_len = sizeof ( sockaddr_storage ),
-		//                        size_t length = sizeof( T ), int flags = 0 );
+		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-		// template <typename T>
-		// ssize_t		recvfrom ( const char * Host, const char * Port,
-		//                        T * data, size_t length = sizeof( T * ),
-		// 		               int flags = 0 );
+		template <typename T>
+		ssize_t	   recv_into  ( int sockfd, T * buffer,
+			                    size_t buflen = sizeof( T ),
+			                    int flags = 0 );
+		template <typename T>
+		ssize_t	   recv_into  ( T * buffer,
+			                    size_t buflen = sizeof( T ),
+			                    int flags = 0 );
+		template <typename T>
+		ssize_t	   recv_into  ( Socket sender, T * buffer,
+			                    size_t buflen = sizeof( T ),
+			                    int flags = 0 );
 
-		// template <typename T>
-		// ssize_t		recvfrom ( const char * Host, const char * Port,
-		//                        T data, size_t length = sizeof( T ),
-		// 		               int flags = 0 );
+		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-		// template <typename T>
-		// ssize_t		recvfrom ( Socket receiver, T * data, size_t length = sizeof( T * ),
-		//                        int flags = 0 );
-
-		// template <typename T>
-		// ssize_t		recvfrom ( Socket receiver, T data, size_t length = sizeof( T ),
-		//                        int flags = 0 );
+		template <typename T>
+		ssize_t recvfrom_into ( T * buffer,
+		                        struct sockaddr_storage *dest_addr = nullptr,
+					            socklen_t dest_len = sizeof ( sockaddr_storage ),
+					            size_t buflen = sizeof( T ), int flags = 0 );
+		template <typename T>
+		ssize_t recvfrom_into ( Socket sender, T * buffer,
+			                    size_t buflen = sizeof( T ),
+		                        int flags = 0 );
 
 	/* EXCEPTION(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -261,21 +287,21 @@ class Socket {
 				SocketError &	operator = ( const SocketError & );
 
 				std::string getError ( void ) const;
-				const char * what () const noexcept override final;
+				const char * what () const noexcept;
 		};
 
-		class SocketDisconnect final :
+		class SocketPeerDisconnect final :
 			public std::exception {
 
 			int _sockfd;
 
 			public:
-				SocketDisconnect  ( void ) noexcept;
-				SocketDisconnect  ( int sockfd );
-				SocketDisconnect  ( const SocketDisconnect & );
-				~SocketDisconnect ( void ) noexcept;
+				SocketPeerDisconnect  ( void ) noexcept;
+				SocketPeerDisconnect  ( int sockfd );
+				SocketPeerDisconnect  ( const SocketPeerDisconnect & );
+				~SocketPeerDisconnect ( void ) noexcept;
 
-				SocketDisconnect &	operator = ( const SocketDisconnect & );
+				SocketPeerDisconnect &	operator = ( const SocketPeerDisconnect & );
 
 				int getSockfd ( void ) const;
 				const char * what () const noexcept;
@@ -461,7 +487,7 @@ inline ssize_t	Socket::sendto( Socket receiver, T data, size_t length,
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 template <typename T>
-T *	Socket::recv( int sockfd, size_t length, bool * senderDisconnected,
+T *				Socket::recv( int sockfd, size_t length, bool * peerDisconnected,
 	int flags )
 {
 	T * data;
@@ -471,14 +497,16 @@ T *	Socket::recv( int sockfd, size_t length, bool * senderDisconnected,
 
 	ret = ::recv ( sockfd , reinterpret_cast <void *> ( data ) , length , flags );
 
-	if ( ret == 0            /* for TCP sockets */ ||
-	     errno == ECONNRESET /* for UDP sockets */ ) {
+	 if ( ret == 0 || errno == ECONNRESET ) {
 
-		if ( senderDisconnected != nullptr )
-			( * senderDisconnected ) = true;
+		/* "[ECONNRESET] -- The connection is closed by the peer during a
+		receive attempt on a socket." ; See recv(2) */
+
+		if ( peerDisconnected != nullptr )
+			( * peerDisconnected ) = true;
 		else
-			throw SocketDisconnect(
-				/* the socket on the other end of this */ sockfd /* has disconnected */
+			throw SocketPeerDisconnect(
+				/* the peer of this */ sockfd /* has disconnected */
 			);
 
 	} else if ( ret < 0 ) {
@@ -487,16 +515,19 @@ T *	Socket::recv( int sockfd, size_t length, bool * senderDisconnected,
 		the error corresponding to 'errno' and take action(s) accordingly. */
 
 		throw SocketError( __FILE__ , __LINE__ );
-	}
 
-	if ( senderDisconnected != nullptr )
-		( * senderDisconnected ) = false;
+	} else {
+
+		if ( peerDisconnected != nullptr )
+			( * peerDisconnected ) = false;
+
+	}
 
 	return ( data );
 }
 
 template <typename T>
-T	Socket::recv( int sockfd, size_t length, bool * senderDisconnected,
+T				Socket::recv( int sockfd, size_t length, bool * peerDisconnected,
 	int flags )
 {
 	T data;
@@ -504,14 +535,16 @@ T	Socket::recv( int sockfd, size_t length, bool * senderDisconnected,
 
 	ret = ::recv ( sockfd , reinterpret_cast <void *> ( &data ) , length , flags );
 
-	if ( ret == 0            /* for TCP sockets */ ||
-	     errno == ECONNRESET /* for UDP sockets */ ) {
+	 if ( ret == 0 || errno == ECONNRESET ) {
 
-		if ( senderDisconnected != nullptr )
-			( * senderDisconnected ) = true;
+		/* "[ECONNRESET] -- The connection is closed by the peer during a
+		receive attempt on a socket." ; See recv(2) */
+
+		if ( peerDisconnected != nullptr )
+			( * peerDisconnected ) = true;
 		else
-			throw SocketDisconnect(
-				/* the socket on the other end of this */ sockfd /* has disconnected */
+			throw SocketPeerDisconnect(
+				/* the peer of this */ sockfd /* has disconnected */
 			);
 
 	} else if ( ret < 0 ) {
@@ -520,52 +553,202 @@ T	Socket::recv( int sockfd, size_t length, bool * senderDisconnected,
 		the error corresponding to 'errno' and take action(s) accordingly. */
 
 		throw SocketError( __FILE__ , __LINE__ );
-	}
 
-	if ( senderDisconnected != nullptr )
-		( * senderDisconnected ) = false;
+	} else {
+
+		if ( peerDisconnected != nullptr )
+			( * peerDisconnected ) = false;
+
+	}
 
 	return ( data );
 }
 
 template <typename T>
-T *	Socket::recv( size_t length, bool * senderDisconnected,
-	int flags )
+inline T *		Socket::recv( size_t length,
+	bool * peerDisconnected, int flags )
 {
 	return (
 		Socket::recv <T *> ( descriptor , length ,
-			flags , senderDisconnected )
+			flags , peerDisconnected )
 	);
 }
 
 template <typename T>
-T	Socket::recv( size_t length, bool * senderDisconnected,
-	int flags )
+inline T		Socket::recv( size_t length,
+	bool * peerDisconnected, int flags )
 {
 	return (
 		Socket::recv <T> ( descriptor , length ,
-			flags , senderDisconnected )
+			flags , peerDisconnected )
 	);
 }
 
 template <typename T>
-T *	Socket::recv( Socket sender, size_t length, bool * senderDisconnected,
-	int flags )
+inline T *		Socket::recv( Socket sender, size_t length,
+	bool * peerDisconnected, int flags )
 {
 	return (
 		Socket::recv <T *> ( sender.descriptor , length ,
-			flags , senderDisconnected )
+			flags , peerDisconnected )
 	);
 }
 
 template <typename T>
-T	Socket::recv( Socket sender, size_t length, bool * senderDisconnected,
-	int flags )
+inline T		Socket::recv( Socket sender, size_t length,
+	bool * peerDisconnected, int flags )
 {
 	return (
 		Socket::recv <T> ( sender.descriptor , length ,
-			flags , senderDisconnected )
+			flags , peerDisconnected )
 	);
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+template <typename T>
+T *				Socket::recvfrom ( struct sockaddr_storage *dest_addr,
+	socklen_t dest_len, size_t length, bool * peerDisconnected, int flags )
+{
+	T * data;
+	int ret;
+
+	data = new T [ length ];
+
+	ret = ::recvfrom ( descriptor , reinterpret_cast <void *> ( data ) , length ,
+	                   flags , reinterpret_cast <sockaddr *> ( dest_addr ) ,
+	                   &dest_len );
+
+	if ( ret == 0 || errno == ECONNRESET ) {
+
+		/* "[ECONNRESET] -- The connection is closed by the peer during a
+		receive attempt on a socket." ; See recvfrom(2) */
+
+		if ( peerDisconnected != nullptr )
+			( * peerDisconnected ) = true;
+		else
+			throw SocketPeerDisconnect(
+				/* the peer of this socket ( */ descriptor /* )
+				has disconnected */
+			);
+
+	} else if  ( ret < 0 ) {
+
+		/* 'sockfd' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		throw SocketError( __FILE__ , __LINE__ );
+
+	} else {
+
+		if ( peerDisconnected != nullptr )
+			( * peerDisconnected ) = false;
+
+	}
+
+	return ( data );
+}
+
+template <typename T>
+T				Socket::recvfrom ( struct sockaddr_storage *dest_addr,
+	socklen_t dest_len, size_t length, bool * peerDisconnected, int flags )
+{
+	T data;
+	int ret;
+
+	ret = ::recvfrom ( descriptor , reinterpret_cast <void *> ( &data ) , length ,
+	                   flags , reinterpret_cast <sockaddr *> ( dest_addr ) ,
+	                   &dest_len );
+
+	if ( ret == 0 || errno == ECONNRESET ) {
+
+		/* "[ECONNRESET] -- The connection is closed by the peer during a
+		receive attempt on a socket." ; See recvfrom(2) */
+
+		if ( peerDisconnected != nullptr )
+			( * peerDisconnected ) = true;
+		else
+			throw SocketPeerDisconnect(
+				/* the peer of this socket ( */ descriptor /* )
+				has disconnected */
+			);
+
+	} else if  ( ret < 0 ) {
+
+		/* 'sockfd' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		throw SocketError( __FILE__ , __LINE__ );
+
+	} else {
+
+		if ( peerDisconnected != nullptr )
+			( * peerDisconnected ) = false;
+
+	}
+
+	return ( data );
+}
+
+template <typename T>
+inline T *		Socket::recvfrom ( Socket sender, size_t length,
+	bool * peerDisconnected, int flags )
+{
+	return (
+		Socket::recvfrom <T *> ( &sender.address, sender.address_len,
+			length, peerDisconnected, flags )
+	);
+}
+
+template <typename T>
+inline T		Socket::recvfrom ( Socket sender, size_t length,
+	bool * peerDisconnected, int flags )
+{
+	return (
+		Socket::recvfrom <T> ( &sender.address, sender.address_len,
+			length, peerDisconnected, flags )
+	);
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+template <typename T>
+ssize_t			Socket::recv_into( int sockfd, T * buffer, size_t buflen,
+	int flags )
+{
+
+}
+
+template <typename T>
+ssize_t			Socket::recv_into( T * buffer, size_t buflen,
+	int flags )
+{
+
+}
+
+template <typename T>
+ssize_t			Socket::recv_into( Socket sender, T * buffer, size_t buflen,
+	int flags )
+{
+
+}
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+template <typename T>
+ssize_t			Socket::recvfrom_into ( T * buffer,
+	struct sockaddr_storage *dest_addr, socklen_t dest_len,
+	size_t buflen, int flags )
+{
+
+}
+
+template <typename T>
+ssize_t			Socket::recvfrom_into ( Socket sender, T * buffer,
+	size_t buflen, int flags )
+{
+
 }
 
 

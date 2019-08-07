@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/07 08:38:22 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/07 13:29:19 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,62 @@ struct addrinfo * Socket::getaddrinfo( const char * Host, const char * Port ,
 
 	return ( head );
 }
+
+std::string Socket::getip( struct sockaddr_storage address ) {
+
+	union {
+		struct sockaddr_in *v4;
+		struct sockaddr_in6 *v6;
+	} sockaddr;
+
+	char dest [ INET6_ADDRSTRLEN ];
+
+	switch ( address.ss_family ) {
+
+		case AF_INET:
+
+			sockaddr.v4 = reinterpret_cast <sockaddr_in *> ( &address );
+			::inet_ntop( AF_INET , reinterpret_cast <void *> ( sockaddr.v4 ) ,
+				dest , INET6_ADDRSTRLEN );
+
+			break ;
+
+		case AF_INET6:
+
+			sockaddr.v6 = reinterpret_cast <sockaddr_in6 *> ( &address );
+			::inet_ntop( AF_INET6 , reinterpret_cast <void *> ( sockaddr.v6 ) ,
+				dest , INET6_ADDRSTRLEN );
+
+			break ;
+
+	}
+	return ( dest );
+}
+
+std::string Socket::getport( struct sockaddr_storage address ) {
+
+	unsigned short port;
+
+	switch ( address.ss_family ) {
+
+		case AF_INET:
+
+			port = ntohs( (reinterpret_cast <struct sockaddr_in *> (
+				&address))->sin_port );
+
+			break ;
+
+		case AF_INET6:
+
+			port = ntohs( (reinterpret_cast <struct sockaddr_in6 *> (
+				&address))->sin6_port );
+
+			break ;
+
+	}
+	return ( std::to_string ( port ) );
+}
+
 
 /* OPTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -581,14 +637,17 @@ Socket::SocketError::SocketError( const char *File, size_t Line,
 	_err_msg ( Error_Message ) {
 }
 
-Socket::SocketError::SocketError( const SocketError & src ) {
+Socket::SocketError::SocketError(
+	const SocketError & src )
+{
 	*this = src;
 }
 
 Socket::SocketError::~SocketError( void ) noexcept {}
 
-Socket::SocketError &	Socket::SocketError::operator = ( const SocketError & rhs ) {
-
+Socket::SocketError &	Socket::SocketError::operator = (
+	const SocketError & rhs )
+{
 	if ( this != &rhs ) {
 
 		_file    = rhs._file;
@@ -613,35 +672,38 @@ const char * Socket::SocketError::what( void ) const noexcept {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-Socket::SocketDisconnect::SocketDisconnect() noexcept :
+Socket::SocketPeerDisconnect::SocketPeerDisconnect() noexcept :
 	_sockfd ( -1 ) {}
 
-Socket::SocketDisconnect::SocketDisconnect( int fd ) :
+Socket::SocketPeerDisconnect::SocketPeerDisconnect( int fd ) :
 	_sockfd ( fd ) {}
 
-Socket::SocketDisconnect::SocketDisconnect( const SocketDisconnect & src ) {
+Socket::SocketPeerDisconnect::SocketPeerDisconnect(
+	const SocketPeerDisconnect & src )
+{
 	*this = src;
 }
 
-Socket::SocketDisconnect::~SocketDisconnect( void ) noexcept {}
+Socket::SocketPeerDisconnect::~SocketPeerDisconnect( void ) noexcept {}
 
-Socket::SocketDisconnect &
-	Socket::SocketDisconnect::operator = ( const SocketDisconnect & rhs ) {
-
+Socket::SocketPeerDisconnect &
+	Socket::SocketPeerDisconnect::operator = (
+		const SocketPeerDisconnect & rhs )
+{
 	if ( this != &rhs )
 		_sockfd = rhs._sockfd;
 	return ( *this );
 }
 
-int Socket::SocketDisconnect::getSockfd( void ) const {
+int Socket::SocketPeerDisconnect::getSockfd( void ) const {
 	return ( _sockfd );
 }
 
-const char * Socket::SocketDisconnect::what( void ) const noexcept {
+const char * Socket::SocketPeerDisconnect::what( void ) const noexcept {
 
 	return (
 		std::string(
-			"~ Sender on the other end of Socket # " +
+			"~ SocketDisconnect : Peer of socket # " +
 			std::to_string(_sockfd) +
 			"Disconnected ~"
 		).c_str()

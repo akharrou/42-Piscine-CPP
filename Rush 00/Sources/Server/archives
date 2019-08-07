@@ -312,15 +312,15 @@ class Socket {
 				virtual const char* what( void ) const throw();
 		};
 
-		class SocketDisconnect :
+		class SocketPeerDisconnect :
 			public std::exception {
 
 				int _sockfd;
 
 			public:
-				SocketDisconnect  ( void );
-				SocketDisconnect  ( int sockfd );
-				~SocketDisconnect ( void );
+				SocketPeerDisconnect  ( void );
+				SocketPeerDisconnect  ( int sockfd );
+				~SocketPeerDisconnect ( void );
 
 				int getSockfd(void) const;
 				virtual const char *what(void) const throw();
@@ -379,7 +379,7 @@ T	Socket::recv ( int sockfd, size_t length, int flags ) {
 		throw SocketError( __FILE__ , __LINE__ );
 
 	if ( bytes_received == 0 )
-		throw SocketDisconnect( sockfd );
+		throw SocketPeerDisconnect( sockfd );
 
 	return ( data );
 }
@@ -565,7 +565,7 @@ T	Socket::recv ( int sockfd, size_t length, int flags ) {
 		throw SocketError( __FILE__ , __LINE__ );
 
 	if ( bytes_received == 0 )
-		throw SocketDisconnect( sockfd );
+		throw SocketPeerDisconnect( sockfd );
 
 	return ( data );
 }
@@ -699,7 +699,7 @@ T *			Socket::recv( int sockfd, size_t length, int flags )
 		throw SocketError( __FILE__ , __LINE__ );
 
 	} else if ( ret == 0 )
-		throw SocketDisconnect( sockfd );
+		throw SocketPeerDisconnect( sockfd );
 
 	return ( data );
 }
@@ -719,7 +719,7 @@ T			Socket::recv( int sockfd, size_t length, int flags )
 		throw SocketError( __FILE__ , __LINE__ );
 
 	} else if ( ret == 0 )
-		throw SocketDisconnect( sockfd );
+		throw SocketPeerDisconnect( sockfd );
 
 	return ( data );
 }
@@ -741,7 +741,7 @@ inline T *	Socket::recv( size_t length, int flags )
 		throw SocketError( __FILE__ , __LINE__ );
 
 	} else if ( ret == 0 )
-		throw SocketDisconnect( descriptor );
+		throw SocketPeerDisconnect( descriptor );
 
 	return ( data );
 }
@@ -761,7 +761,7 @@ inline T	Socket::recv( size_t length, int flags )
 		throw SocketError( __FILE__ , __LINE__ );
 
 	} else if ( ret == 0 )
-		throw SocketDisconnect( descriptor );
+		throw SocketPeerDisconnect( descriptor );
 
 	return ( data );
 }
@@ -783,7 +783,7 @@ inline T *	Socket::recv( Socket sender, size_t length, int flags )
 		throw SocketError( __FILE__ , __LINE__ );
 
 	} else if ( ret == 0 )
-		throw SocketDisconnect( sender.descriptor );
+		throw SocketPeerDisconnect( sender.descriptor );
 
 	return ( data );
 }
@@ -803,7 +803,7 @@ inline T	Socket::recv( Socket sender, size_t length, int flags )
 		throw SocketError( __FILE__ , __LINE__ );
 
 	} else if ( ret == 0 )
-		throw SocketDisconnect( sender.descriptor );
+		throw SocketPeerDisconnect( sender.descriptor );
 
 	return ( data );
 }
