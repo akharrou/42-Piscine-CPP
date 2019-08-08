@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/07 19:23:08 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/07 19:23:48 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -443,7 +443,7 @@ inline ssize_t	Socket::sendto( const char * Host, const char * Port,
 		try {
 
 			bytes_sent = Socket::sendto( data , cur->ai_addr , cur->ai_addrlen ,
-				length , flags );
+			                             length , flags );
 
 		} catch ( std::exception & e ) {
 
