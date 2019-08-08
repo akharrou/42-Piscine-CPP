@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/07 19:06:16 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/07 19:07:32 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,12 +121,12 @@ class Socket {
 
 	/* OPTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-		Socket &	setsockopt  ( int level, int option, int value );
-		Socket &	settimeout  ( double timeout );
-		Socket &	setblocking ( bool value );
+		Socket &   setsockopt ( int level, int option, int value );
+		Socket &   settimeout ( double timeout );
+		Socket &  setblocking ( bool value );
 
-		int	        getsockopt  ( int option, int level ) const;
-		double		gettimeout  ( void ) const;
+		int	       getsockopt ( int option, int level ) const;
+		double	   gettimeout ( void ) const;
 
 	/* OPERATIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -151,22 +151,22 @@ class Socket {
 	/* I/O OPERATONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		template <typename T>
-		ssize_t		send      ( int sockfd, T * data, size_t length = sizeof( T * ),
+		ssize_t		     send ( int sockfd, T * data, size_t length = sizeof( T * ),
 				                int flags = 0 );
 		template <typename T>
-		ssize_t		send      ( int sockfd, T data, size_t length = sizeof( T ),
+		ssize_t		     send ( int sockfd, T data, size_t length = sizeof( T ),
 				                int flags = 0 );
 		template <typename T>
-		ssize_t		send      ( T * data, size_t length = sizeof( T * ),
+		ssize_t		     send ( T * data, size_t length = sizeof( T * ),
 				                int flags = 0 );
 		template <typename T>
-		ssize_t		send      ( T data, size_t length = sizeof( T ),
+		ssize_t		     send ( T data, size_t length = sizeof( T ),
 				                int flags = 0 );
 		template <typename T>
-		ssize_t		send      ( Socket receiver, T * data, size_t length = sizeof( T * ),
+		ssize_t		     send ( Socket receiver, T * data, size_t length = sizeof( T * ),
 		                        int flags = 0 );
 		template <typename T>
-		ssize_t		send      ( Socket receiver, T data, size_t length = sizeof( T ),
+		ssize_t		     send ( Socket receiver, T data, size_t length = sizeof( T ),
 		                        int flags = 0 );
 
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
