@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/07 19:17:46 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/07 19:21:18 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,100 +176,100 @@ class Socket {
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		template <typename T>
-		ssize_t		sendto    ( T * data, struct sockaddr_storage *dest_addr,
+		ssize_t        sendto ( T * data, struct sockaddr_storage *dest_addr,
 		                        socklen_t dest_len = sizeof ( sockaddr_storage ),
 		                        size_t length = sizeof( T * ), int flags = 0 );
 		template <typename T>
-		ssize_t		sendto    ( T data, struct sockaddr_storage *dest_addr,
+		ssize_t        sendto ( T data, struct sockaddr_storage *dest_addr,
 		                        socklen_t dest_len = sizeof ( sockaddr_storage ),
 		                        size_t length = sizeof( T ), int flags = 0 );
 		template <typename T>
-		ssize_t		sendto    ( const char * Host, const char * Port,
+		ssize_t        sendto ( const char * Host, const char * Port,
 		                        T * data, size_t length = sizeof( T * ),
-				                int flags = 0 );
-		template <typename T>
-		ssize_t		sendto    ( const char * Host, const char * Port,
-		                        T data, size_t length = sizeof( T ),
-				                int flags = 0 );
-		template <typename T>
-		ssize_t		sendto    ( Socket receiver, T * data, size_t length = sizeof( T * ),
 		                        int flags = 0 );
 		template <typename T>
-		ssize_t		sendto    ( Socket receiver, T data, size_t length = sizeof( T ),
+		ssize_t        sendto ( const char * Host, const char * Port,
+		                        T data, size_t length = sizeof( T ),
+		                        int flags = 0 );
+		template <typename T>
+		ssize_t        sendto ( Socket receiver, T * data, size_t length = sizeof( T * ),
+		                        int flags = 0 );
+		template <typename T>
+		ssize_t        sendto ( Socket receiver, T data, size_t length = sizeof( T ),
 		                        int flags = 0 );
 
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		template <typename T>
-		ssize_t	   recv_into  ( int sockfd, T * buffer,
-			                    size_t buflen = sizeof( T ),
-			                    int flags = 0 );
+		ssize_t     recv_into ( int sockfd, T * buffer,
+		                        size_t buflen = sizeof( T ),
+		                        int flags = 0 );
 		template <typename T>
-		ssize_t	   recv_into  ( T * buffer,
-			                    size_t buflen = sizeof( T ),
-			                    int flags = 0 );
+		ssize_t     recv_into ( T * buffer,
+		                        size_t buflen = sizeof( T ),
+		                        int flags = 0 );
 		template <typename T>
-		ssize_t	   recv_into  ( Socket sender, T * buffer,
-			                    size_t buflen = sizeof( T ),
-			                    int flags = 0 );
+		ssize_t     recv_into ( Socket sender, T * buffer,
+		                        size_t buflen = sizeof( T ),
+		                        int flags = 0 );
 
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		template <typename T>
 		ssize_t recvfrom_into ( T * buffer,
 		                        struct sockaddr_storage *dest_addr = nullptr,
-					            socklen_t dest_len = sizeof ( sockaddr_storage ),
-					            size_t buflen = sizeof( T ), int flags = 0 );
+		                        socklen_t dest_len = sizeof ( sockaddr_storage ),
+		                        size_t buflen = sizeof( T ), int flags = 0 );
 		template <typename T>
 		ssize_t recvfrom_into ( Socket sender, T * buffer,
-			                    size_t buflen = sizeof( T ),
+		                        size_t buflen = sizeof( T ),
 		                        int flags = 0 );
 
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		template <typename T>
-		T *		      recv    ( int sockfd, size_t length = sizeof( T * ),
+		T *              recv ( int sockfd, size_t length = sizeof( T * ),
 		                        bool * peerDisconnected = nullptr, int flags = 0 );
 		template <typename T>
-		T		      recv    ( int sockfd, size_t length = sizeof( T ),
+		T                recv ( int sockfd, size_t length = sizeof( T ),
 		                        bool * peerDisconnected = nullptr, int flags = 0 );
 		template <typename T>
-		T *		      recv    ( size_t length = sizeof( T * ),
+		T *              recv ( size_t length = sizeof( T * ),
 		                        bool * peerDisconnected = nullptr, int flags = 0 );
 		template <typename T>
-		T		      recv    ( size_t length = sizeof( T ),
+		T                recv ( size_t length = sizeof( T ),
 		                        bool * peerDisconnected = nullptr, int flags = 0 );
 		template <typename T>
-		T *		      recv    ( Socket sender, size_t length = sizeof( T * ),
+		T *              recv ( Socket sender, size_t length = sizeof( T * ),
 		                        bool * peerDisconnected = nullptr, int flags = 0 );
 		template <typename T>
-		T		      recv    ( Socket sender, size_t length = sizeof( T ),
+		T                recv ( Socket sender, size_t length = sizeof( T ),
 		                        bool * peerDisconnected = nullptr, int flags = 0 );
 
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		template <typename T>
-		T *		    recvfrom  ( struct sockaddr_storage *dest_addr = nullptr,
-					            socklen_t dest_len = sizeof ( sockaddr_storage ),
-					            size_t length = sizeof( T * ),
-					            bool * peerDisconnected = nullptr,
-					            int flags = 0 );
+		T *           recvfrom ( struct sockaddr_storage *dest_addr = nullptr,
+		                         socklen_t dest_len = sizeof ( sockaddr_storage ),
+		                         size_t length = sizeof( T * ),
+		                         bool * peerDisconnected = nullptr,
+		                         int flags = 0 );
 		template <typename T>
-		T		    recvfrom  ( struct sockaddr_storage *dest_addr = nullptr,
-					            socklen_t dest_len = sizeof ( sockaddr_storage ),
-					            size_t length = sizeof( T ),
-					            bool * peerDisconnected = nullptr,
-					            int flags = 0 );
+		T             recvfrom ( struct sockaddr_storage *dest_addr = nullptr,
+		                         socklen_t dest_len = sizeof ( sockaddr_storage ),
+		                         size_t length = sizeof( T ),
+		                         bool * peerDisconnected = nullptr,
+		                         int flags = 0 );
 		template <typename T>
-		T *		    recvfrom  ( Socket sender,
-					            size_t length = sizeof( T * ),
-		                        bool * peerDisconnected = nullptr,
-					            int flags = 0 );
+		T *           recvfrom ( Socket sender,
+		                         size_t length = sizeof( T * ),
+		                         bool * peerDisconnected = nullptr,
+		                         int flags = 0 );
 		template <typename T>
-		T		    recvfrom  ( Socket sender,
-					            size_t length = sizeof( T ),
-		                        bool * peerDisconnected = nullptr,
-					            int flags = 0 );
+		T             recvfrom ( Socket sender,
+		                         size_t length = sizeof( T ),
+		                         bool * peerDisconnected = nullptr,
+		                         int flags = 0 );
 
 	/* EXCEPTION(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
