@@ -807,3 +807,244 @@ inline T	Socket::recv( Socket sender, size_t length, int flags )
 
 	return ( data );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+template <typename T>
+T *				Socket::recv( int sockfd, size_t length, bool * peerDisconnected,
+	int flags )
+{
+	T * data;
+	int ret;
+
+	data = new T [ length ];
+
+	ret = ::recv ( sockfd , reinterpret_cast <void *> ( data ) , length , flags );
+
+	 if ( ret == 0 || errno == ECONNRESET ) {
+
+		/* "[ECONNRESET] -- The connection is closed by the peer during a
+		receive attempt on a socket." ; See recv(2) */
+
+		if ( peerDisconnected != nullptr )
+			( * peerDisconnected ) = true;
+		else
+			throw SocketPeerDisconnect(
+				/* the peer of this */ sockfd /* has disconnected */
+			);
+
+	} else if ( ret < 0 ) {
+
+		/* 'sockfd' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		throw SocketError( __FILE__ , __LINE__ );
+
+	} else {
+
+		if ( peerDisconnected != nullptr )
+			( * peerDisconnected ) = false;
+
+	}
+
+	return ( data );
+}
+
+template <typename T>
+T				Socket::recv( int sockfd, size_t length, bool * peerDisconnected,
+	int flags )
+{
+	T data;
+	int ret;
+
+	ret = ::recv ( sockfd , reinterpret_cast <void *> ( &data ) , length , flags );
+
+	 if ( ret == 0 || errno == ECONNRESET ) {
+
+		/* "[ECONNRESET] -- The connection is closed by the peer during a
+		receive attempt on a socket." ; See recv(2) */
+
+		if ( peerDisconnected != nullptr )
+			( * peerDisconnected ) = true;
+		else
+			throw SocketPeerDisconnect(
+				/* the peer of this */ sockfd /* has disconnected */
+			);
+
+	} else if ( ret < 0 ) {
+
+		/* 'sockfd' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		throw SocketError( __FILE__ , __LINE__ );
+
+	} else {
+
+		if ( peerDisconnected != nullptr )
+			( * peerDisconnected ) = false;
+
+	}
+
+	return ( data );
+}
+
+template <typename T>
+inline T *		Socket::recv( size_t length,
+	bool * peerDisconnected, int flags )
+{
+	return (
+		Socket::recv <T *> ( descriptor , length ,
+			flags , peerDisconnected )
+	);
+}
+
+template <typename T>
+inline T		Socket::recv( size_t length,
+	bool * peerDisconnected, int flags )
+{
+	return (
+		Socket::recv <T> ( descriptor , length ,
+			flags , peerDisconnected )
+	);
+}
+
+template <typename T>
+inline T *		Socket::recv( Socket sender, size_t length,
+	bool * peerDisconnected, int flags )
+{
+	return (
+		Socket::recv <T *> ( sender.descriptor , length ,
+			flags , peerDisconnected )
+	);
+}
+
+template <typename T>
+inline T		Socket::recv( Socket sender, size_t length,
+	bool * peerDisconnected, int flags )
+{
+	return (
+		Socket::recv <T> ( sender.descriptor , length ,
+			flags , peerDisconnected )
+	);
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+template <typename T>
+T *				Socket::recvfrom ( struct sockaddr_storage *dest_addr,
+	socklen_t dest_len, size_t length, bool * peerDisconnected, int flags )
+{
+	T * data;
+	int ret;
+
+	data = new T [ length ];
+
+	ret = ::recvfrom ( descriptor , reinterpret_cast <void *> ( data ) , length ,
+	                   flags , reinterpret_cast <sockaddr *> ( dest_addr ) ,
+	                   &dest_len );
+
+	if ( ret == 0 || errno == ECONNRESET ) {
+
+		/* "[ECONNRESET] -- The connection is closed by the peer during a
+		receive attempt on a socket." ; See recvfrom(2) */
+
+		if ( peerDisconnected != nullptr )
+			( * peerDisconnected ) = true;
+		else
+			throw SocketPeerDisconnect(
+				/* the peer of this socket ( */ descriptor /* )
+				has disconnected */
+			);
+
+	} else if  ( ret < 0 ) {
+
+		/* 'sockfd' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		throw SocketError( __FILE__ , __LINE__ );
+
+	} else {
+
+		if ( peerDisconnected != nullptr )
+			( * peerDisconnected ) = false;
+
+	}
+
+	return ( data );
+}
+
+template <typename T>
+T				Socket::recvfrom ( struct sockaddr_storage *dest_addr,
+	socklen_t dest_len, size_t length, bool * peerDisconnected, int flags )
+{
+	T data;
+	int ret;
+
+	ret = ::recvfrom ( descriptor , reinterpret_cast <void *> ( &data ) , length ,
+	                   flags , reinterpret_cast <sockaddr *> ( dest_addr ) ,
+	                   &dest_len );
+
+	if ( ret == 0 || errno == ECONNRESET ) {
+
+		/* "[ECONNRESET] -- The connection is closed by the peer during a
+		receive attempt on a socket." ; See recvfrom(2) */
+
+		if ( peerDisconnected != nullptr )
+			( * peerDisconnected ) = true;
+		else
+			throw SocketPeerDisconnect(
+				/* the peer of this socket ( */ descriptor /* )
+				has disconnected */
+			);
+
+	} else if  ( ret < 0 ) {
+
+		/* 'sockfd' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		throw SocketError( __FILE__ , __LINE__ );
+
+	} else {
+
+		if ( peerDisconnected != nullptr )
+			( * peerDisconnected ) = false;
+
+	}
+
+	return ( data );
+}
+
+template <typename T>
+inline T *		Socket::recvfrom ( Socket sender, size_t length,
+	bool * peerDisconnected, int flags )
+{
+	return (
+		Socket::recvfrom <T *> ( &sender.address, sender.address_len,
+			length, peerDisconnected, flags )
+	);
+}
+
+template <typename T>
+inline T		Socket::recvfrom ( Socket sender, size_t length,
+	bool * peerDisconnected, int flags )
+{
+	return (
+		Socket::recvfrom <T> ( &sender.address, sender.address_len,
+			length, peerDisconnected, flags )
+	);
+}
+

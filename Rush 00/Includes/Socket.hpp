@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/07 13:43:54 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/07 19:04:04 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,6 +197,33 @@ class Socket {
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		template <typename T>
+		ssize_t	   recv_into  ( int sockfd, T * buffer,
+			                    size_t buflen = sizeof( T ),
+			                    int flags = 0 );
+		template <typename T>
+		ssize_t	   recv_into  ( T * buffer,
+			                    size_t buflen = sizeof( T ),
+			                    int flags = 0 );
+		template <typename T>
+		ssize_t	   recv_into  ( Socket sender, T * buffer,
+			                    size_t buflen = sizeof( T ),
+			                    int flags = 0 );
+
+		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+		template <typename T>
+		ssize_t recvfrom_into ( T * buffer,
+		                        struct sockaddr_storage *dest_addr = nullptr,
+					            socklen_t dest_len = sizeof ( sockaddr_storage ),
+					            size_t buflen = sizeof( T ), int flags = 0 );
+		template <typename T>
+		ssize_t recvfrom_into ( Socket sender, T * buffer,
+			                    size_t buflen = sizeof( T ),
+		                        int flags = 0 );
+
+		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+		template <typename T>
 		T *		      recv    ( int sockfd, size_t length = sizeof( T * ),
 		                        bool * peerDisconnected = nullptr, int flags = 0 );
 		template <typename T>
@@ -239,33 +266,6 @@ class Socket {
 					            size_t length = sizeof( T ),
 		                        bool * peerDisconnected = nullptr,
 					            int flags = 0 );
-
-		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-		template <typename T>
-		ssize_t	   recv_into  ( int sockfd, T * buffer,
-			                    size_t buflen = sizeof( T ),
-			                    int flags = 0 );
-		template <typename T>
-		ssize_t	   recv_into  ( T * buffer,
-			                    size_t buflen = sizeof( T ),
-			                    int flags = 0 );
-		template <typename T>
-		ssize_t	   recv_into  ( Socket sender, T * buffer,
-			                    size_t buflen = sizeof( T ),
-			                    int flags = 0 );
-
-		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-		template <typename T>
-		ssize_t recvfrom_into ( T * buffer,
-		                        struct sockaddr_storage *dest_addr = nullptr,
-					            socklen_t dest_len = sizeof ( sockaddr_storage ),
-					            size_t buflen = sizeof( T ), int flags = 0 );
-		template <typename T>
-		ssize_t recvfrom_into ( Socket sender, T * buffer,
-			                    size_t buflen = sizeof( T ),
-		                        int flags = 0 );
 
 	/* EXCEPTION(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -487,20 +487,98 @@ inline ssize_t	Socket::sendto( Socket receiver, T data, size_t length,
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 template <typename T>
-T *				Socket::recv( int sockfd, size_t length, bool * peerDisconnected,
+ssize_t			Socket::recv_into( int sockfd, T * buffer, size_t buflen,
 	int flags )
 {
-	T * data;
-	int ret;
+	int bytes_recvd;
 
-	data = new T [ length ];
+	bytes_recvd = ::recv ( sockfd , reinterpret_cast <void *> ( buffer ) ,
+	                       buflen , flags );
 
-	ret = ::recv ( sockfd , reinterpret_cast <void *> ( data ) , length , flags );
-
-	 if ( ret == 0 || errno == ECONNRESET ) {
+	if ( bytes_recvd == 0 || errno == ECONNRESET ) {
 
 		/* "[ECONNRESET] -- The connection is closed by the peer during a
 		receive attempt on a socket." ; See recv(2) */
+
+		return ( 0 );
+
+	} else if ( bytes_recvd < 0 ) {
+
+		/* 'sockfd' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		throw SocketError( __FILE__ , __LINE__ );
+
+	}
+
+	return ( bytes_recvd );
+}
+
+template <typename T>
+ssize_t			Socket::recv_into( T * buffer, size_t buflen, int flags )
+{
+	return ( Socket::recv_into ( descriptor , buffer , buflen , flags ) );
+}
+
+template <typename T>
+ssize_t			Socket::recv_into( Socket sender, T * buffer, size_t buflen,
+	int flags )
+{
+	return ( Socket::recv_into ( sender.descriptor , buffer , buflen , flags ) );
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+template <typename T>
+ssize_t			Socket::recvfrom_into ( T * buffer,
+	struct sockaddr_storage *dest_addr, socklen_t dest_len,
+	size_t buflen, int flags )
+{
+	ssize_t bytes_recvd;
+
+	bytes_recvd = ::recvfrom ( descriptor ,
+	                           reinterpret_cast <void *> ( buffer ) ,
+	                           buflen , flags ,
+	                           reinterpret_cast <sockaddr *> ( dest_addr ) ,
+	                           &dest_len );
+
+	if  ( bytes_recvd < 0 ) {
+
+		/* 'sockfd' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		throw SocketError( __FILE__ , __LINE__ );
+
+	}
+
+	return ( bytes_recvd );
+}
+
+template <typename T>
+inline ssize_t	Socket::recvfrom_into ( Socket sender, T * buffer,
+	size_t buflen, int flags )
+{
+	return (
+		Socket::recvfrom_into( buffer , sender.address , sender.address_len ,
+			buflen , flags )
+	);
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+template <typename T>
+T *				Socket::recv( int sockfd, size_t length, bool * peerDisconnected,
+	int flags )
+{
+	ssize_t bytes_recvd;
+	T * data;
+
+	data = new T [ length ];
+
+	bytes_recvd = Socket::recv_into <T> ( sockfd ,
+	                                      reinterpret_cast <void *> ( data ) ,
+	                                      length , flags );
+	if ( bytes_recvd == 0 ) {
 
 		if ( peerDisconnected != nullptr )
 			( * peerDisconnected ) = true;
@@ -508,13 +586,6 @@ T *				Socket::recv( int sockfd, size_t length, bool * peerDisconnected,
 			throw SocketPeerDisconnect(
 				/* the peer of this */ sockfd /* has disconnected */
 			);
-
-	} else if ( ret < 0 ) {
-
-		/* 'sockfd' won't be closed; it will be up to the caller to check
-		the error corresponding to 'errno' and take action(s) accordingly. */
-
-		throw SocketError( __FILE__ , __LINE__ );
 
 	} else {
 
@@ -530,15 +601,13 @@ template <typename T>
 T				Socket::recv( int sockfd, size_t length, bool * peerDisconnected,
 	int flags )
 {
+	ssize_t bytes_recvd;
 	T data;
-	int ret;
 
-	ret = ::recv ( sockfd , reinterpret_cast <void *> ( &data ) , length , flags );
-
-	 if ( ret == 0 || errno == ECONNRESET ) {
-
-		/* "[ECONNRESET] -- The connection is closed by the peer during a
-		receive attempt on a socket." ; See recv(2) */
+	bytes_recvd = Socket::recv_into <T> ( sockfd ,
+	                                      reinterpret_cast <void *> ( &data ) ,
+	                                      length , flags );
+	if ( bytes_recvd == 0 ) {
 
 		if ( peerDisconnected != nullptr )
 			( * peerDisconnected ) = true;
@@ -546,13 +615,6 @@ T				Socket::recv( int sockfd, size_t length, bool * peerDisconnected,
 			throw SocketPeerDisconnect(
 				/* the peer of this */ sockfd /* has disconnected */
 			);
-
-	} else if ( ret < 0 ) {
-
-		/* 'sockfd' won't be closed; it will be up to the caller to check
-		the error corresponding to 'errno' and take action(s) accordingly. */
-
-		throw SocketError( __FILE__ , __LINE__ );
 
 	} else {
 
@@ -610,19 +672,19 @@ template <typename T>
 T *				Socket::recvfrom ( struct sockaddr_storage *dest_addr,
 	socklen_t dest_len, size_t length, bool * peerDisconnected, int flags )
 {
+	ssize_t bytes_recvd;
 	T * data;
-	int ret;
 
 	data = new T [ length ];
 
-	ret = ::recvfrom ( descriptor , reinterpret_cast <void *> ( data ) , length ,
-	                   flags , reinterpret_cast <sockaddr *> ( dest_addr ) ,
-	                   &dest_len );
-
-	if ( ret == 0 || errno == ECONNRESET ) {
-
-		/* "[ECONNRESET] -- The connection is closed by the peer during a
-		receive attempt on a socket." ; See recvfrom(2) */
+	bytes_recvd =
+		Socket::recvfrom_into <T> ( descriptor ,
+		                            reinterpret_cast <void *> ( data ) ,
+		                            length ,
+		                            flags ,
+		                            reinterpret_cast <sockaddr *> ( dest_addr ) ,
+		                            &dest_len );
+	if ( bytes_recvd == 0 ) {
 
 		if ( peerDisconnected != nullptr )
 			( * peerDisconnected ) = true;
@@ -631,13 +693,6 @@ T *				Socket::recvfrom ( struct sockaddr_storage *dest_addr,
 				/* the peer of this socket ( */ descriptor /* )
 				has disconnected */
 			);
-
-	} else if  ( ret < 0 ) {
-
-		/* 'sockfd' won't be closed; it will be up to the caller to check
-		the error corresponding to 'errno' and take action(s) accordingly. */
-
-		throw SocketError( __FILE__ , __LINE__ );
 
 	} else {
 
@@ -653,17 +708,17 @@ template <typename T>
 T				Socket::recvfrom ( struct sockaddr_storage *dest_addr,
 	socklen_t dest_len, size_t length, bool * peerDisconnected, int flags )
 {
+	ssize_t bytes_recvd;
 	T data;
-	int ret;
 
-	ret = ::recvfrom ( descriptor , reinterpret_cast <void *> ( &data ) , length ,
-	                   flags , reinterpret_cast <sockaddr *> ( dest_addr ) ,
-	                   &dest_len );
-
-	if ( ret == 0 || errno == ECONNRESET ) {
-
-		/* "[ECONNRESET] -- The connection is closed by the peer during a
-		receive attempt on a socket." ; See recvfrom(2) */
+	bytes_recvd =
+		Socket::recvfrom_into <T> ( descriptor ,
+		                            reinterpret_cast <void *> ( &data ) ,
+		                            length ,
+		                            flags ,
+		                            reinterpret_cast <sockaddr *> ( dest_addr ) ,
+		                            &dest_len );
+	if ( bytes_recvd == 0 ) {
 
 		if ( peerDisconnected != nullptr )
 			( * peerDisconnected ) = true;
@@ -672,13 +727,6 @@ T				Socket::recvfrom ( struct sockaddr_storage *dest_addr,
 				/* the peer of this socket ( */ descriptor /* )
 				has disconnected */
 			);
-
-	} else if  ( ret < 0 ) {
-
-		/* 'sockfd' won't be closed; it will be up to the caller to check
-		the error corresponding to 'errno' and take action(s) accordingly. */
-
-		throw SocketError( __FILE__ , __LINE__ );
 
 	} else {
 
@@ -709,48 +757,6 @@ inline T		Socket::recvfrom ( Socket sender, size_t length,
 			length, peerDisconnected, flags )
 	);
 }
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-template <typename T>
-ssize_t			Socket::recv_into( int sockfd, T * buffer, size_t buflen,
-	int flags )
-{
-
-}
-
-template <typename T>
-ssize_t			Socket::recv_into( T * buffer, size_t buflen,
-	int flags )
-{
-
-}
-
-template <typename T>
-ssize_t			Socket::recv_into( Socket sender, T * buffer, size_t buflen,
-	int flags )
-{
-
-}
-
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-template <typename T>
-ssize_t			Socket::recvfrom_into ( T * buffer,
-	struct sockaddr_storage *dest_addr, socklen_t dest_len,
-	size_t buflen, int flags )
-{
-
-}
-
-template <typename T>
-ssize_t			Socket::recvfrom_into ( Socket sender, T * buffer,
-	size_t buflen, int flags )
-{
-
-}
-
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
