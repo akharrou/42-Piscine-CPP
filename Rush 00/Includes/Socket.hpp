@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/07 19:17:23 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/07 19:17:46 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,6 @@ class Socket {
 		                                int Type     = DFLT_FAMILY ,
 		                                int Protocol = DFLT_TYPE   ,
 		                                int Flags    = AI_DEFAULT );
-
 		static
 		std::string     getip ( struct sockaddr_storage address );
 
