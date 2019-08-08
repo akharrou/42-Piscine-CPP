@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/07 19:21:18 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/07 19:23:08 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -401,8 +401,8 @@ ssize_t			Socket::sendto( T * data, struct sockaddr_storage *dest_addr,
 		data = reinterpret_cast <const char *> (data) + bytes_sent;
 		bytes_sent +=
 			Socket::sendto( data , dest_addr , dest_len ,
-				            length - static_cast <size_t> (bytes_sent) ,
-				            flags );
+			                length - static_cast <size_t> (bytes_sent) ,
+			                flags );
 
 	}
 
