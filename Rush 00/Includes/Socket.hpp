@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/07 19:16:02 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/07 19:16:22 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,10 +119,10 @@ class Socket {
                                         int Flags    = AI_DEFAULT );
 
 		static
-        std::string getip     ( struct sockaddr_storage address );
+        std::string     getip ( struct sockaddr_storage address );
 
 		static
-        std::string getport   ( struct sockaddr_storage address );
+        std::string   getport ( struct sockaddr_storage address );
 
 	/* OPTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
