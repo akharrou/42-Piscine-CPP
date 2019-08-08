@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/07 19:12:21 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/07 19:13:12 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,23 +130,23 @@ class Socket {
 
 	/* OPERATIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-		Socket &	   socket ( int Family, int Type, int Protocol );
-		Socket &	   socket ( int Family );
+		Socket &       socket ( int Family, int Type, int Protocol );
+		Socket &       socket ( int Family );
 
-		Socket &	     bind ( const char * Host, const char * Port, int flags );
+		Socket &         bind ( const char * Host, const char * Port, int flags );
 
-		Socket &	   listen ( int connections );
+		Socket &       listen ( int connections );
 
-		Socket &	  connect ( Socket & );
-		Socket &	  connect ( const char * Host, const char * Port, int Family,
+		Socket &      connect ( Socket & );
+		Socket &      connect ( const char * Host, const char * Port, int Family,
 			                   int Flags );
 
-		Socket		   accept ( void ) const;
+		Socket         accept ( void ) const;
 
-		void		 shutdown ( int sockfd, int how );
+		void         shutdown ( int sockfd, int how );
 
-		void		    close ( int sockfd );
-		void		    close ( void );
+		void            close ( int sockfd );
+		void            close ( void );
 
 	/* I/O OPERATONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
