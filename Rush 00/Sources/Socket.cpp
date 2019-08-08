@@ -6,27 +6,31 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/07 19:04:35 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/08 15:39:39 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../../Includes/Socket.hpp"
+# include "../Includes/Socket.hpp"
 
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
 Socket::Socket( void ) :
+	ip_address ( "unknown"     ),
+	port       ( "unknown"     ),
 	type       ( DFLT_TYPE     ),
 	protocol   ( DFLT_PROTOCOL ),
 	descriptor ( -1            ) {}
 
-Socket::Socket( int Family, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) :
-	family     ( Family   ),
-	type       ( Type     ),
-	protocol   ( Protocol ),
-	descriptor ( -1       ) {}
+Socket::Socket( int Family, int Type, int Protocol ) :
+	ip_address ( "unknown" ),
+	port       ( "unknown" ),
+	family     ( Family    ),
+	type       ( Type      ),
+	protocol   ( Protocol  ),
+	descriptor ( -1        ) {}
 
-Socket::Socket( const char * Host, const char * Port = NULL,
-	int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL ) :
+Socket::Socket( const char * Host, const char * Port,
+	int Type, int Protocol ) :
 
 	ip_address ( Host     ),
 	port       ( Port     ),
@@ -34,7 +38,7 @@ Socket::Socket( const char * Host, const char * Port = NULL,
 	protocol   ( Protocol ),
 	descriptor ( -1       )
 {
-	Socket::bind ( ip_address, port , AI_PASSIVE );
+	Socket::bind ( ip_address.c_str(), port.c_str() , AI_PASSIVE );
 }
 
 Socket::Socket( const Socket & src )
@@ -44,7 +48,8 @@ Socket::Socket( const Socket & src )
 
 Socket::~Socket( void )
 {
-	Socket::close();
+	// if ( connected( descriptor ) )
+	// 	Socket::close();
 }
 
 
@@ -72,7 +77,9 @@ std::ostream &  operator << ( std::ostream& out, const Socket & in ) {
 	    << ", family="    << in.family
 	    << ", type="      << in.type
 	    << ", protocol="  << in.protocol
-	    << ", laddr=('"   << in.ip_address << "', " << in.port << ")>\n";
+	    << ", laddr=('"   << in.ip_address
+		<< "', "          << in.port
+		<< ")>\n";
 
 	return (out);
 }
@@ -141,11 +148,11 @@ struct addrinfo * Socket::getaddrinfo( const char * Host, const char * Port ,
 
 	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-	struct addrinfo * head;
 	struct addrinfo hints;
+	struct addrinfo * head;
 	int ret;
 
-	memset( &hints, 0, sizeof(addrinfo) );
+	memset( &hints, 0, sizeof( hints ) );
 
 	hints.ai_family   = Family;     /* AF_UNSPEC indicates that the address
 	                                family (is unspecified & ) will be
@@ -157,7 +164,7 @@ struct addrinfo * Socket::getaddrinfo( const char * Host, const char * Port ,
 	ret = ::getaddrinfo( Host , Port , &hints , &head );
 
 	if ( ret != 0 )
-		throw Socket::SocketError( __FILE__ , __LINE__ , gai_strerror(ret) );
+		throw SocketError( __FILE__ , __LINE__ , gai_strerror(ret) );
 
 	return ( head );
 }
@@ -380,7 +387,7 @@ Socket &	Socket::socket( int Family, int Type, int Protocol ) {
 }
 
 Socket &	Socket::bind( const char * Host, const char * Port,
-	int flags = AI_PASSIVE ) {
+	int flags ) {
 
 	/* Bind to an Address and Port - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -410,9 +417,16 @@ Socket &	Socket::bind( const char * Host, const char * Port,
 		head = Socket::getaddrinfo( Host , Port , AF_UNSPEC , type , protocol ,
 		                            flags );
 
-	} catch ( std::exception & e ) {
+	} catch ( SocketError & e ) {
+
 		freeaddrinfo(head);
 		throw e;
+
+	} catch ( std::exception & e ) {
+
+		freeaddrinfo(head);
+		throw e;
+
 	}
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -479,7 +493,7 @@ Socket &	Socket::listen( int connections = 0 ) {
 }
 
 Socket &	Socket::connect( const char * Host, const char * Port,
-	int Family = AF_UNSPEC, int Flags = AI_DEFAULT ) {
+	int Family, int Flags ) {
 
 	/* Get information on some hostname/Port - - - - - - - - - - - - - - - - -
 
@@ -504,9 +518,16 @@ Socket &	Socket::connect( const char * Host, const char * Port,
 		head = Socket::getaddrinfo( Host , Port , Family , type , protocol ,
 		                            Flags );
 
-	} catch ( std::exception & e ) {
+	} catch ( SocketError & e ) {
+
 		freeaddrinfo(head);
 		throw e;
+
+	} catch ( std::exception & e ) {
+
+		freeaddrinfo(head);
+		throw e;
+
 	}
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -570,9 +591,6 @@ Socket		Socket::accept( void ) const {
 
 	Socket Client( this->family, this->type, this->protocol );
 
-	Client.ip_address  = nullptr;
-	Client.port        = nullptr;
-
 	Client.address_len = sizeof( Client.address );
 
 	Client.descriptor =
@@ -583,10 +601,13 @@ Socket		Socket::accept( void ) const {
 	if ( Client.descriptor == -1 )
 		throw SocketError( __FILE__ , __LINE__ );
 
+	Client.ip_address  = Socket::getip   ( Client.address );
+	Client.port        = Socket::getport ( Client.address );
+
 	return ( Client );
 }
 
-void		Socket::shutdown ( int sockfd, int how = SHUT_RDWR ) {
+void		Socket::shutdown ( int sockfd, int how ) {
 
 	/* Shut down part of a full-duplex connection - - - - - - - - - - - - - - -
 
@@ -621,7 +642,7 @@ void		Socket::close( void )
 
 /* EXCEPTION(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-Socket::SocketError::SocketError( void ) noexcept {}
+Socket::SocketError::SocketError( void ) {}
 
 Socket::SocketError::SocketError( const char *File, size_t Line ) :
 	_file ( File ),
@@ -643,7 +664,7 @@ Socket::SocketError::SocketError(
 	*this = src;
 }
 
-Socket::SocketError::~SocketError( void ) noexcept {}
+Socket::SocketError::~SocketError( void ) {}
 
 Socket::SocketError &	Socket::SocketError::operator = (
 	const SocketError & rhs )
@@ -661,7 +682,7 @@ std::string	Socket::SocketError::getError( void ) const {
 	return ( _err_msg );
 }
 
-const char * Socket::SocketError::what( void ) const noexcept {
+const char * Socket::SocketError::what() const noexcept {
 
 	return (
 		std::string("~ " + _file + ":" + _line + " -- Socket Error : "
@@ -672,7 +693,7 @@ const char * Socket::SocketError::what( void ) const noexcept {
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-Socket::SocketPeerDisconnect::SocketPeerDisconnect() noexcept :
+Socket::SocketPeerDisconnect::SocketPeerDisconnect() :
 	_sockfd ( -1 ) {}
 
 Socket::SocketPeerDisconnect::SocketPeerDisconnect( int fd ) :
@@ -684,7 +705,7 @@ Socket::SocketPeerDisconnect::SocketPeerDisconnect(
 	*this = src;
 }
 
-Socket::SocketPeerDisconnect::~SocketPeerDisconnect( void ) noexcept {}
+Socket::SocketPeerDisconnect::~SocketPeerDisconnect( void ) {}
 
 Socket::SocketPeerDisconnect &
 	Socket::SocketPeerDisconnect::operator = (
@@ -699,7 +720,7 @@ int Socket::SocketPeerDisconnect::getSockfd( void ) const {
 	return ( _sockfd );
 }
 
-const char * Socket::SocketPeerDisconnect::what( void ) const noexcept {
+const char * Socket::SocketPeerDisconnect::what() const noexcept {
 
 	return (
 		std::string(
