@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/09 09:13:38 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/09 11:32:29 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,10 +157,12 @@ class Socket {
 	/* I/O OPERATONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		template <typename T>
-		ssize_t          send ( int sockfd, T * data, size_t length = sizeof( T ),
+		ssize_t          send ( int sockfd, T * data,
+		                        size_t length = sizeof( T ),
 		                        int flags = 0 );
 		template <typename T>
-		ssize_t          send ( int sockfd, T && data, size_t length = sizeof( T ),
+		ssize_t          send ( int sockfd, T && data,
+		                        size_t length = sizeof( T ),
 		                        int flags = 0 );
 		template <typename T>
 		ssize_t          send ( T * data, size_t length = sizeof( T ),
@@ -169,10 +171,12 @@ class Socket {
 		ssize_t          send ( T && data, size_t length = sizeof( T ),
 		                        int flags = 0 );
 		template <typename T>
-		ssize_t          send ( Socket & receiver, T * data, size_t length = sizeof( T ),
+		ssize_t          send ( Socket & receiver,
+		                        T * data, size_t length = sizeof( T ),
 		                        int flags = 0 );
 		template <typename T>
-		ssize_t          send ( Socket & receiver, T && data, size_t length = sizeof( T ),
+		ssize_t          send ( Socket & receiver,
+		                        T && data, size_t length = sizeof( T ),
 		                        int flags = 0 );
 
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -194,10 +198,12 @@ class Socket {
 		                        T && data, size_t length = sizeof( T ),
 		                        int flags = 0 );
 		template <typename T>
-		ssize_t        sendto ( Socket & receiver, T * data, size_t length = sizeof( T ),
+		ssize_t        sendto ( Socket & receiver,
+		                        T * data, size_t length = sizeof( T ),
 		                        int flags = 0 );
 		template <typename T>
-		ssize_t        sendto ( Socket & receiver, T && data, size_t length = sizeof( T ),
+		ssize_t        sendto ( Socket & receiver,
+		                        T && data, size_t length = sizeof( T ),
 		                        int flags = 0 );
 
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -207,7 +213,7 @@ class Socket {
 		                        size_t buflen = sizeof( T ),
 		                        int flags = 0 );
 		template <typename T>
-		ssize_t     recv_into ( int sockfd, T & buffer,
+		ssize_t     recv_into ( int sockfd, T && buffer,
 		                        size_t buflen = sizeof( T ),
 		                        int flags = 0 );
 		template <typename T>
@@ -215,7 +221,7 @@ class Socket {
 		                        size_t buflen = sizeof( T ),
 		                        int flags = 0 );
 		template <typename T>
-		ssize_t     recv_into ( T & buffer,
+		ssize_t     recv_into ( T && buffer,
 		                        size_t buflen = sizeof( T ),
 		                        int flags = 0 );
 		template <typename T>
@@ -223,7 +229,7 @@ class Socket {
 		                        size_t buflen = sizeof( T ),
 		                        int flags = 0 );
 		template <typename T>
-		ssize_t     recv_into ( Socket & sender, T & buffer,
+		ssize_t     recv_into ( Socket & sender, T && buffer,
 		                        size_t buflen = sizeof( T ),
 		                        int flags = 0 );
 
@@ -235,7 +241,7 @@ class Socket {
 		                        socklen_t dest_len = sizeof ( sockaddr_storage ),
 		                        int flags = 0 );
 		template <typename T>
-		ssize_t recvfrom_into ( T & buffer, size_t buflen = sizeof( T ),
+		ssize_t recvfrom_into ( T && buffer, size_t buflen = sizeof( T ),
 		                        struct sockaddr_storage *dest_addr = nullptr,
 		                        socklen_t dest_len = sizeof ( sockaddr_storage ),
 		                        int flags = 0 );
@@ -244,7 +250,7 @@ class Socket {
 		                        size_t buflen = sizeof( T ),
 		                        int flags = 0 );
 		template <typename T>
-		ssize_t recvfrom_into ( Socket & sender, T & buffer,
+		ssize_t recvfrom_into ( Socket & sender, T && buffer,
 		                        size_t buflen = sizeof( T ),
 		                        int flags = 0 );
 
@@ -557,34 +563,42 @@ ssize_t			Socket::recv_into( int sockfd, T * buffer, size_t buflen,
 }
 
 template <typename T>
-ssize_t			Socket::recv_into( T * buffer, size_t buflen, int flags )
-{
-	return ( Socket::recv_into <T> ( descriptor , buffer , buflen , flags ) );
-}
-
-template <typename T>
-ssize_t			Socket::recv_into( Socket & sender, T * buffer, size_t buflen,
+inline ssize_t	Socket::recv_into ( int sockfd, T && buffer, size_t buflen,
 	int flags )
 {
-	return ( Socket::recv_into <T> ( sender.descriptor , buffer , buflen , flags ) );
+	return ( Socket::recv_into ( sockfd , &buffer, buflen , flags ) );
 }
 
 template <typename T>
-ssize_t     recv_into ( int sockfd, T & buffer, size_t buflen, int flags )
+inline ssize_t	Socket::recv_into( T * buffer, size_t buflen, int flags )
 {
-	return ( Socket::recv_into (  ) );
+	return ( Socket::recv_into ( descriptor , buffer , buflen , flags ) );
 }
 
 template <typename T>
-ssize_t     recv_into ( T & buffer, size_t buflen, int flags )
+inline ssize_t	Socket::recv_into ( T && buffer, size_t buflen, int flags )
 {
-	return ( Socket::recv_into (  ) );
+	return (
+		Socket::recv_into ( descriptor , &buffer , buflen , flags )
+	);
 }
 
 template <typename T>
-ssize_t     recv_into ( Socket & sender, T & buffer, size_t buflen, int flags )
+inline ssize_t	Socket::recv_into( Socket & sender, T * buffer, size_t buflen,
+	int flags )
 {
-	return ( Socket::recv_into (  ) );
+	return (
+		Socket::recv_into ( sender.descriptor , buffer , buflen , flags )
+	);
+}
+
+template <typename T>
+inline ssize_t	Socket::recv_into ( Socket & sender, T && buffer, size_t buflen,
+	int flags )
+{
+	return (
+		Socket::recv_into ( sender.descriptor , &buffer , buflen , flags )
+	);
 }
 
 
@@ -615,11 +629,11 @@ ssize_t			Socket::recvfrom_into ( T * buffer, size_t buflen,
 }
 
 template <typename T>
-ssize_t			Socket::recvfrom_into ( T & buffer, size_t buflen,
+inline ssize_t	Socket::recvfrom_into ( T && buffer, size_t buflen,
 	struct sockaddr_storage *dest_addr, socklen_t dest_len, int flags )
 {
 	return (
-		Socket::recvfrom_into <T> ( &buffer , buflen , dest_addr ,
+		Socket::recvfrom_into ( &buffer , buflen , dest_addr ,
 			sizeof ( dest_len ) , flags )
 	);
 }
@@ -629,17 +643,17 @@ inline ssize_t	Socket::recvfrom_into ( Socket & sender, T * buffer,
 	size_t buflen, int flags )
 {
 	return (
-		Socket::recvfrom_into <T> ( buffer , buflen , &sender.address ,
+		Socket::recvfrom_into ( buffer , buflen , &sender.address ,
 			 sender.address_len , flags )
 	);
 }
 
 template <typename T>
-ssize_t			Socket::recvfrom_into ( Socket & sender, T & buffer,
+inline ssize_t	Socket::recvfrom_into ( Socket & sender, T && buffer,
 	size_t buflen, int flags )
 {
 	return (
-		Socket::recvfrom_into <T> ( &buffer , buflen , &sender.address ,
+		Socket::recvfrom_into ( &buffer , buflen , &sender.address ,
 			 sender.address_len , flags )
 	);
 }
