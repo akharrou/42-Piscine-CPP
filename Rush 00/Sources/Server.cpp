@@ -11,74 +11,79 @@ int	main(int ac, const char **argv) {
 	const char * host = "127.0.0.1";
 	const char * port = "9974";
 
-// 	/* DEMONSTRATES API FOR UDP - - - - - - - - - - - - - - - - - - - - - - - - */
-// 	try {
+	/* DEMONSTRATES API FOR UDP - - - - - - - - - - - - - - - - - - - - - - - - */
+	try {
 
-// 		Socket Server( host , port , SOCK_DGRAM );
-// 		Socket Client( AF_INET , SOCK_DGRAM );
-// 		Socket ClientSenderInfo;
+		Socket Server( host , port , SOCK_DGRAM );
+		Socket Client( AF_INET , SOCK_DGRAM );
+		Socket ClientSenderInfo;
 
-// 		std::string *string_msg = new std::string; /* NOTE : dunno why this shows no leaks */
-// 		char char_msg[100];
-// 		int num;
+		std::string string_msg;
+		char char_msg[100];
+		int num;
 
-// 		cout << "\n~ UDP Protocol Sockets (i.e Datagram Sockets) ~\n"
-// 		     << "—————————————————————————————————————————————————\n"
-// 			 << "\n"
-// 		     << "RVALUES ; pointers & non-pointers :\n\n";
+		cout << "\n~ UDP Protocol Sockets (i.e Datagram Sockets) ~\n"
+		     << "—————————————————————————————————————————————————\n"
+			 << "\n"
+		     << "RVALUES ; pointers & non-pointers :\n\n";
 
-// 		for ( int i = 1; i < 6; ++i )
-// 		{
+		for ( int i = 1; i < 6; ++i )
+		{
 
-// 			/* ~ RVALUES ; pointers & non-pointers ~ */
+			/* ~ RVALUES ; pointers & non-pointers ~ */
 
-// 			// char [] ; (i.e, char *)
-// 			Client.sendto( host , port , "(char[]) ; Hello World from UDP -- #", 37 );
-// 			Server.recvfrom_into( /* [ ClientSenderInfo ,] */ char_msg , sizeof( char_msg ) );
+			// char [] ; (i.e, char *)
+			Client.sendto( host , port , "(string) ; Hello World from UDP -- #", 37 );
+			Server.recvfrom_into( /* [ ClientSenderInfo ,] */ string_msg );
 
-// 			// int
-// 			Client.sendto( host , port , 911 );
-// 			Server.recvfrom_into( num );
+			// char [] ; (i.e, char *)
+			Client.sendto( host , port , "(char[]) ; Hello World from UDP -- #", 37 );
+			Server.recvfrom_into( /* [ ClientSenderInfo ,] */ char_msg , sizeof( char_msg ) );
 
-// 			cout << char_msg           << endl;
-// 			cout << "(int)    ; " << num << endl;
+			// int
+			Client.sendto( host , port , 911 );
+			Server.recvfrom_into( num );
 
-// 			sleep(1);
+			cout << string_msg << endl;
+			cout << char_msg   << endl;
+			cout << "(int)    ; " << num << endl;
 
-// 		}
+			sleep(1);
 
-// 		cout << "\nLVALUES ; pointers & non-pointers :\n\n";
-// 		for ( int i = 1; i < 6; ++i )
-// 		{
+		}
 
-// 			/* ~ LVALUES ; pointers & non-pointers ~ */
+		cout << "\nLVALUES ; pointers & non-pointers :\n\n";
+		for ( int i = 1; i < 6; ++i )
+		{
 
-// 			std::string string_greetings = "(string) ; Hello World from UDP -- #";
-// 			const char  char_greetings[] = "(char[]) ; Hello World from UDP -- #";
-// 			int id = 0 + i;
+			/* ~ LVALUES ; pointers & non-pointers ~ */
 
-// 			// std::string
-// 			Client.sendto( host , port , string_greetings );
-// 			Server.recvfrom_into( string_msg );
+			std::string string_greetings = "(string) ; Hello World from UDP -- #";
+			const char  char_greetings[] = "(char[]) ; Hello World from UDP -- #";
+			int id = 0 + i;
 
-// 			// char [] ; (i.e, char *)
-// 			Client.sendto( host , port , char_greetings, strlen(char_greetings) );
-// 			Server.recvfrom_into( char_msg , 100 );
+			// std::string
+			Client.sendto( host , port , string_greetings );
+			Server.recvfrom_into( string_msg );
 
-// 			Client.sendto( host , port , id );
-// 			Server.recvfrom_into( num );
+			// char [] ; (i.e, char *)
+			Client.sendto( host , port , char_greetings, strlen(char_greetings) );
+			Server.recvfrom_into( char_msg , 100 );
 
-// 			cout << *string_msg        << endl;
-// 			cout << char_msg           << endl;
-// 			cout << "(int)    ; "  << num << endl;
+			Client.sendto( host , port , id );
+			Server.recvfrom_into( num );
 
-// 			sleep(1);
+			cout << string_msg << endl;
+			cout << char_msg   << endl;
+			cout << "(int)    ; "  << num << endl;
 
-// 		}
+			sleep(1);
 
-// 	} catch ( std::exception & e ) {
-// 		cout << e.what() << endl;
-// 	}
+		}
+
+	} catch ( std::exception & e ) {
+		cout << e.what() << endl;
+	}
 
 // # define HOME            "\033[H"
 // # define CLEAR           "\033[2J"
@@ -180,170 +185,175 @@ int	main(int ac, const char **argv) {
 
 
 	/* DEMONSTRATES API FOR UDP - - - - - - - - - - - - - - - - - - - - - - - - */
-	try {
+	// try {
 
-		Socket Server( host , port , SOCK_DGRAM );
-		Socket Client( AF_INET , SOCK_DGRAM );
-		Socket ClientSenderInfo;
+	// 	Socket Server( host , port , SOCK_DGRAM );
+	// 	Socket Client( AF_INET , SOCK_DGRAM );
+	// 	Socket ClientSenderInfo;
 
-		std::string *string_msg = new std::string; /* NOTE : dunno why this shows no leaks */
-		char char_msg[100];
-		int num;
+	// 	std::string string_msg; /* NOTE : dunno why this shows no leaks */
+	// 	char * char_msg;
+	// 	// int num;
 
-		cout << "\n~ UDP Protocol Sockets (i.e Datagram Sockets) ~\n"
-		     << "—————————————————————————————————————————————————\n"
-			 << "\n"
-		     << "RVALUES ; pointers & non-pointers :\n\n";
+	// 	cout << "\n~ UDP Protocol Sockets (i.e Datagram Sockets) ~\n"
+	// 	     << "—————————————————————————————————————————————————\n"
+	// 		 << "\n"
+	// 	     << "RVALUES ; pointers & non-pointers :\n\n";
 
-		for ( int i = 1; i < 6; ++i )
-		{
+	// 	for ( int i = 1; i < 6; ++i )
+	// 	{
 
-			/* ~ RVALUES ; pointers & non-pointers ~ */
+	// 		/* ~ RVALUES ; pointers & non-pointers ~ */
 
-			// char [] ; (i.e, char *)
-			Client.sendto( host , port , "(char[]) ; Hello World from UDP -- #", 37 );
-			Server.recvfrom( /* [ ClientSenderInfo ,] */ char_msg , sizeof( char_msg ) );
+	// 		// char [] ; (i.e, char *)
+	// 		Client.sendto( host , port , "(char[]) ; Hello World from UDP -- #", 36 );
+	// 		// string_msg = Server.recvfrom();
+	// 		cout << string_msg << endl;
 
-			// int
-			Client.sendto( host , port , 911 );
-			Server.recvfrom_into( num );
+	// 		// char [] ; (i.e, char *)
+	// 		Client.sendto( host , port , "(char[]) ; Hello World from UDP -- #", 36 );
+	// 		char_msg = Server.recvfrom <char> ( 100 );
+	// 		cout << char_msg << endl;
 
-			cout << char_msg           << endl;
-			cout << "(int)    ; " << num << endl;
+	// 		// int
+	// 		Client.sendto( host , port , 911 );
+	// 		cout << "(int) ; " << Server.recvfrom <int> (/* [[ ClientSenderInfo ,] length, peerDisconnected, flags ] */) << endl;
 
-			sleep(1);
+	// 		delete char_msg;
 
-		}
+	// 		sleep(1);
 
-		cout << "\nLVALUES ; pointers & non-pointers :\n\n";
-		for ( int i = 1; i < 6; ++i )
-		{
+	// 	}
 
-			/* ~ LVALUES ; pointers & non-pointers ~ */
+		// cout << "\nLVALUES ; pointers & non-pointers :\n\n";
+		// for ( int i = 1; i < 6; ++i )
+		// {
 
-			std::string string_greetings = "(string) ; Hello World from UDP -- #";
-			const char  char_greetings[] = "(char[]) ; Hello World from UDP -- #";
-			int id = 0 + i;
+		// 	/* ~ LVALUES ; pointers & non-pointers ~ */
 
-			// std::string
-			Client.sendto( host , port , string_greetings );
-			Server.recvfrom_into( string_msg );
+		// 	std::string string_greetings = "(string) ; Hello World from UDP -- #";
+		// 	const char  char_greetings[] = "(char[]) ; Hello World from UDP -- #";
+		// 	int id = 0 + i;
 
-			// char [] ; (i.e, char *)
-			Client.sendto( host , port , char_greetings, strlen(char_greetings) );
-			Server.recvfrom_into( char_msg , 100 );
+		// 	// std::string
+		// 	Client.sendto( host , port , string_greetings );
+		// 	Server.recvfrom_into( string_msg );
 
-			Client.sendto( host , port , id );
-			Server.recvfrom_into( num );
+		// 	// char [] ; (i.e, char *)
+		// 	Client.sendto( host , port , char_greetings, strlen(char_greetings) );
+		// 	Server.recvfrom_into( char_msg , 100 );
 
-			cout << *string_msg        << endl;
-			cout << char_msg           << endl;
-			cout << "(int)    ; "  << num << endl;
+		// 	Client.sendto( host , port , id );
+		// 	Server.recvfrom_into( num );
 
-			sleep(1);
+		// 	cout << *string_msg        << endl;
+		// 	cout << char_msg           << endl;
+		// 	cout << "(int)    ; "  << num << endl;
 
-		}
+		// 	sleep(1);
 
-	} catch ( std::exception & e ) {
-		cout << e.what() << endl;
-	}
+		// }
 
-# define HOME            "\033[H"
-# define CLEAR           "\033[2J"
-# define CLEANUP { std::cout << CLEAR << HOME << std::endl; }
+	// } catch ( std::exception & e ) {
+	// 	cout << e.what() << endl;
+	// }
 
-	CLEANUP;
-	sleep(1);
-		cout << "\n~ TCP Protocol Sockets (i.e Stream Sockets) ~\n"
-		     << "—————————————————————————————————————————————————\n\n";
-	sleep(1);
+// # define HOME            "\033[H"
+// # define CLEAR           "\033[2J"
+// # define CLEANUP { std::cout << CLEAR << HOME << std::endl; }
 
-		/* DEMONSTRATES API FOR TCP - - - - - - - - - - - - - - - - - - - - - - - - */
-		try
-	{
+// 	CLEANUP;
+// 	sleep(1);
+// 		cout << "\n~ TCP Protocol Sockets (i.e Stream Sockets) ~\n"
+// 		     << "—————————————————————————————————————————————————\n\n";
+// 	sleep(1);
 
-		/* STEP #1 -- SERVER SIDE */
-		Socket Server( host , port /* [, AF_INET , TCP , IPPROTO_TCP ] */ );
+// 		/* DEMONSTRATES API FOR TCP - - - - - - - - - - - - - - - - - - - - - - - - */
+// 		try
+// 	{
 
-		Server.setsockopt( SOL_SOCKET , SO_REUSEPORT , true )
-		      .settimeout(2)
-		      .listen();
+// 		/* STEP #1 -- SERVER SIDE */
+// 		Socket Server( host , port /* [, AF_INET , TCP , IPPROTO_TCP ] */ );
 
-		cout << "Server Status: [RUNNING]\n"
-			 << "Server running at " << host << " @ " << port
-			 << endl << endl;
-	sleep(1);
+// 		Server.setsockopt( SOL_SOCKET , SO_REUSEPORT , true )
+// 		      .settimeout(2)
+// 		      .listen();
 
-		/* STEP #2 -- CLIENT SIDE */
-		Socket Client;
-		Client.connect( host , port );
+// 		cout << "Server Status: [RUNNING]\n"
+// 			 << "Server running at " << host << " @ " << port
+// 			 << endl << endl;
+// 	sleep(1);
 
-
-		/* STEP #3 -- SERVER SIDE */
-		Socket NEW_ConnectedClient;
-		NEW_ConnectedClient = Server.accept();
+// 		/* STEP #2 -- CLIENT SIDE */
+// 		Socket Client;
+// 		Client.connect( host , port );
 
 
-		/* STEP #4 -- CLIENT / SERVER SIDE */
-		char char_msg[100];
-		int num;
+// 		/* STEP #3 -- SERVER SIDE */
+// 		Socket NEW_ConnectedClient;
+// 		NEW_ConnectedClient = Server.accept();
 
-		cout << "\n"
-		     << "RVALUES ; pointers & non-pointers :\n\n";
 
-		for ( int i = 1; i < 6; ++i )
-		{
+// 		/* STEP #4 -- CLIENT / SERVER SIDE */
+// 		char char_msg[100];
+// 		int num;
 
-			/* ~ RVALUES ; pointers & non-pointers ~ */
+// 		cout << "\n"
+// 		     << "RVALUES ; pointers & non-pointers :\n\n";
 
-			Client.send( "(char[]) ; Hello World from TCP -- #" , 36 );
-			Server.recv_into( NEW_ConnectedClient , char_msg , sizeof char_msg );
+// 		for ( int i = 1; i < 6; ++i )
+// 		{
 
-			Client.send( 911 );
-			Server.recv_into( NEW_ConnectedClient , num );
+// 			/* ~ RVALUES ; pointers & non-pointers ~ */
 
-			cout << char_msg           << endl;
-			cout << "(int)    ; " << num << endl;
+// 			Client.send( "(char[]) ; Hello World from TCP -- #" , 36 );
+// 			Server.recv_into( NEW_ConnectedClient , char_msg , sizeof char_msg );
 
-			sleep(1);
+// 			Client.send( 911 );
+// 			Server.recv_into( NEW_ConnectedClient , num );
 
-		}
+// 			cout << char_msg           << endl;
+// 			cout << "(int)    ; " << num << endl;
 
-		cout << "\nLVALUES ; pointers & non-pointers :\n\n";
-		std::string *string_msg = new std::string;
+// 			sleep(1);
 
-		for ( int i = 1; i < 6; ++i )
-		{
+// 		}
 
-			std::string string_greetings = "(string) ; Hello World from UDP -- #";
-			const char  char_greetings[] = "(char[]) ; Hello World from UDP -- #";
-			int id = i;
+// 		cout << "\nLVALUES ; pointers & non-pointers :\n\n";
+// 		std::string *string_msg = new std::string;
 
-			/* ~ LVALUES ; pointers & non-pointers ~ */
+// 		for ( int i = 1; i < 6; ++i )
+// 		{
 
-			// std::string
-			Client.send( string_greetings );
-			Server.recv_into( NEW_ConnectedClient , string_msg );
+// 			std::string string_greetings = "(string) ; Hello World from UDP -- #";
+// 			const char  char_greetings[] = "(char[]) ; Hello World from UDP -- #";
+// 			int id = i;
 
-			// char [] ; (i.e, char *)
-			Client.send( char_greetings , strlen(char_greetings) );
-			Server.recv_into( NEW_ConnectedClient , char_msg , sizeof char_msg );
+// 			/* ~ LVALUES ; pointers & non-pointers ~ */
 
-			// int
-			Client.send( id );
-			Server.recv_into( NEW_ConnectedClient , num );
+// 			// std::string
+// 			Client.send( string_greetings );
+// 			Server.recv_into( NEW_ConnectedClient , string_msg );
 
-			cout << *string_msg        << endl;
-			cout << char_msg           << endl;
-			cout << "(int)    ; " << num << endl;
+// 			// char [] ; (i.e, char *)
+// 			Client.send( char_greetings , strlen(char_greetings) );
+// 			Server.recv_into( NEW_ConnectedClient , char_msg , sizeof char_msg );
 
-			sleep(1);
+// 			// int
+// 			Client.send( id );
+// 			Server.recv_into( NEW_ConnectedClient , num );
 
-		}
+// 			cout << *string_msg        << endl;
+// 			cout << char_msg           << endl;
+// 			cout << "(int)    ; " << num << endl;
 
-	} catch ( std::exception & e ) {
-		cout << e.what() << endl;
-	}
+// 			sleep(1);
+
+// 		}
+
+// 	} catch ( std::exception & e ) {
+// 		cout << e.what() << endl;
+// 	}
 
 
 	cout << "\n\n-----------------------------------------------------------\n"

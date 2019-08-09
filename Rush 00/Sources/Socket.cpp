@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/09 10:18:36 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/09 13:30:36 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -703,6 +703,92 @@ const char * Socket::SocketError::what() const noexcept {
 	);
 }
 
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+ssize_t			Socket::recv_into( int sockfd, std::string && buffer, size_t n,
+	int flags )
+{
+	char * tmp = new char [ n ];
+	int bytes_recvd;
+
+	bytes_recvd = ::recv ( sockfd , reinterpret_cast <void *> ( tmp ) ,
+	                       n , flags );
+
+	if ( bytes_recvd == 0 || errno == ECONNRESET ) {
+
+		/* "[ECONNRESET] -- The connection is closed by the peer during a
+		receive attempt on a socket." ; See recv(2) */
+
+		delete [] tmp;
+		return ( 0 );
+
+	} else if ( bytes_recvd < 0 ) {
+
+		/* 'sockfd' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		delete [] tmp;
+		throw SocketError( __FILE__ , __LINE__ );
+
+	}
+
+	buffer = tmp;
+	delete [] tmp;
+
+	return ( bytes_recvd );
+}
+
+inline ssize_t	Socket::recv_into( std::string && buffer, size_t n,
+	int flags )
+{
+	return ( Socket::recv_into ( descriptor , buffer , n , flags ) );
+}
+
+inline ssize_t	Socket::recv_into( Socket & sender, std::string && buffer,
+	size_t n, int flags )
+{
+	return ( Socket::recv_into ( sender.descriptor , buffer , n , flags ) );
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+ssize_t			Socket::recvfrom_into( std::string && buffer, size_t n,
+	struct sockaddr_storage *dest_addr, socklen_t && dest_len, int flags )
+{
+	char * tmp = new char [ n ];
+	ssize_t bytes_recvd;
+
+	bytes_recvd = ::recvfrom ( descriptor ,
+	                           reinterpret_cast <void *> ( tmp ) ,
+	                           n , flags ,
+	                           reinterpret_cast <sockaddr *> ( dest_addr ) ,
+	                           &dest_len );
+
+	if  ( bytes_recvd < 0 ) {
+
+		/* 'sockfd' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		delete [] tmp;
+		throw SocketError( __FILE__ , __LINE__ );
+
+	}
+
+	buffer = tmp;
+	delete [] tmp;
+
+	return ( bytes_recvd );
+}
+
+inline ssize_t	Socket::recvfrom_into ( Socket & sender, std::string && buffer,
+	size_t n, int flags )
+{
+	return (
+		Socket::recvfrom_into ( buffer , n , &sender.address ,
+			sender.address_len , flags )
+	);
+}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
