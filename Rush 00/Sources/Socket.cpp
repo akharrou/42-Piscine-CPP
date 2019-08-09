@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/08 15:39:39 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/08 20:06:25 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,11 @@ Socket::Socket( int Family, int Type, int Protocol ) :
 	family     ( Family    ),
 	type       ( Type      ),
 	protocol   ( Protocol  ),
-	descriptor ( -1        ) {}
+	descriptor ( -1        )
+{
+	if ( type == SOCK_DGRAM )
+		Socket::socket( family );
+}
 
 Socket::Socket( const char * Host, const char * Port,
 	int Type, int Protocol ) :
@@ -481,7 +485,7 @@ Socket &	Socket::bind( const char * Host, const char * Port,
 	return ( *this );
 }
 
-Socket &	Socket::listen( int connections = 0 ) {
+Socket &	Socket::listen( int connections ) {
 
 	int ret = ::listen( descriptor , connections );
 
@@ -575,36 +579,45 @@ Socket &	Socket::connect( Socket & peer ) {
 
 	int ret;
 
-	Socket::socket  ( peer.family, peer.type, peer.protocol       );
+	Socket::socket  ( peer.family, peer.type, peer.protocol );
 	ret = ::connect ( descriptor,
-	                  reinterpret_cast <struct sockaddr *> (&peer.address),
+	                  reinterpret_cast <struct sockaddr *> ( &peer.address ),
 	                  peer.address_len );
 
 	if ( ret == -1 ) {
 		this->close();
 		throw SocketError( __FILE__ , __LINE__ );
 	}
+
+	ip_address  = Socket::getip   ( address );
+	port        = Socket::getport ( address );
+
 	return ( *this );
+}
+
+Socket &	Socket::accept( Socket & newClient ) const {
+
+	newClient.address_len = sizeof( newClient.address );
+
+	newClient.descriptor =
+		::accept( descriptor,
+		          reinterpret_cast <struct sockaddr *> ( &newClient.address ),
+		          &newClient.address_len );
+
+	if ( newClient.descriptor == -1 )
+		throw SocketError( __FILE__ , __LINE__ );
+
+	newClient.ip_address  = Socket::getip   ( newClient.address );
+	newClient.port        = Socket::getport ( newClient.address );
+
+	return ( newClient );
 }
 
 Socket		Socket::accept( void ) const {
 
 	Socket Client( this->family, this->type, this->protocol );
 
-	Client.address_len = sizeof( Client.address );
-
-	Client.descriptor =
-		::accept( descriptor,
-		          reinterpret_cast <struct sockaddr *> ( &Client.address ),
-		          &Client.address_len );
-
-	if ( Client.descriptor == -1 )
-		throw SocketError( __FILE__ , __LINE__ );
-
-	Client.ip_address  = Socket::getip   ( Client.address );
-	Client.port        = Socket::getport ( Client.address );
-
-	return ( Client );
+	return ( Socket::accept( Client ) );
 }
 
 void		Socket::shutdown ( int sockfd, int how ) {
