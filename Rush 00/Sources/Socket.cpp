@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/09 13:30:36 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/09 14:10:46 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -652,59 +652,7 @@ void		Socket::close( void )
 	Socket::close( descriptor );
 }
 
-
-/* EXCEPTION(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-Socket::SocketError::SocketError( void ) {}
-
-Socket::SocketError::SocketError( const char *File, size_t Line ) :
-	_file ( File ),
-	_line ( std::to_string( Line ) ),
-	_err_msg ( strerror(errno) ) {
-}
-
-Socket::SocketError::SocketError( const char *File, size_t Line,
-	const char * Error_Message ) :
-
-	_file ( File ),
-	_line ( std::to_string( Line ) ),
-	_err_msg ( Error_Message ) {
-}
-
-Socket::SocketError::SocketError(
-	const SocketError & src )
-{
-	*this = src;
-}
-
-Socket::SocketError::~SocketError( void ) {}
-
-Socket::SocketError &	Socket::SocketError::operator = (
-	const SocketError & rhs )
-{
-	if ( this != &rhs ) {
-
-		_file    = rhs._file;
-		_line    = rhs._line;
-		_err_msg = rhs._err_msg;
-	}
-	return ( *this );
-}
-
-std::string	Socket::SocketError::getError( void ) const {
-	return ( _err_msg );
-}
-
-const char * Socket::SocketError::what() const noexcept {
-
-	return (
-		std::string("~ " + _file + ":" + _line + " -- Socket Error : "
-		+ _err_msg + " ~").c_str()
-	);
-}
-
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* I/O OPERATONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 ssize_t			Socket::recv_into( int sockfd, std::string && buffer, size_t n,
 	int flags )
@@ -786,7 +734,58 @@ inline ssize_t	Socket::recvfrom_into ( Socket & sender, std::string && buffer,
 {
 	return (
 		Socket::recvfrom_into ( buffer , n , &sender.address ,
-			sender.address_len , flags )
+			reinterpret_cast <socklen_t> (sender.address_len) ,
+			flags )
+	);
+}
+
+/* EXCEPTION(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+Socket::SocketError::SocketError( void ) {}
+
+Socket::SocketError::SocketError( const char *File, size_t Line ) :
+	_file ( File ),
+	_line ( std::to_string( Line ) ),
+	_err_msg ( strerror(errno) ) {
+}
+
+Socket::SocketError::SocketError( const char *File, size_t Line,
+	const char * Error_Message ) :
+
+	_file ( File ),
+	_line ( std::to_string( Line ) ),
+	_err_msg ( Error_Message ) {
+}
+
+Socket::SocketError::SocketError(
+	const SocketError & src )
+{
+	*this = src;
+}
+
+Socket::SocketError::~SocketError( void ) {}
+
+Socket::SocketError &	Socket::SocketError::operator = (
+	const SocketError & rhs )
+{
+	if ( this != &rhs ) {
+
+		_file    = rhs._file;
+		_line    = rhs._line;
+		_err_msg = rhs._err_msg;
+	}
+	return ( *this );
+}
+
+std::string	Socket::SocketError::getError( void ) const {
+	return ( _err_msg );
+}
+
+const char * Socket::SocketError::what() const noexcept {
+
+	return (
+		std::string("~ " + _file + ":" + _line + " -- Socket Error : "
+		+ _err_msg + " ~").c_str()
 	);
 }
 

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/09 13:27:24 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/09 14:35:36 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -500,8 +500,9 @@ inline ssize_t	Socket::sendto( const char * Host, const char * Port,
 		try {
 
 			bytes_sent = Socket::sendto( data ,
-				reinterpret_cast <struct sockaddr_storage *> ( cur->ai_addr ) ,
-				cur->ai_addrlen, length , flags );
+					reinterpret_cast <sockaddr_storage *> ( cur->ai_addr ) ,
+					static_cast <socklen_t> ( cur->ai_addrlen ) ,
+					length , flags );
 
 		} catch ( SocketError & e ) {
 
