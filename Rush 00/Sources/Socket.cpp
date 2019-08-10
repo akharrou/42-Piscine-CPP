@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/09 14:10:46 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/09 17:37:02 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -654,7 +654,7 @@ void		Socket::close( void )
 
 /* I/O OPERATONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-ssize_t			Socket::recv_into( int sockfd, std::string && buffer, size_t n,
+ssize_t			Socket::recv_into( int sockfd, std::string & buffer, size_t n,
 	int flags )
 {
 	char * tmp = new char [ n ];
@@ -687,13 +687,13 @@ ssize_t			Socket::recv_into( int sockfd, std::string && buffer, size_t n,
 	return ( bytes_recvd );
 }
 
-inline ssize_t	Socket::recv_into( std::string && buffer, size_t n,
+inline ssize_t	Socket::recv_into( std::string & buffer, size_t n,
 	int flags )
 {
 	return ( Socket::recv_into ( descriptor , buffer , n , flags ) );
 }
 
-inline ssize_t	Socket::recv_into( Socket & sender, std::string && buffer,
+inline ssize_t	Socket::recv_into( Socket & sender, std::string & buffer,
 	size_t n, int flags )
 {
 	return ( Socket::recv_into ( sender.descriptor , buffer , n , flags ) );
@@ -701,8 +701,8 @@ inline ssize_t	Socket::recv_into( Socket & sender, std::string && buffer,
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-ssize_t			Socket::recvfrom_into( std::string && buffer, size_t n,
-	struct sockaddr_storage *dest_addr, socklen_t && dest_len, int flags )
+ssize_t			Socket::recvfrom_into( std::string & buffer, size_t n,
+	struct sockaddr_storage *dest_addr, socklen_t *dest_len, int flags )
 {
 	char * tmp = new char [ n ];
 	ssize_t bytes_recvd;
@@ -711,7 +711,7 @@ ssize_t			Socket::recvfrom_into( std::string && buffer, size_t n,
 	                           reinterpret_cast <void *> ( tmp ) ,
 	                           n , flags ,
 	                           reinterpret_cast <sockaddr *> ( dest_addr ) ,
-	                           &dest_len );
+	                           dest_len );
 
 	if  ( bytes_recvd < 0 ) {
 
@@ -729,13 +729,12 @@ ssize_t			Socket::recvfrom_into( std::string && buffer, size_t n,
 	return ( bytes_recvd );
 }
 
-inline ssize_t	Socket::recvfrom_into ( Socket & sender, std::string && buffer,
+inline ssize_t	Socket::recvfrom_into ( Socket & sender, std::string & buffer,
 	size_t n, int flags )
 {
 	return (
 		Socket::recvfrom_into ( buffer , n , &sender.address ,
-			reinterpret_cast <socklen_t> (sender.address_len) ,
-			flags )
+			&sender.address_len , flags )
 	);
 }
 

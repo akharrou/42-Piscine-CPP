@@ -9,7 +9,7 @@ int	main(int ac, const char **argv) {
 
 
 	const char * host = "127.0.0.1";
-	const char * port = "9974";
+	const char * port = "9973";
 
 	/* DEMONSTRATES API FOR UDP - - - - - - - - - - - - - - - - - - - - - - - - */
 	try {
