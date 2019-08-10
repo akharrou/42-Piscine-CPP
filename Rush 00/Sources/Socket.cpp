@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/09 17:37:02 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/10 00:13:32 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -654,6 +654,140 @@ void		Socket::close( void )
 
 /* I/O OPERATONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+// ssize_t		Socket::send ( int sockfd, std::string & data, size_t n,
+// 	int flags, char * tmpbuf )
+// {
+
+// }
+
+// ssize_t		Socket::send ( std::string & data, size_t n,
+// 	int flags, char * tmpbuf )
+// {
+
+// }
+
+// ssize_t		Socket::send ( Socket & receiver, std::string & data, size_t n,
+// 	int flags, char * tmpbuf )
+// {
+
+// }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+ssize_t		Socket::sendto( std::string & data,
+	struct sockaddr_storage *dest_addr, socklen_t && dest_len,
+	size_t n, int flags, char *&& tmpbuf )
+{
+	ssize_t bytes_sent;
+
+	if (!tmpbuf)
+		tmpbuf = new char [ n ];
+	bytes_sent = ::sendto( descriptor,
+	                       reinterpret_cast <const void *> ( tmpbuf ) ,
+	                       n , flags,
+	                       reinterpret_cast <struct sockaddr *> ( dest_addr ),
+	                       dest_len );
+
+	if ( bytes_sent < 0 ) {
+
+		/* 'sockfd' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		delete [] tmpbuf;
+		throw SocketError( __FILE__ , __LINE__ );
+
+	} else if ( static_cast <size_t> (bytes_sent) < n ) {
+
+		tmpbuf += bytes_sent;
+		n -= static_cast <size_t> ( bytes_sent );
+
+		bytes_sent +=
+			Socket::sendto( data ,
+			                dest_addr , static_cast <socklen_t> ( dest_len ),
+							n, flags , tmpbuf );
+
+	}
+
+	if ( tmpbuf ) {
+		delete [] tmpbuf;
+		tmpbuf = nullptr;
+	}
+
+	return ( bytes_sent );
+}
+
+ssize_t		Socket::sendto( const char * Host, const char * Port,
+	std::string & data, size_t n, int flags, char *&& tmpbuf )
+{
+	struct addrinfo * head;
+	struct addrinfo * cur;
+	ssize_t bytes_sent;
+
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+	try {
+
+		head = Socket::getaddrinfo( Host , Port , family , type , protocol );
+
+	} catch ( SocketError & e ) {
+
+		freeaddrinfo( head );
+		throw e;
+
+	} catch ( std::exception & e ) {
+
+		freeaddrinfo( head );
+		throw e;
+
+	}
+
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+	for ( cur = head; cur; cur = cur->ai_next ) {
+
+		try {
+
+			bytes_sent = Socket::sendto( data ,
+					reinterpret_cast <sockaddr_storage *> ( cur->ai_addr ) ,
+					static_cast <socklen_t> ( cur->ai_addrlen ) ,
+					n , flags , tmpbuf );
+
+		} catch ( SocketError & e ) {
+
+			if ( errno == EHOSTUNREACH )
+				continue ;
+
+			freeaddrinfo( head );
+			throw e;
+
+		} catch ( std::exception & e ) {
+
+			if ( errno == EHOSTUNREACH )
+				continue ;
+
+			freeaddrinfo( head );
+			throw e;
+
+		}
+	}
+
+	freeaddrinfo( head );
+
+	return ( bytes_sent );
+}
+
+ssize_t		Socket::sendto( Socket & receiver, std::string & data, size_t n,
+	int flags, char *&& tmpbuf )
+{
+	return (
+		Socket::sendto ( data , receiver.address ,
+			static_cast <socklen_t> ( receiver.address_len ) ,
+			n , flags , tmpbuf )
+	);
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
 ssize_t			Socket::recv_into( int sockfd, std::string & buffer, size_t n,
 	int flags )
 {
@@ -702,7 +836,7 @@ inline ssize_t	Socket::recv_into( Socket & sender, std::string & buffer,
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 ssize_t			Socket::recvfrom_into( std::string & buffer, size_t n,
-	struct sockaddr_storage *dest_addr, socklen_t *dest_len, int flags )
+	struct sockaddr_storage *dest_addr, socklen_t && dest_len, int flags )
 {
 	char * tmp = new char [ n ];
 	ssize_t bytes_recvd;
@@ -711,7 +845,7 @@ ssize_t			Socket::recvfrom_into( std::string & buffer, size_t n,
 	                           reinterpret_cast <void *> ( tmp ) ,
 	                           n , flags ,
 	                           reinterpret_cast <sockaddr *> ( dest_addr ) ,
-	                           dest_len );
+	                           &dest_len );
 
 	if  ( bytes_recvd < 0 ) {
 
@@ -734,7 +868,7 @@ inline ssize_t	Socket::recvfrom_into ( Socket & sender, std::string & buffer,
 {
 	return (
 		Socket::recvfrom_into ( buffer , n , &sender.address ,
-			&sender.address_len , flags )
+			static_cast <socklen_t> (sender.address_len) , flags )
 	);
 }
 

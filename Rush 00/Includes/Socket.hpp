@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/09 18:03:50 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/10 00:06:53 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,6 +187,17 @@ class Socket {
 		                        T && data, size_t length = sizeof( T ),
 		                        int flags = 0 );
 
+		ssize_t          send ( int sockfd, std::string & data,
+		                        size_t n = LINE_SIZE, int flags = 0,
+		                        char *&& tmpbuf = nullptr );
+
+		ssize_t          send ( std::string & data, size_t n = LINE_SIZE,
+		                        int flags = 0, char *&& tmpbuf = nullptr );
+
+		ssize_t          send ( Socket & receiver, std::string & data,
+		                        size_t n = LINE_SIZE, int flags = 0,
+		                        char *&& tmpbuf = nullptr );
+
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		template <typename T>
@@ -214,17 +225,21 @@ class Socket {
 		                        T && data, size_t length = sizeof( T ),
 		                        int flags = 0 );
 
+		ssize_t        sendto ( std::string & data,
+		                        struct sockaddr_storage *dest_addr,
+		                        socklen_t && dest_len, size_t n = LINE_SIZE,
+		                        int flags = 0, char *&& tmpbuf = nullptr );
+
+		ssize_t        sendto ( const char * Host, const char * Port,
+		                        std::string & data, size_t n = LINE_SIZE,
+		                        int flags = 0, char *&& tmpbuf = nullptr );
+
+		ssize_t        sendto ( Socket & receiver, std::string & data,
+		                        size_t n = LINE_SIZE, int flags = 0,
+		                        char *&& tmpbuf = nullptr );
+
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-
-		ssize_t     recv_into ( int sockfd, std::string & buffer,
-		                        size_t n = LINE_SIZE, int flags = 0 );
-
-		ssize_t     recv_into ( std::string & buffer,
-		                        size_t n = LINE_SIZE, int flags = 0 );
-
-		ssize_t     recv_into ( Socket & sender, std::string & buffer,
-		                        size_t n = LINE_SIZE, int flags = 0 );
 		template <typename T>
 		ssize_t     recv_into ( int sockfd, T * buffer,
 		                        size_t buflen = sizeof( T ),
@@ -250,14 +265,16 @@ class Socket {
 		                        size_t buflen = sizeof( T ),
 		                        int flags = 0 );
 
+		ssize_t     recv_into ( int sockfd, std::string & buffer,
+		                        size_t n = LINE_SIZE, int flags = 0 );
+
+		ssize_t     recv_into ( std::string & buffer,
+		                        size_t n = LINE_SIZE, int flags = 0 );
+
+		ssize_t     recv_into ( Socket & sender, std::string & buffer,
+		                        size_t n = LINE_SIZE, int flags = 0 );
+
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-		ssize_t recvfrom_into ( std::string & buffer, size_t n = LINE_SIZE,
-		                        struct sockaddr_storage *dest_addr = nullptr,
-		                        socklen_t * dest_len = nullptr, int flags = 0 );
-
-		ssize_t recvfrom_into ( Socket & sender, std::string & buffer,
-		                        size_t n, int flags = 0 );
 
 		template <typename T>
 		ssize_t recvfrom_into ( T * buffer, size_t buflen = sizeof( T ),
@@ -277,6 +294,14 @@ class Socket {
 		ssize_t recvfrom_into ( Socket & sender, T && buffer,
 		                        size_t buflen = sizeof( T ),
 		                        int flags = 0 );
+
+		ssize_t recvfrom_into ( std::string & buffer, size_t n = LINE_SIZE,
+		                        struct sockaddr_storage *dest_addr = nullptr,
+		                        socklen_t && dest_len = sizeof( sockaddr_storage ),
+								int flags = 0 );
+
+		ssize_t recvfrom_into ( Socket & sender, std::string & buffer,
+		                        size_t n = LINE_SIZE, int flags = 0 );
 
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
