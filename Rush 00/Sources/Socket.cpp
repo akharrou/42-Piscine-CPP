@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/11 12:23:16 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/11 15:00:05 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,7 +213,7 @@ struct addrinfo * Socket::getaddrinfo( const char * Host, const char * Port ,
 	return ( head );
 }
 
-std::string Socket::getip( struct sockaddr_storage address ) {
+std::string	Socket::getip( struct sockaddr_storage address ) {
 
 	union {
 		struct sockaddr_in *v4;
@@ -756,7 +756,7 @@ ssize_t		Socket::send( Socket & receiver, std::string & data,
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-ssize_t        Socket::sendto ( std::string & data,
+ssize_t		Socket::sendto ( std::string & data,
 	struct sockaddr_storage *dest_addr, socklen_t & dest_len,
 	size_t maxlen, int flags )
 {
@@ -860,7 +860,7 @@ ssize_t		Socket::sendto( Socket & receiver, std::string & data, size_t maxlen,
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-ssize_t			Socket::recv_into( int sockfd, std::string & buffer, size_t maxlen,
+ssize_t		Socket::recv_into( int sockfd, std::string & buffer, size_t maxlen,
 	int flags )
 {
 	char * tmp = new char [ maxlen ];
@@ -893,7 +893,7 @@ ssize_t			Socket::recv_into( int sockfd, std::string & buffer, size_t maxlen,
 	return ( bytes_recvd );
 }
 
-inline ssize_t	Socket::recv_into( std::string & buffer, size_t maxlen,
+ssize_t		Socket::recv_into( std::string & buffer, size_t maxlen,
 	int flags )
 {
 	return ( Socket::recv_into ( descriptor , buffer , maxlen , flags ) );
@@ -907,7 +907,7 @@ ssize_t     Socket::recv_into( Socket & sender, std::string & buffer,
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-ssize_t			Socket::recvfrom_into( std::string & buffer, size_t maxlen,
+ssize_t		Socket::recvfrom_into( std::string & buffer, size_t maxlen,
 	struct sockaddr_storage *dest_addr, socklen_t && dest_len, int flags )
 {
 	char * tmp = new char [ maxlen ];
@@ -935,7 +935,7 @@ ssize_t			Socket::recvfrom_into( std::string & buffer, size_t maxlen,
 	return ( bytes_recvd );
 }
 
-ssize_t			Socket::recvfrom_into ( Socket & sender, std::string & buffer,
+ssize_t		Socket::recvfrom_into ( Socket & sender, std::string & buffer,
 	size_t maxlen, int flags )
 {
 	ssize_t bytes_sent;
@@ -951,7 +951,7 @@ ssize_t			Socket::recvfrom_into ( Socket & sender, std::string & buffer,
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-std::string   Socket::recvfrom ( size_t maxlen,
+std::string	Socket::recvfrom ( size_t maxlen,
 	struct sockaddr_storage *dest_addr, socklen_t && dest_len,
 	bool *&& peerConnected, int flags )
 {
@@ -978,7 +978,7 @@ std::string   Socket::recvfrom ( size_t maxlen,
 	return ( data );
 }
 
-std::string   Socket::recvfrom ( Socket & sender, size_t maxlen,
+std::string	Socket::recvfrom ( Socket & sender, size_t maxlen,
 	bool *&& peerConnected, int flags )
 {
 	return (
@@ -986,6 +986,50 @@ std::string   Socket::recvfrom ( Socket & sender, size_t maxlen,
 			static_cast <socklen_t> ( sender.address_len ) ,
 			static_cast <bool *> ( peerConnected ) ,
 			flags )
+	);
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+std::string	Socket::recv ( int sockfd, size_t maxlen,
+	bool *&& peerConnected, int flags )
+{
+	ssize_t bytes_recvd;
+	std::string data;
+
+	bytes_recvd = Socket::recv_into( sockfd , data , maxlen , flags );
+
+	if ( bytes_recvd == 0 ) {
+
+		if ( peerConnected != nullptr )
+			( * peerConnected ) = false;
+		else
+			throw SocketPeerDisconnect(
+				/* the peer of this socket (*/ descriptor /*)
+				has disconnected */
+			);
+
+	} else if ( peerConnected != nullptr )
+		( * peerConnected ) = true;
+
+	return ( data );
+}
+
+std::string	Socket::recv ( size_t maxlen,
+	bool *&& peerConnected, int flags )
+{
+	return (
+		Socket::recv ( descriptor , maxlen ,
+			static_cast <bool *> ( peerConnected ) , flags )
+	);
+}
+
+std::string	Socket::recv ( Socket & sender, size_t maxlen,
+	bool *&& peerConnected, int flags )
+{
+	return (
+		Socket::recv ( sender.descriptor , maxlen ,
+			static_cast <bool *> ( peerConnected ) , flags )
 	);
 }
 

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/11 12:19:38 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/11 15:41:43 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -303,27 +303,38 @@ public:
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		template <typename T>
-		T *              recv ( int sockfd, size_t length = sizeof( T * ),
+		T *              recv ( int sockfd, size_t length,
 		                        bool *&& peerConnected = nullptr,
 		                        int flags = 0 );
 		template <typename T>
-		T                recv ( int sockfd, size_t length = sizeof( T ),
+		T                recv ( int sockfd,
 		                        bool *&& peerConnected = nullptr,
 		                        int flags = 0 );
 		template <typename T>
-		T *              recv ( size_t length = sizeof( T * ),
+		T *              recv ( size_t length,
 		                        bool *&& peerConnected = nullptr,
 		                        int flags = 0 );
 		template <typename T>
-		T                recv ( size_t length = sizeof( T ),
+		T                recv ( bool *&& peerConnected = nullptr,
+		                        int flags = 0 );
+		template <typename T>
+		T *              recv ( Socket & sender, size_t length,
 		                        bool *&& peerConnected = nullptr,
 		                        int flags = 0 );
 		template <typename T>
-		T *              recv ( Socket & sender, size_t length = sizeof( T * ),
+		T                recv ( Socket & sender,
 		                        bool *&& peerConnected = nullptr,
 		                        int flags = 0 );
-		template <typename T>
-		T                recv ( Socket & sender, size_t length = sizeof( T ),
+
+		std::string      recv ( int sockfd, size_t maxlen = LINE_SIZE,
+		                        bool *&& peerConnected = nullptr,
+		                        int flags = 0 );
+
+		std::string      recv ( size_t maxlen = LINE_SIZE,
+		                        bool *&& peerConnected = nullptr,
+		                        int flags = 0 );
+
+		std::string      recv ( Socket & sender, size_t maxlen = LINE_SIZE,
 		                        bool *&& peerConnected = nullptr,
 		                        int flags = 0 );
 
@@ -431,31 +442,31 @@ ssize_t			Socket::send( int sockfd, T * data, size_t length, int flags )
 }
 
 template <typename T>
-inline ssize_t	Socket::send( T * data, size_t length, int flags )
+ssize_t			Socket::send( T * data, size_t length, int flags )
 {
 	return ( Socket::send( descriptor, data, length, flags ) );
 }
 
 template <typename T>
-inline ssize_t	Socket::send( Socket & receiver, T * data, size_t length, int flags )
+ssize_t			Socket::send( Socket & receiver, T * data, size_t length, int flags )
 {
 	return ( Socket::send( receiver.descriptor, data, length, flags ) );
 }
 
 template <typename T>
-inline ssize_t	Socket::send( int sockfd, T && data, size_t length, int flags )
+ssize_t			Socket::send( int sockfd, T && data, size_t length, int flags )
 {
 	return ( Socket::send ( sockfd, &data, length, flags ) );
 }
 
 template <typename T>
-inline ssize_t	Socket::send( T && data, size_t length, int flags )
+ssize_t			Socket::send( T && data, size_t length, int flags )
 {
 	return ( Socket::send( descriptor, &data, length, flags ) );
 }
 
 template <typename T>
-inline ssize_t	Socket::send( Socket & receiver, T && data, size_t length, int flags )
+ssize_t			Socket::send( Socket & receiver, T && data, size_t length, int flags )
 {
 	return ( Socket::send( receiver.descriptor, &data, length, flags ) );
 }
@@ -494,14 +505,14 @@ ssize_t			Socket::sendto( T * data, struct sockaddr_storage *dest_addr,
 }
 
 template <typename T>
-inline ssize_t	Socket::sendto( T && data, struct sockaddr_storage *dest_addr,
+ssize_t			Socket::sendto( T && data, struct sockaddr_storage *dest_addr,
 	socklen_t && dest_len, size_t length, int flags )
 {
 	return ( Socket::sendto( &data , dest_addr , dest_len , length , flags ) );
 }
 
 template <typename T>
-inline ssize_t	Socket::sendto( const char * Host, const char * Port,
+ssize_t			Socket::sendto( const char * Host, const char * Port,
 	T * data, size_t length, int flags )
 {
 	struct addrinfo * head;
@@ -563,14 +574,14 @@ inline ssize_t	Socket::sendto( const char * Host, const char * Port,
 }
 
 template <typename T>
-inline ssize_t	Socket::sendto( const char * Host, const char * Port,
+ssize_t			Socket::sendto( const char * Host, const char * Port,
 	T && data, size_t length, int flags )
 {
 	return ( Socket::sendto( Host , Port , &data , length , flags ) );
 }
 
 template <typename T>
-inline ssize_t	Socket::sendto( Socket & receiver, T * data, size_t length,
+ssize_t			Socket::sendto( Socket & receiver, T * data, size_t length,
 	int flags )
 {
 	return (
@@ -580,7 +591,7 @@ inline ssize_t	Socket::sendto( Socket & receiver, T * data, size_t length,
 }
 
 template <typename T>
-inline ssize_t	Socket::sendto( Socket & receiver, T && data, size_t length,
+ssize_t			Socket::sendto( Socket & receiver, T && data, size_t length,
 	int flags )
 {
 	return (
@@ -620,20 +631,20 @@ ssize_t			Socket::recv_into( int sockfd, T * buffer, size_t buflen,
 }
 
 template <typename T>
-inline ssize_t	Socket::recv_into( int sockfd, T && buffer, size_t buflen,
+ssize_t			Socket::recv_into( int sockfd, T && buffer, size_t buflen,
 	int flags )
 {
 	return ( Socket::recv_into ( sockfd , &buffer, buflen , flags ) );
 }
 
 template <typename T>
-inline ssize_t	Socket::recv_into( T * buffer, size_t buflen, int flags )
+ssize_t			Socket::recv_into( T * buffer, size_t buflen, int flags )
 {
 	return ( Socket::recv_into ( descriptor , buffer , buflen , flags ) );
 }
 
 template <typename T>
-inline ssize_t	Socket::recv_into( T && buffer, size_t buflen, int flags )
+ssize_t			Socket::recv_into( T && buffer, size_t buflen, int flags )
 {
 	return (
 		Socket::recv_into ( descriptor , &buffer , buflen , flags )
@@ -641,7 +652,7 @@ inline ssize_t	Socket::recv_into( T && buffer, size_t buflen, int flags )
 }
 
 template <typename T>
-inline ssize_t	Socket::recv_into( Socket & sender, T * buffer, size_t buflen,
+ssize_t			Socket::recv_into( Socket & sender, T * buffer, size_t buflen,
 	int flags )
 {
 	return (
@@ -650,7 +661,7 @@ inline ssize_t	Socket::recv_into( Socket & sender, T * buffer, size_t buflen,
 }
 
 template <typename T>
-inline ssize_t	Socket::recv_into( Socket & sender, T && buffer, size_t buflen,
+ssize_t			Socket::recv_into( Socket & sender, T && buffer, size_t buflen,
 	int flags )
 {
 	return (
@@ -685,7 +696,7 @@ ssize_t			Socket::recvfrom_into ( T * buffer, size_t buflen,
 }
 
 template <typename T>
-inline ssize_t	Socket::recvfrom_into ( T && buffer, size_t buflen,
+ssize_t			Socket::recvfrom_into ( T && buffer, size_t buflen,
 	struct sockaddr_storage *dest_addr, socklen_t && dest_len, int flags )
 {
 	return (
@@ -726,47 +737,19 @@ ssize_t			Socket::recvfrom_into ( Socket & sender, T && buffer,
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-// template <typename T>
-// T *				Socket::recv( int sockfd, size_t length, bool *&& peerConnected,
-// 	int flags )
-// {
-// 	ssize_t bytes_recvd;
-// 	T * data;
-
-// 	data = new T [ length ];
-
-// 	bytes_recvd = Socket::recv_into <T> ( sockfd ,
-// 	                                      reinterpret_cast <void *> ( data ) ,
-// 	                                      length , flags );
-// 	if ( bytes_recvd == 0 ) {
-
-// 		if ( peerConnected != nullptr )
-// 			( * peerConnected ) = true;
-// 		else
-// 			throw SocketPeerDisconnect(
-// 				/* the peer of this */ sockfd /* has disconnected */
-// 			);
-
-// 	} else {
-
-// 		if ( peerConnected != nullptr )
-// 			( * peerConnected ) = false;
-
-// 	}
-
-// 	return ( data );
-// }
-
 template <typename T>
-T				Socket::recv( int sockfd, size_t length,
+T *				Socket::recv( int sockfd, size_t length,
 	bool *&& peerConnected, int flags )
 {
 	ssize_t bytes_recvd;
-	T data;
+	T * data;
 
-	bytes_recvd = Socket::recv_into <T> ( sockfd ,
-	                                      reinterpret_cast <void *> ( &data ) ,
-	                                      length , flags );
+	data = new T [ length ];
+
+	bytes_recvd = ::recv ( sockfd ,
+	                       reinterpret_cast <void *> ( data ) ,
+	                       length , flags );
+
 	if ( bytes_recvd == 0 ) {
 
 		if ( peerConnected != nullptr )
@@ -783,50 +766,75 @@ T				Socket::recv( int sockfd, size_t length,
 	return ( data );
 }
 
-// template <typename T>
-// inline T *		Socket::recv( size_t length,
-// 	bool *&& peerConnected, int flags )
-// {
-// 	return (
-// 		Socket::recv <T *> ( descriptor , length ,
-// 			flags , peerConnected )
-// 	);
-// }
+template <typename T>
+T				Socket::recv( int sockfd, bool *&& peerConnected, int flags )
+{
+	ssize_t bytes_recvd;
+	T data;
+
+	bytes_recvd = ::recv ( sockfd , reinterpret_cast <void *> ( &data ) ,
+	                       sizeof ( T ) , flags );
+
+	if ( bytes_recvd == 0 ) {
+
+		if ( peerConnected != nullptr )
+			( * peerConnected ) = false;
+		else
+			throw SocketPeerDisconnect(
+				/* the peer of this */ sockfd /*
+				has disconnected */
+			);
+
+	} else if ( peerConnected != nullptr )
+		( * peerConnected ) = true;
+
+	return ( data );
+}
 
 template <typename T>
-inline T		Socket::recv( size_t length,
-	bool *&& peerConnected, int flags )
+T *				Socket::recv( size_t length, bool *&& peerConnected, int flags )
 {
 	return (
 		Socket::recv <T> ( descriptor , length ,
-			flags , static_cast <bool*> ( peerConnected ) )
+			static_cast <bool *> ( peerConnected ) , flags )
 	);
 }
 
-// template <typename T>
-// inline T *		Socket::recv( Socket & sender, size_t length,
-// 	bool *&& peerConnected, int flags )
-// {
-// 	return (
-// 		Socket::recv <T *> ( sender.descriptor , length ,
-// 			flags , peerConnected )
-// 	);
-// }
-
 template <typename T>
-inline T		Socket::recv( Socket & sender, size_t length,
-	bool *&& peerConnected, int flags )
+T				Socket::recv( bool *&& peerConnected, int flags )
 {
 	return (
+		Socket::recv <T> ( descriptor ,
+			static_cast <bool *> ( peerConnected ) , flags )
+	);
+}
+
+template <typename T>
+T *				Socket::recv( Socket & sender, size_t length,
+	bool *&& peerConnected, int flags )
+{
+	T * dataptr;
+
+	dataptr =
 		Socket::recv <T> ( sender.descriptor , length ,
-			flags , static_cast <bool*> ( peerConnected ) )
+			static_cast <bool *> ( peerConnected ) , flags );
+	return ( dataptr );
+}
+
+template <typename T>
+T				Socket::recv( Socket & sender, bool *&& peerConnected,
+	int flags )
+{
+	return (
+		Socket::recv <T> ( sender.descriptor ,
+			static_cast <bool *> ( peerConnected ) , flags )
 	);
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 template <typename T>
-inline T *		Socket::recvfrom( size_t length,
+T *				Socket::recvfrom( size_t length,
 	struct sockaddr_storage *dest_addr, socklen_t && dest_len,
 	bool *&& peerConnected, int flags )
 {
@@ -840,6 +848,7 @@ inline T *		Socket::recvfrom( size_t length,
 		                       length , flags ,
 		                       reinterpret_cast <sockaddr *> ( dest_addr ) ,
 		                       &dest_len );
+
 	if ( bytes_recvd == 0 ) {
 
 		if ( peerConnected != nullptr )
@@ -869,6 +878,7 @@ T 				Socket::recvfrom( struct sockaddr_storage *dest_addr,
 		                       flags ,
 		                       reinterpret_cast <sockaddr *> ( dest_addr ) ,
 		                       &dest_len );
+
 	if ( bytes_recvd == 0 ) {
 
 		if ( peerConnected != nullptr )
@@ -886,22 +896,22 @@ T 				Socket::recvfrom( struct sockaddr_storage *dest_addr,
 }
 
 template <typename T>
-inline T *		Socket::recvfrom( Socket & sender, size_t length,
+T *				Socket::recvfrom( Socket & sender, size_t length,
 	bool *&& peerConnected, int flags )
 {
 	return (
-		Socket::recvfrom <T*> ( &sender.address , sender.address_len ,
-			length , static_cast <bool*> ( peerConnected ) , flags )
+		Socket::recvfrom <T> ( &sender.address , sender.address_len ,
+			length , static_cast <bool *> ( peerConnected ) , flags )
 	);
 }
 
 template <typename T>
-inline T 		Socket::recvfrom( Socket & sender, bool *&& peerConnected,
+T 				Socket::recvfrom( Socket & sender, bool *&& peerConnected,
 	int flags )
 {
 	return (
 		Socket::recvfrom <T> ( &sender.address , sender.address_len ,
-			sizeof ( T ) , static_cast <bool*> ( peerConnected ) , flags )
+			static_cast <bool *> ( peerConnected ) , flags )
 	);
 }
 
