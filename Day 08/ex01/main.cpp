@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 16:30:46 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 00:27:57 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/11 13:20:04 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ int	main() {
 	std::cout << "\n/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */\n\n";
 
 	{
-		int max      = 20000;
-		int mul      = 9000;
+		int max      = 20;
+		int mul      = 5;
 		int maxTimes = max * mul;
 
 		Span sp = Span( max );
@@ -51,14 +51,20 @@ int	main() {
 
 		sp.addNumber(vec.begin(), vec.end());
 
-		for_each(sp.begin(), sp.end(), [](int a) {
-			std::cout << a << std::endl;
-		});
+		for ( Span::iterator first = sp.begin(); first != sp.end(); ++first )
+			std::cout << *first << std::endl;
 
 	std::cout << "\n/ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - /\n\n";
 
+	try {
+
 		std::cout << "shortestSpan : " << sp.shortestSpan () << std::endl;
 		std::cout << "longestSpan  : " << sp.longestSpan  () << std::endl;
+
+	} catch ( std::exception & e ) {
+
+		std::cout << e.what() << std::endl;
+	}
 
 	std::cout << "\n/ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - /\n\n";
 

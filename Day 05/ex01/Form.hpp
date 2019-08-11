@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   AForm.hpp                                           :+:      :+:    :+:   */
+/*   Form.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 14:20:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/22 15:52:25 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/11 12:24:29 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-class AForm {
+class Form {
 
 	private:
 		const std::string	_name;
@@ -38,7 +38,7 @@ class AForm {
 		const int	_lowest_grade;
 
 	protected:
-		AForm( void );
+		Form( void );
 
 	public:
 
@@ -48,11 +48,11 @@ class AForm {
 		class GradeTooLowException	:
 			public Bureaucrat::GradeTooLowException { };
 
-		AForm( std::string name, const int signGradeReq, const int exeGradeReq );
-		AForm( const AForm & src );
-		~AForm( void );
+		Form( std::string name, const int signGradeReq, const int exeGradeReq );
+		Form( const Form & src );
+		~Form( void );
 
-		AForm &		operator = ( const AForm & rhs );
+		Form &		operator = ( const Form & rhs );
 
 		std::string		getName          () const;
 		bool			getSigned        () const;
@@ -63,7 +63,7 @@ class AForm {
 
 };
 
-std::ostream & operator << ( std::ostream & out, const AForm & in );
+std::ostream & operator << ( std::ostream & out, const Form & in );
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 

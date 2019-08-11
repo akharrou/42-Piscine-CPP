@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 01:08:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/24 23:34:41 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/11 13:34:03 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,22 @@ void	identify_from_reference ( Base & p );
 
 int	main() {
 
-	identify_from_pointer   (   generate () );
-	identify_from_reference ( * generate () );
+	std::cout << "\nTEST : random\n";
+
+	std::cout << "Pointer   : "; identify_from_pointer   (   generate () );
+	std::cout << "Reference : "; identify_from_reference ( * generate () );
+
+	std::cout << "\nTEST Pointers:\n";
+
+	identify_from_pointer ( new A );
+	identify_from_pointer ( new B );
+	identify_from_pointer ( new C );
+
+	std::cout << "\nTEST References:\n";
+
+	identify_from_reference ( * ( new A ) );
+	identify_from_reference ( * ( new B ) );
+	identify_from_reference ( * ( new C ) );
 
 	return (0);
 }
@@ -69,25 +83,34 @@ void	identify_from_pointer ( Base * p ) {
 
 void	identify_from_reference ( Base & p ) {
 
-	A *typeA;
-	B *typeB;
-	C *typeC;
+	try {
 
-	typeA = dynamic_cast <A*> (&p);
-	if (typeA) {
+		A & typeA = dynamic_cast <A&> (p);
+		(void) typeA;
 		std::cout << "A\n";
 		return ;
-	}
-	typeB = dynamic_cast <B*> (&p);
-	if (typeB) {
+
+	} catch ( std::bad_cast & ) {}
+
+	try {
+
+		B & typeB = dynamic_cast <B&> (p);
+		(void) typeB;
 		std::cout << "B\n";
 		return ;
-	}
-	typeC = dynamic_cast <C*> (&p);
-	if (typeC) {
+
+	} catch ( std::bad_cast & ) {}
+
+	try {
+
+		C & typeC = dynamic_cast <C&> (p);
+		(void) typeC;
 		std::cout << "C\n";
 		return ;
-	}
+
+	} catch ( std::bad_cast & ) {}
+
+	std::cout << "Not A nor B nor C\n";
 }
 
 Base * generate(void) {

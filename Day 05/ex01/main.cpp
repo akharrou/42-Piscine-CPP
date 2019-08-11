@@ -6,14 +6,14 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:40:39 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/22 18:31:28 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/11 12:24:29 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "Bureaucrat.hpp"
-#include "AForm.hpp"
+#include "Form.hpp"
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -33,7 +33,7 @@ int	main() {
 
 	std::cout << "\n/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */\n\n";
 
-		AForm		form_1( "Dorm Reservation" , 2, 1 );
+		Form		form_1( "Dorm Reservation" , 2, 1 );
 
 		std::cout << form_1 << "\n";
 

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 18:23:42 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 00:22:43 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/11 13:21:41 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,32 +43,48 @@ Span &	Span::operator = ( const Span & rhs ) {
 
 /* ACCESSOR(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-std::multiset<int>::iterator	Span::begin() {
-	return (_container.begin());
+Span::iterator	Span::begin() {
+	return ( _container.begin() );
 }
 
-std::multiset<int>::iterator	Span::end() {
-	return (_container.end());
+Span::iterator	Span::end() {
+	return ( _container.end() );
 }
 
 unsigned int	Span::size() const {
-	return (_container.size());
+	return ( _container.size() );
 }
 
 unsigned int	Span::maxsize() const {
-	return (_N);
+	return ( _N );
 }
 
 
 /* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */
 
 void	Span::addNumber( int n ) {
-	(_container.size() < _N) ?
-		_container.insert(n) : throw Span::MaxCapacityReached();
+
+	( _container.size() < _N ) ?
+		_container.insert(n) :
+		throw Span::MaxCapacityReached();
 }
 
 int		Span::shortestSpan() {
-	return ( *(++_container.begin()) - *_container.begin() );
+
+	if ( _container.size() < 2 )
+		return ( 0 );
+
+	Span::iterator beforeLast = --_container.end();
+	Span::iterator cur        = _container.begin();
+	int shortestSpan = 2147483647;
+	int tmp;
+
+	while ( cur != beforeLast ) {
+		tmp = *cur++ - *cur;
+		shortestSpan = MIN ( shortestSpan , ABS( tmp ) );
+	}
+
+	return ( shortestSpan );
 }
 
 int		Span::longestSpan() {

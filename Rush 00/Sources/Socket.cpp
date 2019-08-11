@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/10 00:13:32 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/11 12:23:16 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,7 @@ Socket::Socket( const Socket & src )
 
 Socket::~Socket( void )
 {
-	// if ( connected( descriptor ) )
-	// 	Socket::close();
+	// Socket::close();
 }
 
 
@@ -75,17 +74,58 @@ Socket &	Socket::operator = ( const Socket & rhs ) {
 	return ( *this );
 }
 
+struct { int id; char const *name; }
+	g_sockinfo_map[] =
+{
+	{ AF_INET     , "AF_INET"     },
+	{ AF_INET6    , "AF_INET6"    },
+	{ AF_UNSPEC   , "AF_UNSPEC"   },
+	\
+	{ SOCK_STREAM , "SOCK_STREAM" },
+	{ SOCK_DGRAM  , "SOCK_DGRAM"  },
+	{ SOCK_RAW    , "SOCK_RAW"    },
+	\
+	{ IPPROTO_IP  , "IP"          },
+	{ IPPROTO_TCP , "TCP"         },
+	{ IPPROTO_UDP , "UDP"         }
+};
+
 std::ostream &  operator << ( std::ostream& out, const Socket & in ) {
 
-	out << "<descriptor=" << in.descriptor
-	    << ", family="    << in.family
-	    << ", type="      << in.type
-	    << ", protocol="  << in.protocol
-	    << ", laddr=('"   << in.ip_address
-		<< "', "          << in.port
-		<< ")>\n";
+	int i = 0;
 
-	return (out);
+	out << "<descriptor=" << in.descriptor;
+
+	out << ", family=";
+	for ( ; i < 3 ; ++i ) {
+		if ( g_sockinfo_map[i].id == in.family ) {
+			out << g_sockinfo_map[i].name;
+			break ;
+		}
+	} if ( i == 3 )
+		out << "unknown";
+
+	out << ", type=";
+	for ( ; i < 6 ; ++i ) {
+		if ( g_sockinfo_map[i].id == in.type ) {
+			out << g_sockinfo_map[i].name;
+			break ;
+		}
+	} if ( i == 6 )
+		out << "unknown";
+
+	out << ", protocol=";
+	for ( ; i < 9 ; ++i ) {
+		if ( g_sockinfo_map[i].id == in.protocol ) {
+			out << g_sockinfo_map[i].name;
+			break ;
+		}
+	} if ( i == 9 )
+		out << "unknown";
+
+	out << ", laddr=('" << in.ip_address << "', " << in.port << ")>\n";
+
+	return ( out );
 }
 
 
@@ -200,32 +240,44 @@ std::string Socket::getip( struct sockaddr_storage address ) {
 
 			break ;
 
+		default:
+
+			strlcpy( dest, "unknown" , INET6_ADDRSTRLEN );
+			break ;
+
 	}
 	return ( dest );
 }
 
 std::string Socket::getport( struct sockaddr_storage address ) {
 
-	unsigned short port;
+	std::string port;
 
 	switch ( address.ss_family ) {
 
 		case AF_INET:
 
-			port = ntohs( (reinterpret_cast <struct sockaddr_in *> (
-				&address))->sin_port );
+			port = std::to_string (
+				ntohs( ( reinterpret_cast <struct sockaddr_in *> (
+					&address))->sin_port ) );
 
 			break ;
 
 		case AF_INET6:
 
-			port = ntohs( (reinterpret_cast <struct sockaddr_in6 *> (
-				&address))->sin6_port );
+			port = std::to_string (
+				ntohs( ( reinterpret_cast <struct sockaddr_in6 *> (
+					&address))->sin6_port ) );
 
 			break ;
 
+		default:
+
+			port = "unknown";
+			break ;
+
 	}
-	return ( std::to_string ( port ) );
+	return ( port );
 }
 
 
@@ -636,15 +688,20 @@ void		Socket::shutdown ( int sockfd, int how ) {
 
 	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-	if ( sockfd != -1 )
+	if ( sockfd != -1 ) {
 		if ( ::shutdown( sockfd , how ) == -1 )
 			throw SocketError( __FILE__ , __LINE__ );
-	sockfd = -1;
+		sockfd = -1;
+	}
 }
 
 void		Socket::close( int sockfd )
 {
-	Socket::shutdown( sockfd );
+	if ( sockfd != -1 ) {
+		if ( ::close( sockfd ) == -1 )
+			throw SocketError( __FILE__ , __LINE__ );
+		sockfd = -1;
+	}
 }
 
 void		Socket::close( void )
@@ -654,74 +711,91 @@ void		Socket::close( void )
 
 /* I/O OPERATONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-// ssize_t		Socket::send ( int sockfd, std::string & data, size_t n,
-// 	int flags, char * tmpbuf )
-// {
-
-// }
-
-// ssize_t		Socket::send ( std::string & data, size_t n,
-// 	int flags, char * tmpbuf )
-// {
-
-// }
-
-// ssize_t		Socket::send ( Socket & receiver, std::string & data, size_t n,
-// 	int flags, char * tmpbuf )
-// {
-
-// }
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-ssize_t		Socket::sendto( std::string & data,
-	struct sockaddr_storage *dest_addr, socklen_t && dest_len,
-	size_t n, int flags, char *&& tmpbuf )
+ssize_t		Socket::send( int sockfd, std::string & data,
+	size_t maxlen , int flags )
 {
 	ssize_t bytes_sent;
 
-	if (!tmpbuf)
-		tmpbuf = new char [ n ];
-	bytes_sent = ::sendto( descriptor,
-	                       reinterpret_cast <const void *> ( tmpbuf ) ,
-	                       n , flags,
-	                       reinterpret_cast <struct sockaddr *> ( dest_addr ),
-	                       dest_len );
+	bytes_sent = ::send( sockfd,
+		reinterpret_cast <const void *> ( data.substr( 0 , maxlen ).c_str() ),
+		maxlen , flags );
 
 	if ( bytes_sent < 0 ) {
 
 		/* 'sockfd' won't be closed; it will be up to the caller to check
 		the error corresponding to 'errno' and take action(s) accordingly. */
 
-		delete [] tmpbuf;
 		throw SocketError( __FILE__ , __LINE__ );
 
-	} else if ( static_cast <size_t> (bytes_sent) < n ) {
+	} else if ( static_cast <size_t> (bytes_sent) < maxlen ) {
 
-		tmpbuf += bytes_sent;
-		n -= static_cast <size_t> ( bytes_sent );
+		std::string remaining_data;
+
+		maxlen -= static_cast <size_t> ( bytes_sent );
+		remaining_data = data.substr( bytes_sent , maxlen );
 
 		bytes_sent +=
-			Socket::sendto( data ,
-			                dest_addr , static_cast <socklen_t> ( dest_len ),
-							n, flags , tmpbuf );
+			Socket::send ( sockfd , remaining_data, maxlen, flags );
 
 	}
 
-	if ( tmpbuf ) {
-		delete [] tmpbuf;
-		tmpbuf = nullptr;
+	return ( bytes_sent );
+}
+
+ssize_t		Socket::send( std::string & data,
+	size_t maxlen , int flags )
+{
+	return ( Socket::send ( descriptor , data , maxlen , flags ) );
+}
+
+ssize_t		Socket::send( Socket & receiver, std::string & data,
+	size_t maxlen , int flags )
+{
+	return ( Socket::send ( receiver.descriptor , data , maxlen , flags ) );
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+ssize_t        Socket::sendto ( std::string & data,
+	struct sockaddr_storage *dest_addr, socklen_t & dest_len,
+	size_t maxlen, int flags )
+{
+	ssize_t bytes_sent;
+
+	bytes_sent = ::sendto( descriptor,
+		reinterpret_cast <const void *> ( data.substr( 0 , maxlen ).c_str() ),
+		maxlen , flags, reinterpret_cast <struct sockaddr *> ( dest_addr ),
+		dest_len );
+
+	if ( bytes_sent < 0 ) {
+
+		/* 'sockfd' won't be closed; it will be up to the caller to check
+		the error corresponding to 'errno' and take action(s) accordingly. */
+
+		throw SocketError( __FILE__ , __LINE__ );
+
+	} else if ( static_cast <size_t> (bytes_sent) < maxlen ) {
+
+		std::string remaining_data;
+
+		maxlen -= static_cast <size_t> ( bytes_sent );
+		remaining_data = data.substr( bytes_sent , maxlen );
+
+		bytes_sent +=
+			Socket::sendto ( remaining_data, dest_addr, dest_len,  maxlen, flags );
+
 	}
 
 	return ( bytes_sent );
 }
 
 ssize_t		Socket::sendto( const char * Host, const char * Port,
-	std::string & data, size_t n, int flags, char *&& tmpbuf )
+	std::string & data, size_t maxlen, int flags )
 {
 	struct addrinfo * head;
 	struct addrinfo * cur;
-	ssize_t bytes_sent;
+
+	ssize_t bytes_sent = 0;
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -749,8 +823,7 @@ ssize_t		Socket::sendto( const char * Host, const char * Port,
 
 			bytes_sent = Socket::sendto( data ,
 					reinterpret_cast <sockaddr_storage *> ( cur->ai_addr ) ,
-					static_cast <socklen_t> ( cur->ai_addrlen ) ,
-					n , flags , tmpbuf );
+					cur->ai_addrlen, maxlen , flags );
 
 		} catch ( SocketError & e ) {
 
@@ -776,26 +849,25 @@ ssize_t		Socket::sendto( const char * Host, const char * Port,
 	return ( bytes_sent );
 }
 
-ssize_t		Socket::sendto( Socket & receiver, std::string & data, size_t n,
-	int flags, char *&& tmpbuf )
+ssize_t		Socket::sendto( Socket & receiver, std::string & data, size_t maxlen,
+	int flags )
 {
 	return (
-		Socket::sendto ( data , receiver.address ,
-			static_cast <socklen_t> ( receiver.address_len ) ,
-			n , flags , tmpbuf )
+		Socket::sendto ( data , &receiver.address , receiver.address_len ,
+			maxlen , flags )
 	);
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-ssize_t			Socket::recv_into( int sockfd, std::string & buffer, size_t n,
+ssize_t			Socket::recv_into( int sockfd, std::string & buffer, size_t maxlen,
 	int flags )
 {
-	char * tmp = new char [ n ];
-	int bytes_recvd;
+	char * tmp = new char [ maxlen ];
+	ssize_t bytes_recvd;
 
 	bytes_recvd = ::recv ( sockfd , reinterpret_cast <void *> ( tmp ) ,
-	                       n , flags );
+	                       maxlen , flags );
 
 	if ( bytes_recvd == 0 || errno == ECONNRESET ) {
 
@@ -821,29 +893,29 @@ ssize_t			Socket::recv_into( int sockfd, std::string & buffer, size_t n,
 	return ( bytes_recvd );
 }
 
-inline ssize_t	Socket::recv_into( std::string & buffer, size_t n,
+inline ssize_t	Socket::recv_into( std::string & buffer, size_t maxlen,
 	int flags )
 {
-	return ( Socket::recv_into ( descriptor , buffer , n , flags ) );
+	return ( Socket::recv_into ( descriptor , buffer , maxlen , flags ) );
 }
 
-inline ssize_t	Socket::recv_into( Socket & sender, std::string & buffer,
-	size_t n, int flags )
+ssize_t     Socket::recv_into( Socket & sender, std::string & buffer,
+	size_t maxlen, int flags )
 {
-	return ( Socket::recv_into ( sender.descriptor , buffer , n , flags ) );
+	return ( Socket::recv_into ( sender.descriptor , buffer , maxlen , flags ) );
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-ssize_t			Socket::recvfrom_into( std::string & buffer, size_t n,
+ssize_t			Socket::recvfrom_into( std::string & buffer, size_t maxlen,
 	struct sockaddr_storage *dest_addr, socklen_t && dest_len, int flags )
 {
-	char * tmp = new char [ n ];
+	char * tmp = new char [ maxlen ];
 	ssize_t bytes_recvd;
 
 	bytes_recvd = ::recvfrom ( descriptor ,
 	                           reinterpret_cast <void *> ( tmp ) ,
-	                           n , flags ,
+	                           maxlen , flags ,
 	                           reinterpret_cast <sockaddr *> ( dest_addr ) ,
 	                           &dest_len );
 
@@ -863,12 +935,57 @@ ssize_t			Socket::recvfrom_into( std::string & buffer, size_t n,
 	return ( bytes_recvd );
 }
 
-inline ssize_t	Socket::recvfrom_into ( Socket & sender, std::string & buffer,
-	size_t n, int flags )
+ssize_t			Socket::recvfrom_into ( Socket & sender, std::string & buffer,
+	size_t maxlen, int flags )
+{
+	ssize_t bytes_sent;
+
+	bytes_sent = Socket::recvfrom_into ( buffer , maxlen , &sender.address ,
+		static_cast <socklen_t> ( sender.address_len ) , flags );
+
+	sender.ip_address = Socket::getip   ( sender.address );
+	sender.port       = Socket::getport ( sender.address );
+
+	return ( bytes_sent );
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+std::string   Socket::recvfrom ( size_t maxlen,
+	struct sockaddr_storage *dest_addr, socklen_t && dest_len,
+	bool *&& peerConnected, int flags )
+{
+	ssize_t bytes_recvd;
+	std::string data;
+
+	bytes_recvd = Socket::recvfrom_into( data , maxlen , dest_addr ,
+	                                     static_cast <socklen_t> ( dest_len ) ,
+	                                     flags );
+
+	if ( bytes_recvd == 0 ) {
+
+		if ( peerConnected != nullptr )
+			( * peerConnected ) = false;
+		else
+			throw SocketPeerDisconnect(
+				/* the peer of this socket (*/ descriptor /*)
+				has disconnected */
+			);
+
+	} else if ( peerConnected != nullptr )
+		( * peerConnected ) = true;
+
+	return ( data );
+}
+
+std::string   Socket::recvfrom ( Socket & sender, size_t maxlen,
+	bool *&& peerConnected, int flags )
 {
 	return (
-		Socket::recvfrom_into ( buffer , n , &sender.address ,
-			static_cast <socklen_t> (sender.address_len) , flags )
+		Socket::recvfrom( maxlen , &sender.address ,
+			static_cast <socklen_t> ( sender.address_len ) ,
+			static_cast <bool *> ( peerConnected ) ,
+			flags )
 	);
 }
 
@@ -879,7 +996,7 @@ Socket::SocketError::SocketError( void ) {}
 Socket::SocketError::SocketError( const char *File, size_t Line ) :
 	_file ( File ),
 	_line ( std::to_string( Line ) ),
-	_err_msg ( strerror(errno) ) {
+	_err_msg ( strerror( errno ) ) {
 }
 
 Socket::SocketError::SocketError( const char *File, size_t Line,
@@ -908,10 +1025,6 @@ Socket::SocketError &	Socket::SocketError::operator = (
 		_err_msg = rhs._err_msg;
 	}
 	return ( *this );
-}
-
-std::string	Socket::SocketError::getError( void ) const {
-	return ( _err_msg );
 }
 
 const char * Socket::SocketError::what() const noexcept {

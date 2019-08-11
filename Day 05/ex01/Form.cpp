@@ -1,21 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   AForm.cpp                                           :+:      :+:    :+:   */
+/*   Form.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 15:19:00 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/22 15:58:15 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/11 12:33:13 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "AForm.hpp"
-#include "OfficeBlock.hpp"
+#include "Form.hpp"
 
 /* PROTECTED CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - */
 
-AForm::AForm( void ) :
+Form::Form( void ) :
 	_name("n/a"), _signed(false),
 	_sign_grade_required(1),
 	_execute_grade_required(1),
@@ -26,7 +25,7 @@ AForm::AForm( void ) :
 
 /* PUBLIC CONSTRUCTOR / DECONSTRUCTOR - - - - - - - - - - - - - - - - - - - - */
 
-AForm::AForm( std::string name, const int signGradeReq, const int exeGradeReq ) :
+Form::Form( std::string name, const int signGradeReq, const int exeGradeReq ) :
 	_name(name), _signed(false),
 	_sign_grade_required(signGradeReq),
 	_execute_grade_required(exeGradeReq),
@@ -44,7 +43,7 @@ AForm::AForm( std::string name, const int signGradeReq, const int exeGradeReq ) 
 		throw GradeTooLowException();
 }
 
-AForm::AForm( const AForm & src ) :
+Form::Form( const Form & src ) :
 	_name(src._name),
 	_sign_grade_required(src._sign_grade_required),
 	_execute_grade_required(src._execute_grade_required),
@@ -64,22 +63,22 @@ AForm::AForm( const AForm & src ) :
 	*this = src;
 }
 
-AForm::~AForm( void ) { }
+Form::~Form( void ) { }
 
 
 /* OPERATOR OVERLOAD(S) - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-AForm &			AForm::operator = ( const AForm & rhs ) {
+Form &			Form::operator = ( const Form & rhs ) {
 
 	if (this != &rhs)
 		_signed = rhs._signed;
 	return (*this);
 }
 
-std::ostream &		operator << ( std::ostream& out, const AForm & in ) {
+std::ostream &		operator << ( std::ostream& out, const Form & in ) {
 
 	out << "————————————————————————————————————————————————————————————\n"
-		<< "<AForm> " << in.getName()                                  << "\n"
+		<< "<Form> " << in.getName()                                  << "\n"
 		<< "State : " << ((in.getSigned()) ? "Signed" : "not Signed") << "\n"
 		<< "Signature Grade Req. : " << in.getSignGradeReq()          << "\n"
 		<< "Execution Grade Req. : " << in.getExeGradeReq()           << "\n"
@@ -90,26 +89,26 @@ std::ostream &		operator << ( std::ostream& out, const AForm & in ) {
 
 /* ACCESSOR(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-std::string		AForm::getName() const {
+std::string		Form::getName() const {
 	return (_name);
 }
 
-bool			AForm::getSigned() const {
+bool			Form::getSigned() const {
 	return (_signed);
 }
 
-int				AForm::getSignGradeReq() const {
+int				Form::getSignGradeReq() const {
 	return (_sign_grade_required);
 }
 
-int				AForm::getExeGradeReq() const {
+int				Form::getExeGradeReq() const {
 	return (_execute_grade_required);
 }
 
 
 /* PUBLIC MEMBER FUNCTION(S) - - - - - - - - - - - - - - - - - - - - - - - - */
 
-bool	AForm::beSigned( Bureaucrat &bureaucrat ) {
+bool	Form::beSigned( Bureaucrat &bureaucrat ) {
 
 	int bureaucratGrade = bureaucrat.getGrade();
 
@@ -119,10 +118,11 @@ bool	AForm::beSigned( Bureaucrat &bureaucrat ) {
 		throw GradeTooLowException();
 
 	if ( _signed ) {
-		throw OfficeBlock::FormAlreadySigned();
+		throw "form already signed";
 	} else if ( bureaucratGrade > _sign_grade_required ) {
-		throw OfficeBlock::FormSigningGradeNotMet();
+		throw "signature grade requirement not met";
 	} else {
-		return ((_signed = true));
+		_signed = true;
 	}
+	return ( _signed );
 }

@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 16:40:11 by akharrou          #+#    #+#             */
-/*   Updated: 2019/07/26 00:24:09 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/11 12:53:19 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,16 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+# define MIN( x , y ) ( (x) < (y) ? (x) : (y) )
+# define ABS( x )     ( ( x < 0 ) ? -x : x )
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
 class Span {
 
 	private:
 
-		std::multiset<int, std::less<int>> _container;
+		std::multiset< int, std::less<int> > _container;
 		unsigned int _N;
 
 	public:
@@ -45,13 +50,15 @@ class Span {
 
 		Span &	operator = ( const Span & rhs );
 
-		std::multiset<int>::iterator	begin ();
-		std::multiset<int>::iterator	end   ();
+		typedef std::multiset<int>::iterator iterator;
+
+		iterator	begin ();
+		iterator	end   ();
 
 		unsigned int	size    () const;
 		unsigned int	maxsize () const;
 
-		template < class IterType = std::multiset<int>::iterator >
+		template < class IterType >
 		void	addNumber( IterType Begin , IterType End );
 		void	addNumber( int );
 
