@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/11 15:00:05 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/11 21:08:33 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ struct { int id; char const *name; }
 	{ IPPROTO_UDP , "UDP"         }
 };
 
-std::ostream &  operator << ( std::ostream& out, const Socket & in ) {
+std::ostream &  operator << ( std::ostream & out, const Socket & in ) {
 
 	int i = 0;
 
@@ -104,6 +104,8 @@ std::ostream &  operator << ( std::ostream& out, const Socket & in ) {
 		}
 	} if ( i == 3 )
 		out << "unknown";
+	else
+		i = 3;
 
 	out << ", type=";
 	for ( ; i < 6 ; ++i ) {
@@ -113,6 +115,8 @@ std::ostream &  operator << ( std::ostream& out, const Socket & in ) {
 		}
 	} if ( i == 6 )
 		out << "unknown";
+	else
+		i = 6;
 
 	out << ", protocol=";
 	for ( ; i < 9 ; ++i ) {
