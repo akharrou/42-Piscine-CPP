@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/11 15:41:43 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/12 11:55:25 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,11 @@ There are several special addresses:
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+# define SOCKET_DISCONNECTED (  0 )
+# define SOCKET_EMPTY        ( -1 )
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
 class Socket
 {
 
@@ -125,6 +130,7 @@ public:
 		                                int Type     = DFLT_FAMILY ,
 		                                int Protocol = DFLT_TYPE   ,
 		                                int Flags    = AI_DEFAULT );
+
 		static
 		std::string     getip ( struct sockaddr_storage address );
 
@@ -154,8 +160,8 @@ public:
 		Socket &      connect ( const char * Host, const char * Port,
 		                        int Family = AF_UNSPEC, int Flags = AI_DEFAULT );
 
-		Socket &       accept ( Socket & newClient ) const;
-		Socket         accept ( void )               const;
+		int            accept ( Socket & newClient ) const;
+		Socket         accept ( bool && res = 1 ) const;
 
 		void         shutdown ( int sockfd, int how = SHUT_RDWR );
 
@@ -188,13 +194,16 @@ public:
 		                        int flags = 0 );
 
 		ssize_t          send ( int sockfd, std::string & data,
-		                        size_t maxlen = LINE_SIZE, int flags = 0 );
+		                        size_t nbytes = LINE_SIZE,
+		                        int flags = 0 );
 
 		ssize_t          send ( std::string & data,
-		                        size_t maxlen = LINE_SIZE, int flags = 0 );
+		                        size_t nbytes = LINE_SIZE,
+		                        int flags = 0 );
 
 		ssize_t          send ( Socket & receiver, std::string & data,
-		                        size_t maxlen = LINE_SIZE, int flags = 0 );
+		                        size_t nbytes = LINE_SIZE,
+		                        int flags = 0 );
 
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -225,15 +234,15 @@ public:
 
 		ssize_t        sendto ( std::string & data,
 		                        struct sockaddr_storage *dest_addr,
-		                        socklen_t & dest_len, size_t maxlen = LINE_SIZE,
+		                        socklen_t & dest_len, size_t nbytes = LINE_SIZE,
 		                        int flags = 0 );
 
 		ssize_t        sendto ( const char * Host, const char * Port,
-		                        std::string & data, size_t maxlen = LINE_SIZE,
+		                        std::string & data, size_t nbytes = LINE_SIZE,
 		                        int flags = 0 );
 
 		ssize_t        sendto ( Socket & receiver, std::string & data,
-		                        size_t maxlen = LINE_SIZE, int flags = 0 );
+		                        size_t nbytes = LINE_SIZE, int flags = 0 );
 
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -263,13 +272,16 @@ public:
 		                        int flags = 0 );
 
 		ssize_t     recv_into ( int sockfd, std::string & buffer,
-		                        size_t maxlen = LINE_SIZE, int flags = 0 );
+		                        size_t nbytes = LINE_SIZE,
+		                        int flags = 0 );
 
 		ssize_t     recv_into ( std::string & buffer,
-		                        size_t maxlen = LINE_SIZE, int flags = 0 );
+		                        size_t nbytes = LINE_SIZE,
+		                        int flags = 0 );
 
 		ssize_t     recv_into ( Socket & sender, std::string & buffer,
-		                        size_t maxlen = LINE_SIZE, int flags = 0 );
+		                        size_t nbytes = LINE_SIZE,
+		                        int flags = 0 );
 
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -292,50 +304,50 @@ public:
 		                        size_t buflen = sizeof( T ),
 		                        int flags = 0 );
 
-		ssize_t recvfrom_into ( std::string & buffer, size_t maxlen = LINE_SIZE,
+		ssize_t recvfrom_into ( std::string & buffer, size_t nbytes = LINE_SIZE,
 		                        struct sockaddr_storage *dest_addr = nullptr,
 		                        socklen_t && dest_len = sizeof( sockaddr_storage ),
 								int flags = 0 );
 
 		ssize_t recvfrom_into ( Socket & sender, std::string & buffer,
-		                        size_t maxlen = LINE_SIZE, int flags = 0 );
+		                        size_t nbytes = LINE_SIZE, int flags = 0 );
 
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		template <typename T>
 		T *              recv ( int sockfd, size_t length,
-		                        bool *&& peerConnected = nullptr,
+		                        ssize_t && bytes_recvd = -1,
 		                        int flags = 0 );
 		template <typename T>
 		T                recv ( int sockfd,
-		                        bool *&& peerConnected = nullptr,
+		                        ssize_t && bytes_recvd = -1,
 		                        int flags = 0 );
 		template <typename T>
 		T *              recv ( size_t length,
-		                        bool *&& peerConnected = nullptr,
+		                        ssize_t && bytes_recvd = -1,
 		                        int flags = 0 );
 		template <typename T>
-		T                recv ( bool *&& peerConnected = nullptr,
+		T                recv ( ssize_t && bytes_recvd = -1,
 		                        int flags = 0 );
 		template <typename T>
 		T *              recv ( Socket & sender, size_t length,
-		                        bool *&& peerConnected = nullptr,
+		                        ssize_t && bytes_recvd = -1,
 		                        int flags = 0 );
 		template <typename T>
 		T                recv ( Socket & sender,
-		                        bool *&& peerConnected = nullptr,
+		                        ssize_t && bytes_recvd = -1,
 		                        int flags = 0 );
 
-		std::string      recv ( int sockfd, size_t maxlen = LINE_SIZE,
-		                        bool *&& peerConnected = nullptr,
+		std::string      recv ( int sockfd, size_t nbytes = LINE_SIZE,
+		                        ssize_t && bytes_recvd = -1,
 		                        int flags = 0 );
 
-		std::string      recv ( size_t maxlen = LINE_SIZE,
-		                        bool *&& peerConnected = nullptr,
+		std::string      recv ( size_t nbytes = LINE_SIZE,
+		                        ssize_t && bytes_recvd = -1,
 		                        int flags = 0 );
 
-		std::string      recv ( Socket & sender, size_t maxlen = LINE_SIZE,
-		                        bool *&& peerConnected = nullptr,
+		std::string      recv ( Socket & sender, size_t nbytes = LINE_SIZE,
+		                        ssize_t && bytes_recvd = -1,
 		                        int flags = 0 );
 
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -344,27 +356,27 @@ public:
 		T *           recvfrom ( size_t length,
 		                         struct sockaddr_storage *dest_addr = nullptr,
 		                         socklen_t && dest_len = sizeof ( sockaddr_storage ),
-		                         bool *&& peerConnected = nullptr, int flags = 0 );
+		                         ssize_t && bytes_recvd = -1, int flags = 0 );
 		template <typename T>
 		T             recvfrom ( struct sockaddr_storage *dest_addr = nullptr,
 		                         socklen_t && dest_len = sizeof ( sockaddr_storage ),
-		                         bool *&& peerConnected = nullptr, int flags = 0 );
+		                         ssize_t && bytes_recvd = -1, int flags = 0 );
 		template <typename T>
 		T *           recvfrom ( Socket & sender, size_t length,
-		                         bool *&& peerConnected = nullptr,
+		                         ssize_t && bytes_recvd = -1,
 		                         int flags = 0 );
 		template <typename T>
 		T             recvfrom ( Socket & sender,
-		                         bool *&& peerConnected = nullptr,
+		                         ssize_t && bytes_recvd = -1,
 		                         int flags = 0 );
 
-		std::string   recvfrom ( size_t maxlen = LINE_SIZE,
+		std::string   recvfrom ( size_t nbytes = LINE_SIZE,
 		                         struct sockaddr_storage *dest_addr = nullptr,
 		                         socklen_t && dest_len = sizeof ( sockaddr_storage ),
-		                         bool *&& peerConnected = nullptr, int flags = 0 );
+		                         ssize_t && bytes_recvd = -1, int flags = 0 );
 
-		std::string   recvfrom ( Socket & sender, size_t maxlen = LINE_SIZE,
-		                         bool *&& peerConnected = nullptr,
+		std::string   recvfrom ( Socket & sender, size_t nbytes = LINE_SIZE,
+		                         ssize_t && bytes_recvd = -1,
 		                         int flags = 0 );
 
 	/* EXCEPTION(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -389,22 +401,6 @@ public:
 				virtual const char * what () const noexcept;
 		};
 
-		class SocketPeerDisconnect :
-			public std::exception {
-
-			int _sockfd;
-
-			public:
-				SocketPeerDisconnect  ( void );
-				SocketPeerDisconnect  ( int sockfd );
-				SocketPeerDisconnect  ( const SocketPeerDisconnect & );
-				~SocketPeerDisconnect ( void );
-
-				SocketPeerDisconnect &	operator = ( const SocketPeerDisconnect & );
-
-				int getSockfd ( void ) const;
-				virtual const char * what () const noexcept;
-		};
 };
 
 std::ostream & operator << ( std::ostream & out, const Socket & in );
@@ -437,6 +433,8 @@ ssize_t			Socket::send( int sockfd, T * data, size_t length, int flags )
 			              length - static_cast <size_t> (bytes_sent) ,
 			              flags );
 	}
+
+	/* FIXME : make it handle block & non-bocking sockets */
 
 	return ( bytes_sent );
 }
@@ -551,16 +549,16 @@ ssize_t			Socket::sendto( const char * Host, const char * Port,
 
 		} catch ( SocketError & e ) {
 
-			if ( errno == EHOSTUNREACH )
+			if ( errno == EHOSTUNREACH ) {
+
+				errno = 0;
 				continue ;
+			}
 
 			freeaddrinfo( head );
 			throw e;
 
 		} catch ( std::exception & e ) {
-
-			if ( errno == EHOSTUNREACH )
-				continue ;
 
 			freeaddrinfo( head );
 			throw e;
@@ -606,25 +604,48 @@ template <typename T>
 ssize_t			Socket::recv_into( int sockfd, T * buffer, size_t buflen,
 	int flags )
 {
-	int bytes_recvd;
+	ssize_t bytes_recvd;
 
 	bytes_recvd = ::recv ( sockfd , reinterpret_cast <void *> ( buffer ) ,
 	                       buflen , flags );
 
-	if ( bytes_recvd == 0 || errno == ECONNRESET ) {
+	if ( bytes_recvd < 0 ) {
 
-		/* "[ECONNRESET] -- The connection is closed by the peer during a
-		receive attempt on a socket." ; See recv(2) */
+		if ( errno == ECONNRESET ) {
 
-		return ( 0 );
+			/* "[ECONNRESET] -- The connection is closed by the peer during a
+			receive attempt on a socket." ; See recv(2) */
 
-	} else if ( bytes_recvd < 0 ) {
+			/* for TCP sockets; 0 shall be the signal to indicate that the
+			peer socket disconnected ; this signal can also be returned
+			if 'recv' returns 0 */
 
-		/* 'sockfd' won't be closed; it will be up to the caller to check
-		the error corresponding to 'errno' and take action(s) accordingly. */
+			errno = 0;
+			return ( 0 );
 
-		throw SocketError( __FILE__ , __LINE__ );
+		} else if ( errno == EAGAIN || errno == EWOULDBLOCK ) {
 
+			/* "[EAGAIN] -- The socket is marked non-blocking, and the receive
+			operation would block, or a receive timeout had been set, and the
+			timeout expired before data were received." ; See recv(2) */
+
+			/* for non-blocking / timeout bound sockets; -1 shall be the
+			signal to indicate that the socket currently holds no data (but
+			that the connection is still live and on-going ) */
+
+			/* We also check 'EWOULDBLOCK' for portability but its the same
+			as 'EAGAIN'. */
+
+			errno = 0;
+			return ( -1 );
+
+		} else {
+
+			/* 'sockfd' won't be closed; it will be up to the caller to check
+			the error corresponding to 'errno' and take action(s) accordingly. */
+
+			throw SocketError( __FILE__ , __LINE__ );
+		}
 	}
 
 	return ( bytes_recvd );
@@ -683,13 +704,31 @@ ssize_t			Socket::recvfrom_into ( T * buffer, size_t buflen,
 	                           reinterpret_cast <sockaddr *> ( dest_addr ) ,
 	                           &dest_len );
 
-	if  ( bytes_recvd < 0 ) {
+	if ( bytes_recvd < 0 ) {
 
-		/* 'sockfd' won't be closed; it will be up to the caller to check
-		the error corresponding to 'errno' and take action(s) accordingly. */
+		if ( errno == EAGAIN || errno == EWOULDBLOCK ) {
 
-		throw SocketError( __FILE__ , __LINE__ );
+			/* "[EAGAIN] -- The socket is marked non-blocking, and the receive
+			operation would block, or a receive timeout had been set, and the
+			timeout expired before data were received." ; See recv(2) */
 
+			/* for non-blocking / timeout bound sockets; -1 shall be the
+			signal to indicate that the socket currently holds no data (but
+			that the connection is still live and on-going ) */
+
+			/* We also check 'EWOULDBLOCK' for portability but its the same
+			as 'EAGAIN'. */
+
+			errno = 0;
+			return ( -1 );
+
+		} else {
+
+			/* 'sockfd' won't be closed; it will be up to the caller to check
+			the error corresponding to 'errno' and take action(s) accordingly. */
+
+			throw SocketError( __FILE__ , __LINE__ );
+		}
 	}
 
 	return ( bytes_recvd );
@@ -739,95 +778,54 @@ ssize_t			Socket::recvfrom_into ( Socket & sender, T && buffer,
 
 template <typename T>
 T *				Socket::recv( int sockfd, size_t length,
-	bool *&& peerConnected, int flags )
+	ssize_t && bytes_recvd, int flags )
 {
-	ssize_t bytes_recvd;
-	T * data;
+	T * data = new T [ length ];
 
-	data = new T [ length ];
-
-	bytes_recvd = ::recv ( sockfd ,
-	                       reinterpret_cast <void *> ( data ) ,
+	bytes_recvd = ::recv ( sockfd , reinterpret_cast <void *> ( data ) ,
 	                       length , flags );
-
-	if ( bytes_recvd == 0 ) {
-
-		if ( peerConnected != nullptr )
-			( * peerConnected ) = false;
-		else
-			throw SocketPeerDisconnect(
-				/* the peer of this */ sockfd /*
-				has disconnected */
-			);
-
-	} else if ( peerConnected != nullptr )
-		( * peerConnected ) = true;
 
 	return ( data );
 }
 
 template <typename T>
-T				Socket::recv( int sockfd, bool *&& peerConnected, int flags )
+T				Socket::recv( int sockfd, ssize_t && bytes_recvd, int flags )
 {
-	ssize_t bytes_recvd;
 	T data;
 
 	bytes_recvd = ::recv ( sockfd , reinterpret_cast <void *> ( &data ) ,
 	                       sizeof ( T ) , flags );
 
-	if ( bytes_recvd == 0 ) {
-
-		if ( peerConnected != nullptr )
-			( * peerConnected ) = false;
-		else
-			throw SocketPeerDisconnect(
-				/* the peer of this */ sockfd /*
-				has disconnected */
-			);
-
-	} else if ( peerConnected != nullptr )
-		( * peerConnected ) = true;
-
 	return ( data );
 }
 
 template <typename T>
-T *				Socket::recv( size_t length, bool *&& peerConnected, int flags )
+T *				Socket::recv( size_t length, ssize_t && bytes_recvd, int flags )
 {
-	return (
-		Socket::recv <T> ( descriptor , length ,
-			static_cast <bool *> ( peerConnected ) , flags )
-	);
+	return ( Socket::recv <T> ( descriptor , length , bytes_recvd , flags ) );
 }
 
 template <typename T>
-T				Socket::recv( bool *&& peerConnected, int flags )
+T				Socket::recv( ssize_t && bytes_recvd, int flags )
 {
-	return (
-		Socket::recv <T> ( descriptor ,
-			static_cast <bool *> ( peerConnected ) , flags )
-	);
+	return ( Socket::recv <T> ( descriptor , bytes_recvd , flags ) );
 }
 
 template <typename T>
 T *				Socket::recv( Socket & sender, size_t length,
-	bool *&& peerConnected, int flags )
+	ssize_t && bytes_recvd, int flags )
 {
-	T * dataptr;
-
-	dataptr =
-		Socket::recv <T> ( sender.descriptor , length ,
-			static_cast <bool *> ( peerConnected ) , flags );
-	return ( dataptr );
+	return (
+		Socket::recv <T> ( sender.descriptor , length , bytes_recvd , flags )
+	);
 }
 
 template <typename T>
-T				Socket::recv( Socket & sender, bool *&& peerConnected,
+T				Socket::recv( Socket & sender, ssize_t && bytes_recvd,
 	int flags )
 {
 	return (
-		Socket::recv <T> ( sender.descriptor ,
-			static_cast <bool *> ( peerConnected ) , flags )
+		Socket::recv <T> ( sender.descriptor , bytes_recvd , flags )
 	);
 }
 
@@ -836,12 +834,9 @@ T				Socket::recv( Socket & sender, bool *&& peerConnected,
 template <typename T>
 T *				Socket::recvfrom( size_t length,
 	struct sockaddr_storage *dest_addr, socklen_t && dest_len,
-	bool *&& peerConnected, int flags )
+	ssize_t && bytes_recvd, int flags )
 {
-	ssize_t bytes_recvd;
-	T * data;
-
-	data = new T [ length ];
+	T * data  = new T [ length ];
 
 	bytes_recvd = ::recvfrom ( descriptor ,
 		                       reinterpret_cast <void *> ( data ) ,
@@ -849,69 +844,41 @@ T *				Socket::recvfrom( size_t length,
 		                       reinterpret_cast <sockaddr *> ( dest_addr ) ,
 		                       &dest_len );
 
-	if ( bytes_recvd == 0 ) {
-
-		if ( peerConnected != nullptr )
-			( * peerConnected ) = false;
-		else
-			throw SocketPeerDisconnect(
-				/* the peer of this socket (*/ descriptor /*)
-				has disconnected */
-			);
-
-	} else if ( peerConnected != nullptr )
-		( * peerConnected ) = true;
-
 	return ( data );
 }
 
 template <typename T>
 T 				Socket::recvfrom( struct sockaddr_storage *dest_addr,
-	socklen_t && dest_len, bool *&& peerConnected, int flags )
+	socklen_t && dest_len, ssize_t && bytes_recvd, int flags )
 {
-	ssize_t bytes_recvd;
 	T data;
 
 	bytes_recvd = ::recvfrom ( descriptor ,
 		                       reinterpret_cast <void *> ( &data ) ,
-		                       sizeof ( T ) ,
-		                       flags ,
+		                       sizeof ( T ) , flags ,
 		                       reinterpret_cast <sockaddr *> ( dest_addr ) ,
 		                       &dest_len );
-
-	if ( bytes_recvd == 0 ) {
-
-		if ( peerConnected != nullptr )
-			( * peerConnected ) = false;
-		else
-			throw SocketPeerDisconnect(
-				/* the peer of this socket (*/ descriptor /*)
-				has disconnected */
-			);
-
-	} else if ( peerConnected != nullptr )
-		( * peerConnected ) = true;
 
 	return ( data );
 }
 
 template <typename T>
 T *				Socket::recvfrom( Socket & sender, size_t length,
-	bool *&& peerConnected, int flags )
+	ssize_t && bytes_recvd, int flags )
 {
 	return (
 		Socket::recvfrom <T> ( &sender.address , sender.address_len ,
-			length , static_cast <bool *> ( peerConnected ) , flags )
+			bytes_recvd , flags )
 	);
 }
 
 template <typename T>
-T 				Socket::recvfrom( Socket & sender, bool *&& peerConnected,
+T 				Socket::recvfrom( Socket & sender, ssize_t && bytes_recvd,
 	int flags )
 {
 	return (
 		Socket::recvfrom <T> ( &sender.address , sender.address_len ,
-			static_cast <bool *> ( peerConnected ) , flags )
+			bytes_recvd , flags )
 	);
 }
 

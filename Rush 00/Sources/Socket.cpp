@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:37:54 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/11 21:08:33 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/12 11:56:36 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -569,6 +569,8 @@ Socket &	Socket::connect( const char * Host, const char * Port,
 
 	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+	/* FIXME : make it handle blocking & non-blocking sockets correctly */
+
 	struct addrinfo * head;
 	struct addrinfo * cur;
 	int ret;
@@ -651,29 +653,60 @@ Socket &	Socket::connect( Socket & peer ) {
 	return ( *this );
 }
 
-Socket &	Socket::accept( Socket & newClient ) const {
+int			Socket::accept( Socket & newClient ) const {
+
+	int res;
+
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 	newClient.address_len = sizeof( newClient.address );
 
-	newClient.descriptor =
-		::accept( descriptor,
-		          reinterpret_cast <struct sockaddr *> ( &newClient.address ),
-		          &newClient.address_len );
+	newClient.descriptor = ::accept( descriptor,
+		reinterpret_cast <struct sockaddr *> ( &newClient.address ),
+		&newClient.address_len );
 
-	if ( newClient.descriptor == -1 )
-		throw SocketError( __FILE__ , __LINE__ );
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-	newClient.ip_address  = Socket::getip   ( newClient.address );
-	newClient.port        = Socket::getport ( newClient.address );
+	if ( newClient.descriptor < 0 ) {
 
-	return ( newClient );
+		if ( errno == EWOULDBLOCK || errno == EAGAIN ) {
+
+			/* "[EWOULDBLOCK] -- socket is marked as non-blocking and no
+			connections are present to be accepted." ; See accept(2)
+
+			We also check 'EAGAIN' for portability but its the same as
+			'EWOULDBLOCK'. */
+
+			res = ( -1 );
+
+		} else {
+
+			/* 0 shall indicate that something went completely wrong with
+			Socket::accept() */
+
+			res = ( 0 );
+		}
+
+		errno = 0;
+
+	} else {
+
+		res = ( 1 );
+
+		newClient.ip_address  = Socket::getip   ( newClient.address );
+		newClient.port        = Socket::getport ( newClient.address );
+	}
+
+	return ( res );
 }
 
-Socket		Socket::accept( void ) const {
+Socket		Socket::accept( bool && res ) const {
 
-	Socket Client( this->family, this->type, this->protocol );
+	Socket Client ( this->family, this->type, this->protocol );
 
-	return ( Socket::accept( Client ) );
+	res = Socket::accept( Client );
+
+	return ( Client );
 }
 
 void		Socket::shutdown ( int sockfd, int how ) {
@@ -716,13 +749,13 @@ void		Socket::close( void )
 /* I/O OPERATONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 ssize_t		Socket::send( int sockfd, std::string & data,
-	size_t maxlen , int flags )
+	size_t nbytes , int flags )
 {
 	ssize_t bytes_sent;
 
 	bytes_sent = ::send( sockfd,
-		reinterpret_cast <const void *> ( data.substr( 0 , maxlen ).c_str() ),
-		maxlen , flags );
+		reinterpret_cast <const void *> ( data.substr( 0 , nbytes ).c_str() ),
+		nbytes , flags );
 
 	if ( bytes_sent < 0 ) {
 
@@ -731,15 +764,15 @@ ssize_t		Socket::send( int sockfd, std::string & data,
 
 		throw SocketError( __FILE__ , __LINE__ );
 
-	} else if ( static_cast <size_t> (bytes_sent) < maxlen ) {
+	} else if ( static_cast <size_t> (bytes_sent) < nbytes ) {
 
 		std::string remaining_data;
 
-		maxlen -= static_cast <size_t> ( bytes_sent );
-		remaining_data = data.substr( bytes_sent , maxlen );
+		nbytes -= static_cast <size_t> ( bytes_sent );
+		remaining_data = data.substr( bytes_sent , nbytes );
 
 		bytes_sent +=
-			Socket::send ( sockfd , remaining_data, maxlen, flags );
+			Socket::send ( sockfd , remaining_data, nbytes, flags );
 
 	}
 
@@ -747,28 +780,28 @@ ssize_t		Socket::send( int sockfd, std::string & data,
 }
 
 ssize_t		Socket::send( std::string & data,
-	size_t maxlen , int flags )
+	size_t nbytes , int flags )
 {
-	return ( Socket::send ( descriptor , data , maxlen , flags ) );
+	return ( Socket::send ( descriptor , data , nbytes , flags ) );
 }
 
 ssize_t		Socket::send( Socket & receiver, std::string & data,
-	size_t maxlen , int flags )
+	size_t nbytes , int flags )
 {
-	return ( Socket::send ( receiver.descriptor , data , maxlen , flags ) );
+	return ( Socket::send ( receiver.descriptor , data , nbytes , flags ) );
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 ssize_t		Socket::sendto ( std::string & data,
 	struct sockaddr_storage *dest_addr, socklen_t & dest_len,
-	size_t maxlen, int flags )
+	size_t nbytes, int flags )
 {
 	ssize_t bytes_sent;
 
 	bytes_sent = ::sendto( descriptor,
-		reinterpret_cast <const void *> ( data.substr( 0 , maxlen ).c_str() ),
-		maxlen , flags, reinterpret_cast <struct sockaddr *> ( dest_addr ),
+		reinterpret_cast <const void *> ( data.substr( 0 , nbytes ).c_str() ),
+		nbytes , flags, reinterpret_cast <struct sockaddr *> ( dest_addr ),
 		dest_len );
 
 	if ( bytes_sent < 0 ) {
@@ -778,15 +811,15 @@ ssize_t		Socket::sendto ( std::string & data,
 
 		throw SocketError( __FILE__ , __LINE__ );
 
-	} else if ( static_cast <size_t> (bytes_sent) < maxlen ) {
+	} else if ( static_cast <size_t> (bytes_sent) < nbytes ) {
 
 		std::string remaining_data;
 
-		maxlen -= static_cast <size_t> ( bytes_sent );
-		remaining_data = data.substr( bytes_sent , maxlen );
+		nbytes -= static_cast <size_t> ( bytes_sent );
+		remaining_data = data.substr( bytes_sent , nbytes );
 
 		bytes_sent +=
-			Socket::sendto ( remaining_data, dest_addr, dest_len,  maxlen, flags );
+			Socket::sendto ( remaining_data, dest_addr, dest_len,  nbytes, flags );
 
 	}
 
@@ -794,7 +827,7 @@ ssize_t		Socket::sendto ( std::string & data,
 }
 
 ssize_t		Socket::sendto( const char * Host, const char * Port,
-	std::string & data, size_t maxlen, int flags )
+	std::string & data, size_t nbytes, int flags )
 {
 	struct addrinfo * head;
 	struct addrinfo * cur;
@@ -827,20 +860,20 @@ ssize_t		Socket::sendto( const char * Host, const char * Port,
 
 			bytes_sent = Socket::sendto( data ,
 					reinterpret_cast <sockaddr_storage *> ( cur->ai_addr ) ,
-					cur->ai_addrlen, maxlen , flags );
+					cur->ai_addrlen, nbytes , flags );
 
 		} catch ( SocketError & e ) {
 
-			if ( errno == EHOSTUNREACH )
+			if ( errno == EHOSTUNREACH ) {
+
+				errno = 0;
 				continue ;
+			}
 
 			freeaddrinfo( head );
 			throw e;
 
 		} catch ( std::exception & e ) {
-
-			if ( errno == EHOSTUNREACH )
-				continue ;
 
 			freeaddrinfo( head );
 			throw e;
@@ -853,42 +886,65 @@ ssize_t		Socket::sendto( const char * Host, const char * Port,
 	return ( bytes_sent );
 }
 
-ssize_t		Socket::sendto( Socket & receiver, std::string & data, size_t maxlen,
+ssize_t		Socket::sendto( Socket & receiver, std::string & data, size_t nbytes,
 	int flags )
 {
 	return (
 		Socket::sendto ( data , &receiver.address , receiver.address_len ,
-			maxlen , flags )
+			nbytes , flags )
 	);
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-ssize_t		Socket::recv_into( int sockfd, std::string & buffer, size_t maxlen,
-	int flags )
+ssize_t		Socket::recv_into( int sockfd, std::string & buffer,
+	size_t nbytes, int flags )
 {
-	char * tmp = new char [ maxlen ];
 	ssize_t bytes_recvd;
+	char * tmp = new char [ nbytes ];
 
 	bytes_recvd = ::recv ( sockfd , reinterpret_cast <void *> ( tmp ) ,
-	                       maxlen , flags );
+	                       nbytes , flags );
 
-	if ( bytes_recvd == 0 || errno == ECONNRESET ) {
-
-		/* "[ECONNRESET] -- The connection is closed by the peer during a
-		receive attempt on a socket." ; See recv(2) */
+	if ( bytes_recvd < 0 ) {
 
 		delete [] tmp;
-		return ( 0 );
 
-	} else if ( bytes_recvd < 0 ) {
+		if ( errno == ECONNRESET ) {
 
-		/* 'sockfd' won't be closed; it will be up to the caller to check
-		the error corresponding to 'errno' and take action(s) accordingly. */
+			/* "[ECONNRESET] -- The connection is closed by the peer during a
+			receive attempt on a socket." ; See recv(2) */
 
-		delete [] tmp;
-		throw SocketError( __FILE__ , __LINE__ );
+			/* for TCP sockets; 0 shall be the signal to indicate that the
+			peer socket disconnected ; this signal can also be returned
+			if 'recv' returns 0 */
 
+			errno = 0;
+			return ( 0 );
+
+		} else if ( errno == EAGAIN || errno == EWOULDBLOCK ) {
+
+			/* "[EAGAIN] -- The socket is marked non-blocking, and the receive
+			operation would block, or a receive timeout had been set, and the
+			timeout expired before data were received." ; See recv(2) */
+
+			/* for non-blocking / timeout bound sockets; -1 shall be the
+			signal to indicate that the socket currently holds no data (but
+			that the connection is still live and on-going ) */
+
+			/* We also check 'EWOULDBLOCK' for portability but its the same
+			as 'EAGAIN'. */
+
+			errno = 0;
+			return ( -1 );
+
+		} else {
+
+			/* 'sockfd' won't be closed; it will be up to the caller to check
+			the error corresponding to 'errno' and take action(s) accordingly. */
+
+			throw SocketError( __FILE__ , __LINE__ );
+		}
 	}
 
 	buffer = tmp;
@@ -897,40 +953,62 @@ ssize_t		Socket::recv_into( int sockfd, std::string & buffer, size_t maxlen,
 	return ( bytes_recvd );
 }
 
-ssize_t		Socket::recv_into( std::string & buffer, size_t maxlen,
+ssize_t		Socket::recv_into( std::string & buffer, size_t nbytes,
 	int flags )
 {
-	return ( Socket::recv_into ( descriptor , buffer , maxlen , flags ) );
+	return ( Socket::recv_into ( descriptor , buffer , nbytes , flags ) );
 }
 
 ssize_t     Socket::recv_into( Socket & sender, std::string & buffer,
-	size_t maxlen, int flags )
+	size_t nbytes, int flags )
 {
-	return ( Socket::recv_into ( sender.descriptor , buffer , maxlen , flags ) );
+	return ( Socket::recv_into ( sender.descriptor , buffer , nbytes , flags ) );
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-ssize_t		Socket::recvfrom_into( std::string & buffer, size_t maxlen,
+ssize_t		Socket::recvfrom_into( std::string & buffer, size_t nbytes,
 	struct sockaddr_storage *dest_addr, socklen_t && dest_len, int flags )
 {
-	char * tmp = new char [ maxlen ];
 	ssize_t bytes_recvd;
+	char * tmp = new char [ nbytes ];
 
 	bytes_recvd = ::recvfrom ( descriptor ,
 	                           reinterpret_cast <void *> ( tmp ) ,
-	                           maxlen , flags ,
+	                           nbytes , flags ,
 	                           reinterpret_cast <sockaddr *> ( dest_addr ) ,
 	                           &dest_len );
 
-	if  ( bytes_recvd < 0 ) {
+	/* FIXME : make it keep receiving until nbytes are received from the
+	           socket */
 
-		/* 'sockfd' won't be closed; it will be up to the caller to check
-		the error corresponding to 'errno' and take action(s) accordingly. */
+	if ( bytes_recvd < 0 ) {
 
 		delete [] tmp;
-		throw SocketError( __FILE__ , __LINE__ );
 
+		if ( errno == EAGAIN || errno == EWOULDBLOCK ) {
+
+			/* "[EAGAIN] -- The socket is marked non-blocking, and the receive
+			operation would block, or a receive timeout had been set, and the
+			timeout expired before data were received." ; See recv(2) */
+
+			/* for non-blocking / timeout bound sockets; -1 shall be the
+			signal to indicate that the socket currently holds no data (but
+			that the connection is still live and on-going ) */
+
+			/* We also check 'EWOULDBLOCK' for portability but its the same
+			as 'EAGAIN'. */
+
+			errno = 0;
+			return ( -1 );
+
+		} else {
+
+			/* 'sockfd' won't be closed; it will be up to the caller to check
+			the error corresponding to 'errno' and take action(s) accordingly. */
+
+			throw SocketError( __FILE__ , __LINE__ );
+		}
 	}
 
 	buffer = tmp;
@@ -940,11 +1018,11 @@ ssize_t		Socket::recvfrom_into( std::string & buffer, size_t maxlen,
 }
 
 ssize_t		Socket::recvfrom_into ( Socket & sender, std::string & buffer,
-	size_t maxlen, int flags )
+	size_t nbytes, int flags )
 {
 	ssize_t bytes_sent;
 
-	bytes_sent = Socket::recvfrom_into ( buffer , maxlen , &sender.address ,
+	bytes_sent = Socket::recvfrom_into ( buffer , nbytes , &sender.address ,
 		static_cast <socklen_t> ( sender.address_len ) , flags );
 
 	sender.ip_address = Socket::getip   ( sender.address );
@@ -955,85 +1033,55 @@ ssize_t		Socket::recvfrom_into ( Socket & sender, std::string & buffer,
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-std::string	Socket::recvfrom ( size_t maxlen,
+std::string	Socket::recvfrom ( size_t nbytes,
 	struct sockaddr_storage *dest_addr, socklen_t && dest_len,
-	bool *&& peerConnected, int flags )
+	ssize_t && bytes_recvd, int flags )
 {
-	ssize_t bytes_recvd;
 	std::string data;
 
-	bytes_recvd = Socket::recvfrom_into( data , maxlen , dest_addr ,
-	                                     static_cast <socklen_t> ( dest_len ) ,
-	                                     flags );
-
-	if ( bytes_recvd == 0 ) {
-
-		if ( peerConnected != nullptr )
-			( * peerConnected ) = false;
-		else
-			throw SocketPeerDisconnect(
-				/* the peer of this socket (*/ descriptor /*)
-				has disconnected */
-			);
-
-	} else if ( peerConnected != nullptr )
-		( * peerConnected ) = true;
+	bytes_recvd = Socket::recvfrom_into( data , nbytes , dest_addr ,
+		static_cast <socklen_t> ( dest_len ) , flags );
 
 	return ( data );
 }
 
-std::string	Socket::recvfrom ( Socket & sender, size_t maxlen,
-	bool *&& peerConnected, int flags )
+std::string	Socket::recvfrom ( Socket & sender, size_t nbytes,
+	ssize_t && bytes_recvd, int flags )
 {
 	return (
-		Socket::recvfrom( maxlen , &sender.address ,
+		Socket::recvfrom( nbytes , &sender.address ,
 			static_cast <socklen_t> ( sender.address_len ) ,
-			static_cast <bool *> ( peerConnected ) ,
-			flags )
+			static_cast <ssize_t> ( bytes_recvd ) , flags )
 	);
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-std::string	Socket::recv ( int sockfd, size_t maxlen,
-	bool *&& peerConnected, int flags )
+std::string	Socket::recv ( int sockfd, size_t nbytes,
+	ssize_t && bytes_recvd, int flags )
 {
-	ssize_t bytes_recvd;
 	std::string data;
 
-	bytes_recvd = Socket::recv_into( sockfd , data , maxlen , flags );
-
-	if ( bytes_recvd == 0 ) {
-
-		if ( peerConnected != nullptr )
-			( * peerConnected ) = false;
-		else
-			throw SocketPeerDisconnect(
-				/* the peer of this socket (*/ descriptor /*)
-				has disconnected */
-			);
-
-	} else if ( peerConnected != nullptr )
-		( * peerConnected ) = true;
+	bytes_recvd = Socket::recv_into( sockfd , data , nbytes , flags );
 
 	return ( data );
 }
 
-std::string	Socket::recv ( size_t maxlen,
-	bool *&& peerConnected, int flags )
+std::string	Socket::recv ( size_t nbytes,
+	ssize_t && bytes_recvd, int flags )
 {
 	return (
-		Socket::recv ( descriptor , maxlen ,
-			static_cast <bool *> ( peerConnected ) , flags )
+		Socket::recv ( descriptor , nbytes ,
+			static_cast <ssize_t> ( bytes_recvd ) , flags )
 	);
 }
 
-std::string	Socket::recv ( Socket & sender, size_t maxlen,
-	bool *&& peerConnected, int flags )
+std::string	Socket::recv ( Socket & sender, size_t nbytes,
+	ssize_t && bytes_recvd, int flags )
 {
 	return (
-		Socket::recv ( sender.descriptor , maxlen ,
-			static_cast <bool *> ( peerConnected ) , flags )
+		Socket::recv ( sender.descriptor , nbytes ,
+			static_cast <ssize_t> ( bytes_recvd ) , flags )
 	);
 }
 
@@ -1080,45 +1128,5 @@ const char * Socket::SocketError::what() const noexcept {
 	return (
 		std::string("~ " + _file + ":" + _line + " -- Socket Error : "
 		+ _err_msg + " ~").c_str()
-	);
-}
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-Socket::SocketPeerDisconnect::SocketPeerDisconnect() :
-	_sockfd ( -1 ) {}
-
-Socket::SocketPeerDisconnect::SocketPeerDisconnect( int fd ) :
-	_sockfd ( fd ) {}
-
-Socket::SocketPeerDisconnect::SocketPeerDisconnect(
-	const SocketPeerDisconnect & src )
-{
-	*this = src;
-}
-
-Socket::SocketPeerDisconnect::~SocketPeerDisconnect( void ) {}
-
-Socket::SocketPeerDisconnect &
-	Socket::SocketPeerDisconnect::operator = (
-		const SocketPeerDisconnect & rhs )
-{
-	if ( this != &rhs )
-		_sockfd = rhs._sockfd;
-	return ( *this );
-}
-
-int Socket::SocketPeerDisconnect::getSockfd( void ) const {
-	return ( _sockfd );
-}
-
-const char * Socket::SocketPeerDisconnect::what() const noexcept {
-
-	return (
-		std::string(
-			"~ SocketDisconnect : Peer of socket # " +
-			std::to_string(_sockfd) +
-			"Disconnected ~"
-		).c_str()
 	);
 }

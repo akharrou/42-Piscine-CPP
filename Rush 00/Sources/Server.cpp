@@ -5,7 +5,7 @@
 
 #include <iostream>
 #include <thread>
-#include <deque>
+#include <map>
 
 int	main( int ac, const char **argv ) {
 
@@ -14,14 +14,14 @@ int	main( int ac, const char **argv ) {
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-	std::deque<Socket> clients;
+	std::map < size_t, Socket > activeClients;
 	Socket Server;
 
 	try {
 
-		Server.bind( argv[1] , argv[2] )
-			  .setsockopt( SOL_SOCKET , SO_REUSEPORT , true )
+		Server.setsockopt( SOL_SOCKET , SO_REUSEPORT , true )
 			  .setblocking(true)
+			  .bind( argv[1] , argv[2] )
 		      .listen(5);
 
 		std::cout << "Server Status : [RUNNING]\n"
@@ -34,24 +34,36 @@ int	main( int ac, const char **argv ) {
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-	Socket tmpClientHolder;
-
 	while (1) {
 
-		Server.accept( tmpClientHolder );
+		activeClients[ activeClients.size() + 1 ] = Server.accept();
+		std::cout << ("Client #" + std::to_string( activeClients.size() ) + " joined the session.\n");
 
-		std::thread( [ &Server ] ( Socket client ) -> void {
+		try {
 
-			std::string clientMsg;
-			std::string serverReply;
+			std::thread	( [ & Server , & activeClients ] ( size_t identifier ) -> void {
 
-			while ( Server.recv_into( client , clientMsg ) ) {
+				std::map < size_t, Socket> ::iterator curClient;
+				std::string clientMsg;
+				std::string broadcastMsg;
 
-				serverReply = std::string("Server heard you loud and clear : \"" + clientMsg + "\"");
-				Server.send( client , serverReply );
-			}
+				Socket & client = activeClients[ identifier ];
 
-		}, tmpClientHolder ).detach();
+				while ( Server.recv_into( client , clientMsg ) ) {
+
+					broadcastMsg = std::string("[Client #" + std::to_string( identifier ) + "]: " + clientMsg );
+
+					for ( curClient = activeClients.begin(); curClient != activeClients.end(); ++curClient )
+						Server.send( (*curClient).second , broadcastMsg );
+
+				}
+
+				std::cout << std::string("Client #" + std::to_string( identifier ) + " left the session.\n");
+				activeClients.erase( identifier );
+
+			}, activeClients.size() ).detach();
+
+		} catch ( Socket::SocketError & ) {}
 
 	}
 

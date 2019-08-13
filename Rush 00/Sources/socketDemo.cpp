@@ -35,7 +35,7 @@ int	main(int ac, const char **argv) {
 
 			// std::string
 			Client.sendto( host , port , "(string) ; Hello World from UDP -- #", 37 );
-			Server.recvfrom_into( string_msg );
+			Server.recvfrom_into( /* ClientSenderInfo, */ string_msg );
 
 			// char [] ; (i.e, char *)
 			Client.sendto( host , port , "(char[]) ; Hello World from UDP -- #", 37 );
@@ -120,7 +120,7 @@ int	main(int ac, const char **argv) {
 
 		/* STEP #3 -- SERVER SIDE */
 		Socket NEW_ConnectedClient;
-		NEW_ConnectedClient = Server.accept();
+		Server.accept( NEW_ConnectedClient );
 
 		std::cout << endl << "Server:\n" << Server << endl;
 		std::cout << endl << "Client:\n" << NEW_ConnectedClient << endl;
