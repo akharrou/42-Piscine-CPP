@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/12 11:55:25 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/13 23:42:37 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -708,24 +708,10 @@ ssize_t			Socket::recvfrom_into ( T * buffer, size_t buflen,
 
 		if ( errno == EAGAIN || errno == EWOULDBLOCK ) {
 
-			/* "[EAGAIN] -- The socket is marked non-blocking, and the receive
-			operation would block, or a receive timeout had been set, and the
-			timeout expired before data were received." ; See recv(2) */
-
-			/* for non-blocking / timeout bound sockets; -1 shall be the
-			signal to indicate that the socket currently holds no data (but
-			that the connection is still live and on-going ) */
-
-			/* We also check 'EWOULDBLOCK' for portability but its the same
-			as 'EAGAIN'. */
-
 			errno = 0;
 			return ( -1 );
 
 		} else {
-
-			/* 'sockfd' won't be closed; it will be up to the caller to check
-			the error corresponding to 'errno' and take action(s) accordingly. */
 
 			throw SocketError( __FILE__ , __LINE__ );
 		}
@@ -785,6 +771,8 @@ T *				Socket::recv( int sockfd, size_t length,
 	bytes_recvd = ::recv ( sockfd , reinterpret_cast <void *> ( data ) ,
 	                       length , flags );
 
+	/* FIXME : make it handle non-blocking sockets */
+
 	return ( data );
 }
 
@@ -795,6 +783,8 @@ T				Socket::recv( int sockfd, ssize_t && bytes_recvd, int flags )
 
 	bytes_recvd = ::recv ( sockfd , reinterpret_cast <void *> ( &data ) ,
 	                       sizeof ( T ) , flags );
+
+	/* FIXME : make it handle non-blocking sockets */
 
 	return ( data );
 }
@@ -844,6 +834,8 @@ T *				Socket::recvfrom( size_t length,
 		                       reinterpret_cast <sockaddr *> ( dest_addr ) ,
 		                       &dest_len );
 
+	/* FIXME : make it handle non-blocking sockets */
+
 	return ( data );
 }
 
@@ -858,6 +850,8 @@ T 				Socket::recvfrom( struct sockaddr_storage *dest_addr,
 		                       sizeof ( T ) , flags ,
 		                       reinterpret_cast <sockaddr *> ( dest_addr ) ,
 		                       &dest_len );
+
+	/* FIXME : make it handle non-blocking sockets */
 
 	return ( data );
 }

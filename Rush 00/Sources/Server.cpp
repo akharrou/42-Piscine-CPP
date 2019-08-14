@@ -43,7 +43,7 @@ int	main( int ac, const char **argv ) {
 
 			std::thread	( [ & Server , & activeClients ] ( size_t identifier ) -> void {
 
-				std::map < size_t, Socket> ::iterator curClient;
+				std::map < size_t, Socket > ::iterator curClient;
 				std::string clientMsg;
 				std::string broadcastMsg;
 
