@@ -6,7 +6,7 @@
 /*   By: akharrou <akharrou@student.42.us.org>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 17:33:37 by akharrou          #+#    #+#             */
-/*   Updated: 2019/08/13 23:42:37 by akharrou         ###   ########.fr       */
+/*   Updated: 2019/08/16 15:22:49 by akharrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-# define IP  ( IPPROTO_IP  ) /* ip  ; 0  ; IP  ; # internet protocol             */
-# define TCP ( IPPROTO_TCP ) /* tcp ; 6  ; TCP ; # transmission control protocol */
-# define UDP ( IPPROTO_UDP ) /* udp ; 17 ; UDP ; # user datagram protocol
+# define IP  ( IPPROTO_IP  ) /* ip  ; 0  ; IP  ; # internet _protocol             */
+# define TCP ( IPPROTO_TCP ) /* tcp ; 6  ; TCP ; # transmission control _protocol */
+# define UDP ( IPPROTO_UDP ) /* udp ; 17 ; UDP ; # user datagram _protocol
 
 See : /etc/protocols
 
@@ -99,28 +99,33 @@ There are several special addresses:
 class Socket
 {
 
-public:
-	Socket(void);
-	Socket(const Socket &src);
-	Socket(int Family, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL);
-	Socket(const char *Host, const char *Port,
-		   int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL);
-	~Socket(void);
+	protected:
 
-	Socket &operator=(const Socket &rhs);
+		struct sockaddr_storage _address;
+		socklen_t _address_len;
 
-	/* MEMBERS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+		std::string _ip_address;
+		std::string _port;
 
-		std::string ip_address;
-		std::string port;
+		int _family;
+		int _type;
+		int _protocol;
+		int _descriptor;
 
-		int family;
-		int type;
-		int protocol;
-		int descriptor;
+	public:
 
-		struct sockaddr_storage address;
-		socklen_t address_len;
+	/* DE/CONSTRUCTORS - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+		Socket ( void );
+		Socket ( const Socket & src );
+		Socket ( int Family, int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL) ;
+		Socket ( const char * Host, const char * Port,
+			int Type = DFLT_TYPE, int Protocol = DFLT_PROTOCOL );
+		~Socket( void );
+
+	/* OVERLOADS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+		Socket & operator = ( const Socket & rhs );
 
 	/* STATICS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -132,12 +137,12 @@ public:
 		                                int Flags    = AI_DEFAULT );
 
 		static
-		std::string     getip ( struct sockaddr_storage address );
+		std::string     getip ( struct sockaddr_storage _address );
 
 		static
-		std::string   getport ( struct sockaddr_storage address );
+		std::string   getport ( struct sockaddr_storage _address );
 
-	/* OPTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+	/* ACCESSORS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 		Socket &   setsockopt ( int level, int option, int value );
 		Socket &   settimeout ( double timeout );
@@ -145,6 +150,15 @@ public:
 
 		int        getsockopt ( int option, int level ) const;
 		double     gettimeout ( void ) const;
+
+		int            fileno ( void ) const;
+
+		int         getFamily ( void ) const;
+		int           getType ( void ) const;
+		int       getProtocol ( void ) const;
+
+		std::string     getIp ( void ) const;
+		std::string   getPort ( void ) const;
 
 	/* OPERATIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -316,38 +330,38 @@ public:
 
 		template <typename T>
 		T *              recv ( int sockfd, size_t length,
-		                        ssize_t && bytes_recvd = -1,
+		                        ssize_t *&& bytes_recvd = nullptr,
 		                        int flags = 0 );
 		template <typename T>
 		T                recv ( int sockfd,
-		                        ssize_t && bytes_recvd = -1,
+		                        ssize_t *&& bytes_recvd = nullptr,
 		                        int flags = 0 );
 		template <typename T>
 		T *              recv ( size_t length,
-		                        ssize_t && bytes_recvd = -1,
+		                        ssize_t *&& bytes_recvd = nullptr,
 		                        int flags = 0 );
 		template <typename T>
-		T                recv ( ssize_t && bytes_recvd = -1,
+		T                recv ( ssize_t *&& bytes_recvd = nullptr,
 		                        int flags = 0 );
 		template <typename T>
 		T *              recv ( Socket & sender, size_t length,
-		                        ssize_t && bytes_recvd = -1,
+		                        ssize_t *&& bytes_recvd = nullptr,
 		                        int flags = 0 );
 		template <typename T>
 		T                recv ( Socket & sender,
-		                        ssize_t && bytes_recvd = -1,
+		                        ssize_t *&& bytes_recvd = nullptr,
 		                        int flags = 0 );
 
 		std::string      recv ( int sockfd, size_t nbytes = LINE_SIZE,
-		                        ssize_t && bytes_recvd = -1,
+		                        ssize_t *&& bytes_recvd = nullptr,
 		                        int flags = 0 );
 
 		std::string      recv ( size_t nbytes = LINE_SIZE,
-		                        ssize_t && bytes_recvd = -1,
+		                        ssize_t *&& bytes_recvd = nullptr,
 		                        int flags = 0 );
 
 		std::string      recv ( Socket & sender, size_t nbytes = LINE_SIZE,
-		                        ssize_t && bytes_recvd = -1,
+		                        ssize_t *&& bytes_recvd = nullptr,
 		                        int flags = 0 );
 
 		/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -356,27 +370,27 @@ public:
 		T *           recvfrom ( size_t length,
 		                         struct sockaddr_storage *dest_addr = nullptr,
 		                         socklen_t && dest_len = sizeof ( sockaddr_storage ),
-		                         ssize_t && bytes_recvd = -1, int flags = 0 );
+		                         ssize_t *&& bytes_recvd = nullptr, int flags = 0 );
 		template <typename T>
 		T             recvfrom ( struct sockaddr_storage *dest_addr = nullptr,
 		                         socklen_t && dest_len = sizeof ( sockaddr_storage ),
-		                         ssize_t && bytes_recvd = -1, int flags = 0 );
+		                         ssize_t *&& bytes_recvd = nullptr, int flags = 0 );
 		template <typename T>
 		T *           recvfrom ( Socket & sender, size_t length,
-		                         ssize_t && bytes_recvd = -1,
+		                         ssize_t *&& bytes_recvd = nullptr,
 		                         int flags = 0 );
 		template <typename T>
 		T             recvfrom ( Socket & sender,
-		                         ssize_t && bytes_recvd = -1,
+		                         ssize_t *&& bytes_recvd = nullptr,
 		                         int flags = 0 );
 
 		std::string   recvfrom ( size_t nbytes = LINE_SIZE,
 		                         struct sockaddr_storage *dest_addr = nullptr,
 		                         socklen_t && dest_len = sizeof ( sockaddr_storage ),
-		                         ssize_t && bytes_recvd = -1, int flags = 0 );
+		                         ssize_t *&& bytes_recvd = nullptr, int flags = 0 );
 
 		std::string   recvfrom ( Socket & sender, size_t nbytes = LINE_SIZE,
-		                         ssize_t && bytes_recvd = -1,
+		                         ssize_t *&& bytes_recvd = nullptr,
 		                         int flags = 0 );
 
 	/* EXCEPTION(S) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -442,13 +456,13 @@ ssize_t			Socket::send( int sockfd, T * data, size_t length, int flags )
 template <typename T>
 ssize_t			Socket::send( T * data, size_t length, int flags )
 {
-	return ( Socket::send( descriptor, data, length, flags ) );
+	return ( Socket::send( _descriptor, data, length, flags ) );
 }
 
 template <typename T>
 ssize_t			Socket::send( Socket & receiver, T * data, size_t length, int flags )
 {
-	return ( Socket::send( receiver.descriptor, data, length, flags ) );
+	return ( Socket::send( receiver._descriptor, data, length, flags ) );
 }
 
 template <typename T>
@@ -460,13 +474,13 @@ ssize_t			Socket::send( int sockfd, T && data, size_t length, int flags )
 template <typename T>
 ssize_t			Socket::send( T && data, size_t length, int flags )
 {
-	return ( Socket::send( descriptor, &data, length, flags ) );
+	return ( Socket::send( _descriptor, &data, length, flags ) );
 }
 
 template <typename T>
 ssize_t			Socket::send( Socket & receiver, T && data, size_t length, int flags )
 {
-	return ( Socket::send( receiver.descriptor, &data, length, flags ) );
+	return ( Socket::send( receiver._descriptor, &data, length, flags ) );
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -477,7 +491,7 @@ ssize_t			Socket::sendto( T * data, struct sockaddr_storage *dest_addr,
 {
 	ssize_t bytes_sent;
 
-	bytes_sent = ::sendto( descriptor, reinterpret_cast <const void *> ( data ) ,
+	bytes_sent = ::sendto( _descriptor, reinterpret_cast <const void *> ( data ) ,
 	                       length , flags,
 	                       reinterpret_cast <struct sockaddr *> ( dest_addr ),
 	                       dest_len );
@@ -522,7 +536,7 @@ ssize_t			Socket::sendto( const char * Host, const char * Port,
 
 	try {
 
-		head = Socket::getaddrinfo( Host , Port , family , type , protocol );
+		head = Socket::getaddrinfo( Host , Port , _family , _type , _protocol );
 
 	} catch ( SocketError & e ) {
 
@@ -583,7 +597,7 @@ ssize_t			Socket::sendto( Socket & receiver, T * data, size_t length,
 	int flags )
 {
 	return (
-		Socket::sendto( data , &receiver.address , receiver.address_len ,
+		Socket::sendto( data , &receiver._address , receiver._address_len ,
 			length , flags )
 	);
 }
@@ -593,7 +607,7 @@ ssize_t			Socket::sendto( Socket & receiver, T && data, size_t length,
 	int flags )
 {
 	return (
-		Socket::sendto( &data , &receiver.address , receiver.address_len ,
+		Socket::sendto( &data , &receiver._address , receiver._address_len ,
 			length , flags )
 	);
 }
@@ -608,6 +622,9 @@ ssize_t			Socket::recv_into( int sockfd, T * buffer, size_t buflen,
 
 	bytes_recvd = ::recv ( sockfd , reinterpret_cast <void *> ( buffer ) ,
 	                       buflen , flags );
+
+	/* FIXME : make it keep receiving until length are received from the
+	           socket */
 
 	if ( bytes_recvd < 0 ) {
 
@@ -661,14 +678,14 @@ ssize_t			Socket::recv_into( int sockfd, T && buffer, size_t buflen,
 template <typename T>
 ssize_t			Socket::recv_into( T * buffer, size_t buflen, int flags )
 {
-	return ( Socket::recv_into ( descriptor , buffer , buflen , flags ) );
+	return ( Socket::recv_into ( _descriptor , buffer , buflen , flags ) );
 }
 
 template <typename T>
 ssize_t			Socket::recv_into( T && buffer, size_t buflen, int flags )
 {
 	return (
-		Socket::recv_into ( descriptor , &buffer , buflen , flags )
+		Socket::recv_into ( _descriptor , &buffer , buflen , flags )
 	);
 }
 
@@ -677,7 +694,7 @@ ssize_t			Socket::recv_into( Socket & sender, T * buffer, size_t buflen,
 	int flags )
 {
 	return (
-		Socket::recv_into ( sender.descriptor , buffer , buflen , flags )
+		Socket::recv_into ( sender._descriptor , buffer , buflen , flags )
 	);
 }
 
@@ -686,7 +703,7 @@ ssize_t			Socket::recv_into( Socket & sender, T && buffer, size_t buflen,
 	int flags )
 {
 	return (
-		Socket::recv_into ( sender.descriptor , &buffer , buflen , flags )
+		Socket::recv_into ( sender._descriptor , &buffer , buflen , flags )
 	);
 }
 
@@ -698,23 +715,22 @@ ssize_t			Socket::recvfrom_into ( T * buffer, size_t buflen,
 {
 	ssize_t bytes_recvd;
 
-	bytes_recvd = ::recvfrom ( descriptor ,
+	bytes_recvd = ::recvfrom ( _descriptor ,
 	                           reinterpret_cast <void *> ( buffer ) ,
 	                           buflen , flags ,
 	                           reinterpret_cast <sockaddr *> ( dest_addr ) ,
 	                           &dest_len );
 
+	/* FIXME : make it keep receiving until length are received from the
+	           socket */
+
 	if ( bytes_recvd < 0 ) {
 
 		if ( errno == EAGAIN || errno == EWOULDBLOCK ) {
-
 			errno = 0;
 			return ( -1 );
-
-		} else {
-
+		} else
 			throw SocketError( __FILE__ , __LINE__ );
-		}
 	}
 
 	return ( bytes_recvd );
@@ -736,11 +752,11 @@ ssize_t			Socket::recvfrom_into ( Socket & sender, T * buffer,
 {
 	ssize_t bytes_sent;
 
-	bytes_sent = Socket::recvfrom_into ( buffer , buflen , &sender.address ,
-		static_cast <socklen_t> ( sender.address_len ) , flags );
+	bytes_sent = Socket::recvfrom_into ( buffer , buflen , &sender._address ,
+		static_cast <socklen_t> ( sender._address_len ) , flags );
 
-	sender.ip_address = Socket::getip   ( sender.address );
-	sender.port       = Socket::getport ( sender.address );
+	sender._ip_address = Socket::getip   ( sender._address );
+	sender._port       = Socket::getport ( sender._address );
 
 	return ( bytes_sent );
 }
@@ -751,11 +767,11 @@ ssize_t			Socket::recvfrom_into ( Socket & sender, T && buffer,
 {
 	ssize_t bytes_sent;
 
-	bytes_sent = Socket::recvfrom_into ( &buffer , buflen , &sender.address ,
-		static_cast <socklen_t> ( sender.address_len ) , flags );
+	bytes_sent = Socket::recvfrom_into ( &buffer , buflen , &sender._address ,
+		static_cast <socklen_t> ( sender._address_len ) , flags );
 
-	sender.ip_address = Socket::getip   ( sender.address );
-	sender.port       = Socket::getport ( sender.address );
+	sender._ip_address = Socket::getip   ( sender._address );
+	sender._port       = Socket::getport ( sender._address );
 
 	return ( bytes_sent );
 }
@@ -764,58 +780,66 @@ ssize_t			Socket::recvfrom_into ( Socket & sender, T && buffer,
 
 template <typename T>
 T *				Socket::recv( int sockfd, size_t length,
-	ssize_t && bytes_recvd, int flags )
+	ssize_t *&& bytes_recvd, int flags )
 {
 	T * data = new T [ length ];
+	ssize_t res;
 
-	bytes_recvd = ::recv ( sockfd , reinterpret_cast <void *> ( data ) ,
-	                       length , flags );
+	res = Socket::recv_into ( sockfd , data , length , flags );
 
-	/* FIXME : make it handle non-blocking sockets */
+	if ( bytes_recvd == nullptr ) {
+		if ( res < 0 )
+			throw SocketError( __FILE__ , __LINE__ );
+	} else
+		( *bytes_recvd ) = res;
 
 	return ( data );
 }
 
 template <typename T>
-T				Socket::recv( int sockfd, ssize_t && bytes_recvd, int flags )
+T				Socket::recv( int sockfd, ssize_t *&& bytes_recvd, int flags )
 {
 	T data;
+	ssize_t res;
 
-	bytes_recvd = ::recv ( sockfd , reinterpret_cast <void *> ( &data ) ,
-	                       sizeof ( T ) , flags );
+	res = Socket::recv_into ( sockfd , data , sizeof ( T ) , flags );
 
-	/* FIXME : make it handle non-blocking sockets */
+	if ( bytes_recvd == nullptr ) {
+		if ( res < 0 )
+			throw SocketError( __FILE__ , __LINE__ );
+	} else
+		( *bytes_recvd ) = res;
 
 	return ( data );
 }
 
 template <typename T>
-T *				Socket::recv( size_t length, ssize_t && bytes_recvd, int flags )
+T *				Socket::recv( size_t length, ssize_t *&& bytes_recvd, int flags )
 {
-	return ( Socket::recv <T> ( descriptor , length , bytes_recvd , flags ) );
+	return ( Socket::recv <T> ( _descriptor , length , static_cast <ssize_t*> ( bytes_recvd ) , flags ) );
 }
 
 template <typename T>
-T				Socket::recv( ssize_t && bytes_recvd, int flags )
+T				Socket::recv( ssize_t *&& bytes_recvd, int flags )
 {
-	return ( Socket::recv <T> ( descriptor , bytes_recvd , flags ) );
+	return ( Socket::recv <T> ( _descriptor , static_cast <ssize_t*> ( bytes_recvd ) , flags ) );
 }
 
 template <typename T>
 T *				Socket::recv( Socket & sender, size_t length,
-	ssize_t && bytes_recvd, int flags )
+	ssize_t *&& bytes_recvd, int flags )
 {
 	return (
-		Socket::recv <T> ( sender.descriptor , length , bytes_recvd , flags )
+		Socket::recv <T> ( sender._descriptor , length , static_cast <ssize_t*> ( bytes_recvd ) , flags )
 	);
 }
 
 template <typename T>
-T				Socket::recv( Socket & sender, ssize_t && bytes_recvd,
+T				Socket::recv( Socket & sender, ssize_t *&& bytes_recvd,
 	int flags )
 {
 	return (
-		Socket::recv <T> ( sender.descriptor , bytes_recvd , flags )
+		Socket::recv <T> ( sender._descriptor , static_cast <ssize_t*> ( bytes_recvd ) , flags )
 	);
 }
 
@@ -824,55 +848,61 @@ T				Socket::recv( Socket & sender, ssize_t && bytes_recvd,
 template <typename T>
 T *				Socket::recvfrom( size_t length,
 	struct sockaddr_storage *dest_addr, socklen_t && dest_len,
-	ssize_t && bytes_recvd, int flags )
+	ssize_t *&& bytes_recvd, int flags )
 {
 	T * data  = new T [ length ];
+	ssize_t res;
 
-	bytes_recvd = ::recvfrom ( descriptor ,
-		                       reinterpret_cast <void *> ( data ) ,
-		                       length , flags ,
-		                       reinterpret_cast <sockaddr *> ( dest_addr ) ,
-		                       &dest_len );
+	 res = Socket::recvfrom_into ( _descriptor , data , length , flags ,
+		                           reinterpret_cast <sockaddr *> ( dest_addr ) ,
+		                           &dest_len );
 
-	/* FIXME : make it handle non-blocking sockets */
+	if ( bytes_recvd == nullptr ) {
+		if ( res < 0 )
+			throw SocketError( __FILE__ , __LINE__ );
+	} else
+		( *bytes_recvd ) = res;
 
 	return ( data );
 }
 
 template <typename T>
 T 				Socket::recvfrom( struct sockaddr_storage *dest_addr,
-	socklen_t && dest_len, ssize_t && bytes_recvd, int flags )
+	socklen_t && dest_len, ssize_t *&& bytes_recvd, int flags )
 {
 	T data;
+	ssize_t res;
 
-	bytes_recvd = ::recvfrom ( descriptor ,
-		                       reinterpret_cast <void *> ( &data ) ,
-		                       sizeof ( T ) , flags ,
-		                       reinterpret_cast <sockaddr *> ( dest_addr ) ,
-		                       &dest_len );
+	res = Socket::recvfrom_into ( _descriptor , data , sizeof ( T ) , flags ,
+		                          reinterpret_cast <sockaddr *> ( dest_addr ) ,
+		                          &dest_len );
 
-	/* FIXME : make it handle non-blocking sockets */
+	if ( bytes_recvd == nullptr ) {
+		if ( res < 0 )
+			throw SocketError( __FILE__ , __LINE__ );
+	} else
+		( *bytes_recvd ) = res;
 
 	return ( data );
 }
 
 template <typename T>
 T *				Socket::recvfrom( Socket & sender, size_t length,
-	ssize_t && bytes_recvd, int flags )
+	ssize_t *&& bytes_recvd, int flags )
 {
 	return (
-		Socket::recvfrom <T> ( &sender.address , sender.address_len ,
-			bytes_recvd , flags )
+		Socket::recvfrom <T> ( &sender._address , sender._address_len ,
+			static_cast <ssize_t*> ( bytes_recvd ) , flags )
 	);
 }
 
 template <typename T>
-T 				Socket::recvfrom( Socket & sender, ssize_t && bytes_recvd,
+T 				Socket::recvfrom( Socket & sender, ssize_t *&& bytes_recvd,
 	int flags )
 {
 	return (
-		Socket::recvfrom <T> ( &sender.address , sender.address_len ,
-			bytes_recvd , flags )
+		Socket::recvfrom <T> ( &sender._address , sender._address_len ,
+			static_cast <ssize_t*> ( bytes_recvd ) , flags )
 	);
 }
 

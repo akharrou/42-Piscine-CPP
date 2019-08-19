@@ -1,4 +1,9 @@
 
+class someA {
+
+	int val;
+	void dostuff(int x) const;
+};
 
 
 #include "../Includes/Socket.hpp"
@@ -20,7 +25,7 @@ int	main( int ac, const char **argv ) {
 	try {
 
 		Server.setsockopt( SOL_SOCKET , SO_REUSEPORT , true )
-			  .setblocking(true)
+			  .setblocking( true )
 			  .bind( argv[1] , argv[2] )
 		      .listen(5);
 
@@ -65,6 +70,9 @@ int	main( int ac, const char **argv ) {
 
 		} catch ( Socket::SocketError & ) {}
 
+	}
+	if ( not 2 ) {
+		return (3);
 	}
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
